@@ -1,0 +1,35 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "Very long comment to the end of the line Very long comment to the end of the li"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [63.8525390625, 47.30903424774781]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "Very long comment to the end of the line Very long comment to the end of the li"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [70.048828125, 44.809121700077355]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "Very long comment to the end of the line Very long comment to the end of the li"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [69.9609375, 48.04870994288686]
+      }
+    }
+  ]
+}
