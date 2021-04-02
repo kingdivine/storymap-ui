@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import LoginPage from "./LoginPage.tsx/Login";
-import MapPage from "./MapPage.tsx/MapView";
+import MapPage from "./MapPage.tsx/MapPage";
 
 function App() {
   return (
