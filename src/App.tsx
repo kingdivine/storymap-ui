@@ -1,11 +1,20 @@
-import "./App.css";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import LoginPage from "./LoginPage.tsx/Login";
+import MapPage from "./MapPage.tsx/MapView";
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <h1>Storymap</h1>
-      </header>
+      <Router>
+        <Switch>
+          <Route exact path="/login">
+            <LoginPage />
+          </Route>
+          <Route path="/">
+            <MapPage />
+          </Route>
+        </Switch>
+      </Router>
     </div>
   );
 }
