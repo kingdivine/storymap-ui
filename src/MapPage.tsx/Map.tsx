@@ -59,13 +59,13 @@ export default function Map() {
       setZoom(newZoom);
     });
 
-    map.on("load", function () {
+    map.on("load", () => {
       // Add an image to use as a custom marker
       Promise.all(
         markerImages.map(
           (img, idx) =>
             new Promise<void>((resolve, reject) => {
-              map.loadImage(img, function (error, res) {
+              map.loadImage(img, (error, res) => {
                 if (error) throw error;
                 map.addImage(idx.toString(), res!);
                 resolve();
@@ -122,6 +122,22 @@ export default function Map() {
         .catch((e) => {
           console.log(e);
         });
+      // Center the map on the coordinates of any clicked symbol from the 'symbols' layer.
+      map.on("click", "posts", function (e: any) {
+        map.flyTo({
+          center: e.features[0].geometry.coordinates,
+        });
+      });
+
+      // Change the cursor to a pointer when the it enters a feature in the 'symbols' layer.
+      map.on("mouseenter", "posts", () => {
+        map.getCanvas().style.cursor = "pointer";
+      });
+
+      // Change it back to a pointer when it leaves.
+      map.on("mouseleave", "posts", () => {
+        map.getCanvas().style.cursor = "";
+      });
     });
     return () => map.remove();
     // eslint-disable-next-line
