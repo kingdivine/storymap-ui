@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import { makeStyles } from "@material-ui/core/styles";
+import markerPng from "./marker.png";
 import dummyData from "./data.json";
 
 mapboxgl.accessToken =
@@ -56,40 +57,54 @@ export default function Map() {
 
     map.on("load", function () {
       // Add an image to use as a custom marker
-      map.loadImage(
-        "https://docs.mapbox.com/mapbox-gl-js/assets/custom_marker.png",
-        function (error, image) {
-          if (error) throw error;
-          map.addImage("custom-marker", image!);
-          // Add a GeoJSON source
-          map.addSource("posts", {
-            type: "geojson",
-            data: mock,
-            cluster: true,
-            clusterMaxZoom: 14,
-            clusterRadius: 50,
-          });
+      map.loadImage(markerPng, function (error, image) {
+        if (error) throw error;
+        map.addImage("custom-marker", image!);
+        // Add a GeoJSON source
+        map.addSource("posts", {
+          type: "geojson",
+          data: mock,
+          cluster: true,
+          clusterMaxZoom: 14,
+          clusterRadius: 100,
+        });
 
-          // Add a symbol layer
-          map.addLayer({
-            id: "posts",
-            type: "symbol",
-            source: "posts",
-            layout: {
-              "icon-image": "custom-marker",
-              // get the title name from the source's "title" property
-              "text-field": ["get", "title"],
-              "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
-              "text-offset": [0, 1.5],
-              "text-anchor": "top",
-              "text-size": 12,
-            },
-            paint: {
-              "text-color": "white",
-            },
-          });
-        }
-      );
+        // Add posts symbol layer
+        map.addLayer({
+          id: "posts",
+          type: "symbol",
+          source: "posts",
+          layout: {
+            "icon-image": "custom-marker",
+            "text-field": ["get", "title"],
+            "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
+            "text-offset": [0, 2],
+            "text-anchor": "top",
+            "text-size": 12,
+          },
+          paint: {
+            "text-color": "#FC693B",
+          },
+        });
+
+        //add clusters symbol layer
+        map.addLayer({
+          id: "cluster-count",
+          type: "symbol",
+          source: "posts",
+          filter: ["has", "point_count"],
+          layout: {
+            "icon-image": "custom-marker",
+            "text-field": "{point_count_abbreviated} posts",
+            "text-font": ["DIN Offc Pro Medium", "Arial Unicode MS Bold"],
+            "text-size": 16,
+            "text-offset": [0, 2],
+          },
+          paint: {
+            "text-color": "#FC693B",
+          },
+        });
+      });
     });
     return () => map.remove();
     // eslint-disable-next-line

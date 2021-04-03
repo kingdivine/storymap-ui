@@ -30,6 +30,36 @@
         "type": "Point",
         "coordinates": [69.9609375, 48.04870994288686]
       }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "Very long comment to the end of the line Very long comment to the end of the li"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [68.90625, 47.96050238891509]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "Very long comment to the end of the line Very long comment to the end of the li"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [66.5771484375, 47.79839667295524]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "title": "Very long comment to the end of the line Very long comment to the end of the li"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [69.23583984375, 48.07807894349862]
+      }
     }
   ]
 }
