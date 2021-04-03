@@ -5,6 +5,8 @@ import postPinPng from "./post-pin.png";
 import clusterPinPng from "./cluster-pin.png";
 
 import dummyData from "./data.json";
+import { render } from "react-dom";
+import Post from "./Post";
 
 mapboxgl.accessToken =
   "pk.eyJ1IjoiZGl2aW5lYSIsImEiOiJja24wZ2lqbjkwY2J4Mm9scnY3bW1yZW5nIn0.GkVgq5TQlU19vuZLwggtjQ";
@@ -122,10 +124,30 @@ export default function Map() {
         .catch((e) => {
           console.log(e);
         });
-      // Center the map on the coordinates of any clicked symbol from the 'symbols' layer.
+
+      // Pan to a post onclick and display popup
       map.on("click", "posts", function (e: any) {
+        const coordinates = e.features[0].geometry.coordinates.slice();
+        const placeholder = document.createElement("div");
+        render(<Post />, placeholder);
+        let openPopup = true;
+
         map.flyTo({
-          center: e.features[0].geometry.coordinates,
+          center: [
+            e.features[0].geometry.coordinates[0],
+            e.features[0].geometry.coordinates[1] - 0.2,
+          ],
+        });
+
+        map.on("moveend", function (e) {
+          if (openPopup) {
+            new mapboxgl.Popup({ closeOnMove: true, closeButton: false })
+              .setMaxWidth("400")
+              .setLngLat(coordinates)
+              .setDOMContent(placeholder)
+              .addTo(map);
+            openPopup = false;
+          }
         });
       });
 
