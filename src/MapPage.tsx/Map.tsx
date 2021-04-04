@@ -4,15 +4,12 @@ import { makeStyles } from "@material-ui/core/styles";
 import postPinPng from "./post-pin.png";
 import clusterPinPng from "./cluster-pin.png";
 
-import dummyData from "./data.json";
 import { render } from "react-dom";
 import Post from "./Post";
 
 mapboxgl.accessToken =
   "pk.eyJ1IjoiZGl2aW5lYSIsImEiOiJja24wZ2lqbjkwY2J4Mm9scnY3bW1yZW5nIn0.GkVgq5TQlU19vuZLwggtjQ";
 const MAP_THEME = "mapbox://styles/mapbox/dark-v10";
-
-const mock: any = dummyData;
 
 const useStyles = makeStyles({
   mapContainer: {
@@ -38,14 +35,26 @@ const useStyles = makeStyles({
 
 const markerImages = [postPinPng, clusterPinPng];
 
-export default function Map() {
+export default function Map(props: { posts: any[] }) {
   const classes = useStyles();
   const mapContainer = useRef(null);
-  const [long, setLong] = useState(70.048828125);
-  const [lat, setLat] = useState(44.809121700077355);
-  const [zoom, setZoom] = useState(9);
+  const [long, setLong] = useState(9);
+  const [lat, setLat] = useState(25);
+  const [zoom, setZoom] = useState(1.5);
 
   useEffect(() => {
+    const features = props.posts.map((post) => ({
+      type: "Feature",
+      properties: {
+        title: post.title,
+      },
+      geometry: JSON.parse(post.geo_json),
+    }));
+    const featureCollection = {
+      type: "FeatureCollection",
+      features: [...features],
+    };
+
     const map = new mapboxgl.Map({
       container: mapContainer.current!,
       style: MAP_THEME,
@@ -55,7 +64,7 @@ export default function Map() {
     map.on("move", () => {
       const newLong = parseFloat(map.getCenter().lng.toFixed(4));
       const newLat = parseFloat(map.getCenter().lat.toFixed(4));
-      const newZoom = parseFloat(map.getCenter().lat.toFixed(2));
+      const newZoom = parseFloat(map.getZoom().toFixed(2));
       setLong(newLong);
       setLat(newLat);
       setZoom(newZoom);
@@ -79,9 +88,9 @@ export default function Map() {
           // Add data source
           map.addSource("posts", {
             type: "geojson",
-            data: mock,
+            data: featureCollection as any,
             cluster: true,
-            clusterMaxZoom: 14,
+            clusterMaxZoom: 22,
             clusterRadius: 100,
           });
 
@@ -133,15 +142,15 @@ export default function Map() {
         let openPopup = true;
 
         map.flyTo({
-          center: [
-            e.features[0].geometry.coordinates[0],
-            e.features[0].geometry.coordinates[1] - 0.2,
-          ],
+          center: e.features[0].geometry.coordinates,
         });
 
         map.on("moveend", function (e) {
           if (openPopup) {
-            new mapboxgl.Popup({ closeOnMove: true, closeButton: false })
+            new mapboxgl.Popup({
+              closeOnMove: true,
+              closeButton: false,
+            })
               .setMaxWidth("400")
               .setLngLat(coordinates)
               .setDOMContent(placeholder)
@@ -162,7 +171,6 @@ export default function Map() {
       });
     });
     return () => map.remove();
-    // eslint-disable-next-line
   }, []);
 
   return (
