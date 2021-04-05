@@ -4,9 +4,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import postPinPng from "./post-pin.png";
 import clusterPinPng from "./cluster-pin.png";
 
-import { render } from "react-dom";
-import Post from "./Post";
-
 mapboxgl.accessToken =
   "pk.eyJ1IjoiZGl2aW5lYSIsImEiOiJja24wZ2lqbjkwY2J4Mm9scnY3bW1yZW5nIn0.GkVgq5TQlU19vuZLwggtjQ";
 const MAP_THEME = "mapbox://styles/mapbox/dark-v10";
@@ -37,8 +34,12 @@ const markerImages = [postPinPng, clusterPinPng];
 const DEFAULT_LONG_LAT: mapboxgl.LngLatLike = [9, 25];
 const DEFAULT_ZOOM = 1.5;
 
-export default function Map(props: { posts: any[] }) {
+export default function Map(props: {
+  posts: any[];
+  openPost: (postId: string) => void;
+}) {
   const classes = useStyles();
+  const { posts, openPost } = props;
   const mapContainer = useRef(null);
   const [map, setMap] = useState<mapboxgl.Map>();
   const [isLoaded, setIsLoaded] = useState(false);
@@ -57,10 +58,11 @@ export default function Map(props: { posts: any[] }) {
   }, []);
 
   useEffect(() => {
-    const features = props.posts.map((post) => ({
+    const features = posts.map((post) => ({
       type: "Feature",
       properties: {
         title: post.title,
+        id: post.id,
       },
       geometry: JSON.parse(post.geo_json),
     }));
@@ -144,30 +146,9 @@ export default function Map(props: { posts: any[] }) {
           console.log(e);
         });
 
-      // Pan to a post onclick and display popup
+      // Display dialog
       map.on("click", "posts", function (e: any) {
-        const coordinates = e.features[0].geometry.coordinates.slice();
-        const placeholder = document.createElement("div");
-        render(<Post />, placeholder);
-        let openPopup = true;
-
-        map.flyTo({
-          center: e.features[0].geometry.coordinates,
-        });
-
-        map.on("moveend", function (e) {
-          if (openPopup) {
-            new mapboxgl.Popup({
-              closeOnMove: true,
-              closeButton: false,
-            })
-              .setMaxWidth("400")
-              .setLngLat(coordinates)
-              .setDOMContent(placeholder)
-              .addTo(map);
-            openPopup = false;
-          }
-        });
+        openPost(e.features[0].properties.id);
       });
     });
     // Change the cursor to a pointer when the it enters a feature in the 'symbols' layer.
@@ -179,7 +160,7 @@ export default function Map(props: { posts: any[] }) {
     map.on("mouseleave", "posts", () => {
       map.getCanvas().style.cursor = "";
     });
-  }, [map, props.posts, isLoaded]);
+  }, [map, posts, openPost, isLoaded]);
 
   return (
     <div>
