@@ -27,6 +27,27 @@ export default function MapPage() {
   }, []);
 
   if (isLoading) return <CircularProgress />;
-  if (isError) return <h1>Whoops soemthing went wrong!</h1>;
-  return <Map posts={posts} />;
+  if (isError) return <h1>Whoops something went wrong!</h1>;
+  return (
+    <>
+      <Map posts={posts} />
+      <button
+        style={{
+          backgroundColor: "rgba(35, 55, 75, 0.9)",
+          color: "#ffffff",
+          padding: "6px 12px",
+          font: "15px/24px monospace",
+          zIndex: 1,
+          position: "absolute",
+          top: 30,
+          left: 30,
+          margin: "8px",
+          borderRadius: "4px",
+        }}
+        onClick={() => setPosts(posts.slice(2, 6))}
+      >
+        Filter Data
+      </button>
+    </>
+  );
 }

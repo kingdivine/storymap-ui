@@ -34,13 +34,27 @@ const useStyles = makeStyles({
 });
 
 const markerImages = [postPinPng, clusterPinPng];
+const DEFAULT_LONG_LAT: mapboxgl.LngLatLike = [9, 25];
+const DEFAULT_ZOOM = 1.5;
 
 export default function Map(props: { posts: any[] }) {
   const classes = useStyles();
   const mapContainer = useRef(null);
-  const [long, setLong] = useState(9);
-  const [lat, setLat] = useState(25);
-  const [zoom, setZoom] = useState(1.5);
+  const [map, setMap] = useState<mapboxgl.Map>();
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    const initialMap = new mapboxgl.Map({
+      container: mapContainer.current!,
+      style: MAP_THEME,
+      center: DEFAULT_LONG_LAT,
+      zoom: DEFAULT_ZOOM,
+    });
+
+    setMap(initialMap);
+
+    return () => initialMap.remove();
+  }, []);
 
   useEffect(() => {
     const features = props.posts.map((post) => ({
@@ -54,21 +68,16 @@ export default function Map(props: { posts: any[] }) {
       type: "FeatureCollection",
       features: [...features],
     };
+    if (!map) return;
 
-    const map = new mapboxgl.Map({
-      container: mapContainer.current!,
-      style: MAP_THEME,
-      center: [long, lat],
-      zoom: zoom,
-    });
-    map.on("move", () => {
-      const newLong = parseFloat(map.getCenter().lng.toFixed(4));
-      const newLat = parseFloat(map.getCenter().lat.toFixed(4));
-      const newZoom = parseFloat(map.getZoom().toFixed(2));
-      setLong(newLong);
-      setLat(newLat);
-      setZoom(newZoom);
-    });
+    if (isLoaded) {
+      const source: any = map.getSource("posts");
+      source.setData(featureCollection as any);
+      map.flyTo({
+        center: DEFAULT_LONG_LAT,
+      });
+      return;
+    }
 
     map.on("load", () => {
       // Add an image to use as a custom marker
@@ -129,6 +138,7 @@ export default function Map(props: { posts: any[] }) {
               "text-color": "#FFE600",
             },
           });
+          setIsLoaded(true);
         })
         .catch((e) => {
           console.log(e);
@@ -159,25 +169,21 @@ export default function Map(props: { posts: any[] }) {
           }
         });
       });
-
-      // Change the cursor to a pointer when the it enters a feature in the 'symbols' layer.
-      map.on("mouseenter", "posts", () => {
-        map.getCanvas().style.cursor = "pointer";
-      });
-
-      // Change it back to a pointer when it leaves.
-      map.on("mouseleave", "posts", () => {
-        map.getCanvas().style.cursor = "";
-      });
     });
-    return () => map.remove();
-  }, []);
+    // Change the cursor to a pointer when the it enters a feature in the 'symbols' layer.
+    map.on("mouseenter", "posts", () => {
+      map.getCanvas().style.cursor = "pointer";
+    });
+
+    // Change it back to a pointer when it leaves.
+    map.on("mouseleave", "posts", () => {
+      map.getCanvas().style.cursor = "";
+    });
+  }, [map, props.posts, isLoaded]);
 
   return (
     <div>
-      <div className={classes.infoBar}>
-        Longitude: {long} | Latitude: {lat} | Zoom: {zoom}
-      </div>
+      <div className={classes.infoBar}>Storymap</div>
       <div className={classes.mapContainer} ref={mapContainer} />
     </div>
   );
