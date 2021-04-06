@@ -16,18 +16,6 @@ const useStyles = makeStyles({
     left: 0,
     bottom: 0,
   },
-  infoBar: {
-    backgroundColor: "rgba(35, 55, 75, 0.9)",
-    color: "#ffffff",
-    padding: "6px 12px",
-    font: "15px/24px monospace",
-    zIndex: 1,
-    position: "absolute",
-    top: 0,
-    left: 0,
-    margin: "12px",
-    borderRadius: "4px",
-  },
 });
 
 const markerImages = [postPinPng, clusterPinPng];
@@ -164,7 +152,6 @@ export default function Map(props: {
 
   return (
     <div>
-      <div className={classes.infoBar}>Storymap</div>
       <div className={classes.mapContainer} ref={mapContainer} />
     </div>
   );
