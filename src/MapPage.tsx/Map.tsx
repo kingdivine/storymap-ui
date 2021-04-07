@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import { makeStyles } from "@material-ui/core/styles";
-import postPinPng from "./post-pin.png";
-import clusterPinPng from "./cluster-pin.png";
+import postPinPng from "./images/post-pin.png";
+import clusterPinPng from "./images/cluster-pin.png";
 
 mapboxgl.accessToken =
   "pk.eyJ1IjoiZGl2aW5lYSIsImEiOiJja24wZ2lqbjkwY2J4Mm9scnY3bW1yZW5nIn0.GkVgq5TQlU19vuZLwggtjQ";
