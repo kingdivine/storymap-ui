@@ -92,7 +92,7 @@ export default function Map(props: {
             data: featureCollection as any,
             cluster: true,
             clusterMaxZoom: 22,
-            clusterRadius: 100,
+            clusterRadius: 50,
           });
 
           // Add posts symbol layer
@@ -102,9 +102,9 @@ export default function Map(props: {
             source: "posts",
             layout: {
               "icon-image": "0",
+              "icon-anchor": "bottom",
               "text-field": ["get", "title"],
               "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
-              "text-offset": [0, 2],
               "text-anchor": "top",
               "text-size": 12,
             },
@@ -121,10 +121,11 @@ export default function Map(props: {
             filter: ["has", "point_count"],
             layout: {
               "icon-image": "1",
+              "icon-anchor": "bottom",
               "text-field": "{point_count_abbreviated} posts",
-              "text-font": ["DIN Offc Pro Medium", "Arial Unicode MS Bold"],
-              "text-size": 16,
-              "text-offset": [0, 2],
+              "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
+              "text-anchor": "top",
+              "text-size": 12,
             },
             paint: {
               "text-color": "#FFE600",
