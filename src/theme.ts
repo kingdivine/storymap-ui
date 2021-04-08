@@ -14,6 +14,12 @@ export const theme = createMuiTheme({
       gold: "#FFE600",
       reddish: "#FC693B",
     },
+    primary: {
+      main: "#FFE600",
+    },
+    secondary: {
+      main: "#FC693B",
+    },
   },
   typography: {
     fontFamily: [

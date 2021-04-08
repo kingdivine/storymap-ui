@@ -25,9 +25,11 @@ const DEFAULT_ZOOM = 1.5;
 export default function Map(props: {
   posts: any[];
   openPost: (postId: string) => void;
+  flyToLongLat: [number, number] | null;
+  onFlyEnd: () => void;
 }) {
   const classes = useStyles();
-  const { posts, openPost } = props;
+  const { posts, openPost, flyToLongLat, onFlyEnd } = props;
   const mapContainer = useRef(null);
   const [map, setMap] = useState<mapboxgl.Map>();
   const [isLoaded, setIsLoaded] = useState(false);
@@ -149,6 +151,18 @@ export default function Map(props: {
       map.getCanvas().style.cursor = "";
     });
   }, [map, posts, openPost, isLoaded]);
+
+  useEffect(() => {
+    if (flyToLongLat && map) {
+      map.flyTo({
+        center: flyToLongLat,
+        zoom: 9,
+        speed: 0.7,
+        essential: true,
+      });
+      onFlyEnd();
+    }
+  }, [flyToLongLat, map, onFlyEnd]);
 
   return (
     <div>
