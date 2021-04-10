@@ -6,12 +6,13 @@ import { makeStyles } from "@material-ui/core/styles";
 import PostDialog from "./PostDialog";
 import Heading from "../Generic/Heading";
 import LocationSearch from "./LocationSearch";
+import Filter from "./Filter";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     searchAndFilter: {
       display: "flex",
-      alignItems: "center",
+      flexDirection: "column",
       zIndex: 1,
       position: "absolute",
       top: "15%",
@@ -70,6 +71,7 @@ export default function MapPage() {
         <LocationSearch
           onLocationSelect={(coords) => setFlyToLongLat(coords)}
         />
+        <Filter />
       </div>
       <Map
         posts={posts}
