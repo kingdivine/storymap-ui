@@ -28,7 +28,15 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function Filter() {
+export interface FilterObj {
+  username: string;
+  followingOnly: boolean;
+  tags: string[];
+}
+
+export default function Filter(props: {
+  onFilterChange: (filter: FilterObj) => void;
+}) {
   const classes = useStyles();
 
   const [formOpen, setFormOpen] = useState(false);
@@ -76,7 +84,7 @@ export default function Filter() {
 
   const handleSubmit = () => {
     setFormOpen(false);
-    console.log(username, tags, followingOnly);
+    props.onFilterChange({ username, followingOnly, tags });
   };
 
   return (

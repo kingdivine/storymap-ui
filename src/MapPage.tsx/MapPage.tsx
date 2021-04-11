@@ -1,12 +1,12 @@
 import Map from "./Map";
 import axios from "axios";
-import { useCallback, useEffect, useState } from "react";
-import { CircularProgress, createStyles, Theme } from "@material-ui/core";
+import React, { useCallback, useEffect, useState } from "react";
+import { CircularProgress, createStyles, Theme, Chip } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import PostDialog from "./PostDialog";
 import Heading from "../Generic/Heading";
 import LocationSearch from "./LocationSearch";
-import Filter from "./Filter";
+import Filter, { FilterObj } from "./Filter";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -18,6 +18,19 @@ const useStyles = makeStyles((theme: Theme) =>
       top: "15%",
       left: theme.spacing(2),
     },
+    chipContainer: {
+      marginTop: theme.spacing(1),
+      maxWidth: 250,
+    },
+    usersChip: {
+      margin: 2,
+      border: "1px solid white",
+    },
+    tagChip: {
+      margin: 2,
+      border: "1px solid white",
+      backgroundColor: theme.palette.background.default,
+    },
   })
 );
 
@@ -25,6 +38,11 @@ export default function MapPage() {
   const classes = useStyles();
 
   const [posts, setPosts] = useState([]);
+  const [filters, setFilters] = useState<FilterObj>({
+    username: "",
+    followingOnly: false,
+    tags: [],
+  });
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [postInView, setPostInView] = useState<any>(null);
@@ -62,6 +80,10 @@ export default function MapPage() {
     setPostInView(null);
   };
 
+  const handleFilterChange = (newFilters: FilterObj) => {
+    setFilters(newFilters);
+  };
+
   if (isLoading) return <CircularProgress />;
   if (isError) return <h1>Whoops something went wrong!</h1>;
   return (
@@ -71,7 +93,35 @@ export default function MapPage() {
         <LocationSearch
           onLocationSelect={(coords) => setFlyToLongLat(coords)}
         />
-        <Filter />
+        <Filter onFilterChange={handleFilterChange} />
+        <div className={classes.chipContainer}>
+          {filters.username && (
+            <Chip
+              className={classes.usersChip}
+              label={
+                filters.username.startsWith("@")
+                  ? filters.username
+                  : `@${filters.username}`
+              }
+              size="small"
+            />
+          )}
+          {filters.followingOnly && (
+            <Chip
+              className={classes.usersChip}
+              label={"Following Only"}
+              size="small"
+            />
+          )}
+          {filters.tags.map((tag) => (
+            <Chip
+              key={tag}
+              className={classes.tagChip}
+              label={tag.startsWith("#") ? tag : `#${tag}`}
+              size="small"
+            />
+          ))}
+        </div>
       </div>
       <Map
         posts={posts}
