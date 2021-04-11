@@ -1,6 +1,6 @@
 import Map from "./Map";
 import axios from "axios";
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { CircularProgress, createStyles, Theme, Chip } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import PostDialog from "./PostDialog";
