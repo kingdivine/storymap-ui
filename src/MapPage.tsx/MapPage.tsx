@@ -1,12 +1,19 @@
 import Map from "./Map";
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
-import { CircularProgress, createStyles, Theme, Chip } from "@material-ui/core";
+import {
+  LinearProgress,
+  createStyles,
+  Theme,
+  Chip,
+  Snackbar,
+} from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import PostDialog from "./PostDialog";
 import Heading from "../Generic/Heading";
 import LocationSearch from "./LocationSearch";
 import Filter, { FilterObj } from "./Filter";
+import Alert from "@material-ui/lab/Alert";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -20,16 +27,17 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     chipContainer: {
       marginTop: theme.spacing(1),
-      maxWidth: 250,
     },
-    usersChip: {
-      margin: 2,
-      border: "1px solid white",
-    },
-    tagChip: {
+    chip: {
       margin: 2,
       border: "1px solid white",
       backgroundColor: theme.palette.background.default,
+    },
+    loadingBar: {
+      zIndex: 1,
+    },
+    alert: {
+      zIndex: 1,
     },
   })
 );
@@ -38,11 +46,7 @@ export default function MapPage() {
   const classes = useStyles();
 
   const [posts, setPosts] = useState([]);
-  const [filters, setFilters] = useState<FilterObj>({
-    username: "",
-    followingOnly: false,
-    tags: [],
-  });
+  const [filter, setFilter] = useState<FilterObj>();
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [postInView, setPostInView] = useState<any>(null);
@@ -55,7 +59,13 @@ export default function MapPage() {
       setIsLoading(true);
       setIsError(false);
       try {
-        const response = await axios.get("/storymap-api/stories");
+        const response = await axios.get("/storymap-api/stories", {
+          params: {
+            userId: filter?.user?.id,
+            tag: filter?.tag?.title,
+            followingOnly: filter?.followingOnly,
+          },
+        });
         setPosts(response.data);
       } catch (e) {
         setIsError(true);
@@ -66,7 +76,7 @@ export default function MapPage() {
     };
 
     fetchData();
-  }, []);
+  }, [filter]);
 
   const handleOpenPost = useCallback(
     (postId: string) => {
@@ -80,14 +90,16 @@ export default function MapPage() {
     setPostInView(null);
   };
 
-  const handleFilterChange = (newFilters: FilterObj) => {
-    setFilters(newFilters);
+  const handleFilterChange = (newFilter: FilterObj) => {
+    setFilter(newFilter);
   };
 
-  if (isLoading) return <CircularProgress />;
-  if (isError) return <h1>Whoops something went wrong!</h1>;
   return (
     <>
+      {isLoading && (
+        <LinearProgress className={classes.loadingBar} color={"secondary"} />
+      )}
+
       <Heading />
       <div className={classes.searchAndFilter}>
         <LocationSearch
@@ -95,32 +107,27 @@ export default function MapPage() {
         />
         <Filter onFilterChange={handleFilterChange} />
         <div className={classes.chipContainer}>
-          {filters.username && (
+          {filter?.user?.username && (
             <Chip
-              className={classes.usersChip}
-              label={
-                filters.username.startsWith("@")
-                  ? filters.username
-                  : `@${filters.username}`
-              }
+              className={classes.chip}
+              label={`@${filter?.user?.username}`}
               size="small"
             />
           )}
-          {filters.followingOnly && (
+          {filter?.followingOnly && (
             <Chip
-              className={classes.usersChip}
+              className={classes.chip}
               label={"Following Only"}
               size="small"
             />
           )}
-          {filters.tags.map((tag) => (
+          {filter?.tag?.title && (
             <Chip
-              key={tag}
-              className={classes.tagChip}
-              label={tag.startsWith("#") ? tag : `#${tag}`}
+              className={classes.chip}
+              label={`#${filter?.tag?.title}`}
               size="small"
             />
-          ))}
+          )}
         </div>
       </div>
       <Map
@@ -129,6 +136,17 @@ export default function MapPage() {
         flyToLongLat={flyToLongLat}
         onFlyEnd={() => setFlyToLongLat(null)}
       />
+      {isError && (
+        <Snackbar
+          open={isError}
+          autoHideDuration={6000}
+          onClose={() => setIsError(false)}
+        >
+          <Alert onClose={() => setIsError(false)} severity="error">
+            Oops! Something went wrong...
+          </Alert>
+        </Snackbar>
+      )}
       {postInView && (
         <PostDialog post={postInView} closePost={handleClosePost} />
       )}
