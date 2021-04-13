@@ -67,7 +67,7 @@ export default function Filter(props: {
         aria-labelledby="form-dialog-title"
       >
         <DialogTitle>
-          Filter Posts{" "}
+          Filter Posts
           <IconButton
             aria-label="close"
             className={classes.closeButton}

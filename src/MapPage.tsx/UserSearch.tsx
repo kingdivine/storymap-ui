@@ -1,6 +1,6 @@
-import { TextField, Typography } from "@material-ui/core";
-import axios from "axios";
 import { useEffect, useState } from "react";
+import axios from "axios";
+import { TextField, Typography } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import { User } from "./Filter";
 
@@ -23,7 +23,11 @@ export default function UserSearch(props: {
     const fetchData = async (searchString: string) => {
       setIsLoading(true);
       try {
-        const response = await axios.get(`/storymap-api/users/`);
+        const response = await axios.get(`/storymap-api/users/`, {
+          params: {
+            username: searchString,
+          },
+        });
         setOptions(response.data);
       } catch (e) {
         console.log(e);
@@ -53,6 +57,8 @@ export default function UserSearch(props: {
         onInputChange={(event, newSearchTerm) => {
           setSearchTerm(newSearchTerm);
         }}
+        popupIcon={null}
+        noOptionsText={"No users found."}
         loading={isLoading}
         renderInput={(params) => (
           <TextField {...params} label="Username" variant="outlined" />

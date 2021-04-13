@@ -1,6 +1,6 @@
-import { TextField, Typography } from "@material-ui/core";
-import axios from "axios";
 import { useEffect, useState } from "react";
+import axios from "axios";
+import { TextField, Typography } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 
 type Bbox = [number, number, number, number];
@@ -70,6 +70,8 @@ export default function LocationSearch(props: {
         onInputChange={(event, newSearchTerm) => {
           setSearchTerm(newSearchTerm);
         }}
+        popupIcon={null}
+        noOptionsText={"No locations found."}
         loading={isLoading}
         renderInput={(params) => (
           <TextField {...params} label="Fly to..." variant="outlined" />

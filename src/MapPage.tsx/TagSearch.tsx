@@ -1,6 +1,6 @@
-import { TextField, Typography } from "@material-ui/core";
-import axios from "axios";
 import { useEffect, useState } from "react";
+import axios from "axios";
+import { TextField, Typography } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import { Tag } from "./Filter";
 
@@ -21,7 +21,11 @@ export default function UserSearch(props: { onTagSelect: (tag: Tag) => void }) {
     const fetchData = async (searchString: string) => {
       setIsLoading(true);
       try {
-        const response = await axios.get(`/storymap-api/tags/`);
+        const response = await axios.get(`/storymap-api/tags/`, {
+          params: {
+            title: searchString,
+          },
+        });
         setOptions(response.data);
       } catch (e) {
         console.log(e);
@@ -51,6 +55,8 @@ export default function UserSearch(props: { onTagSelect: (tag: Tag) => void }) {
         onInputChange={(event, newSearchTerm) => {
           setSearchTerm(newSearchTerm);
         }}
+        popupIcon={null}
+        noOptionsText={"No tags found."}
         loading={isLoading}
         renderInput={(params) => (
           <TextField {...params} label="Tag" variant="outlined" />
