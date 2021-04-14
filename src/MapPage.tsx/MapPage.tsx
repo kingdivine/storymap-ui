@@ -49,7 +49,7 @@ export default function MapPage() {
   const [filter, setFilter] = useState<FilterObj>();
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
-  const [postInView, setPostInView] = useState<any>(null);
+  const [selectedStoryId, setSelectedStoryId] = useState<string>("");
   const [flyToLongLat, setFlyToLongLat] = useState<[number, number] | null>(
     null
   );
@@ -78,16 +78,12 @@ export default function MapPage() {
     fetchData();
   }, [filter]);
 
-  const handleOpenPost = useCallback(
-    (postId: string) => {
-      const selectedPost = posts.find((post: any) => post.id === postId);
-      setPostInView(selectedPost);
-    },
-    [posts]
-  );
+  const handleOpenPost = useCallback((postId: string) => {
+    setSelectedStoryId(postId);
+  }, []);
 
   const handleClosePost = () => {
-    setPostInView(null);
+    setSelectedStoryId("");
   };
 
   const handleFilterChange = (newFilter: FilterObj) => {
@@ -147,8 +143,8 @@ export default function MapPage() {
           </Alert>
         </Snackbar>
       )}
-      {postInView && (
-        <PostDialog post={postInView} closePost={handleClosePost} />
+      {selectedStoryId && (
+        <PostDialog storyId={selectedStoryId} closePost={handleClosePost} />
       )}
     </>
   );
