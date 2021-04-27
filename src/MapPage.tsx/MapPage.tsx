@@ -17,6 +17,12 @@ import Alert from "@material-ui/lab/Alert";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    headingContainer: {
+      zIndex: 1,
+      position: "absolute",
+      top: theme.spacing(1),
+      left: theme.spacing(2),
+    },
     searchAndFilter: {
       display: "flex",
       flexDirection: "column",
@@ -95,8 +101,10 @@ export default function MapPage() {
       {isLoading && (
         <LinearProgress className={classes.loadingBar} color={"secondary"} />
       )}
+      <div className={classes.headingContainer}>
+        <Heading />
+      </div>
 
-      <Heading />
       <div className={classes.searchAndFilter}>
         <LocationSearch
           onLocationSelect={(coords) => setFlyToLongLat(coords)}
