@@ -1,13 +1,16 @@
+import { useState } from "react";
 import {
   createStyles,
   makeStyles,
   Theme,
   Typography,
   Button,
+  Collapse,
 } from "@material-ui/core";
 import MailOutlineIcon from "@material-ui/icons/MailOutline";
 import Heading from "../Generic/Heading";
 import mapBackground from "../Generic/images/map-background.png";
+import LoginForm from "./LoginForm";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -53,6 +56,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function LoginPage() {
   const classes = useStyles();
+  const [showForm, setShowForm] = useState(false);
   return (
     <div className={classes.pageContainer}>
       <header className={classes.header}>
@@ -69,13 +73,20 @@ export default function LoginPage() {
         >
           Your Online Travel Diary
         </Typography>
-        <Button
-          variant="outlined"
-          className={classes.button}
-          startIcon={<MailOutlineIcon />}
-        >
-          Continue with Email
-        </Button>
+
+        <Collapse in={!showForm}>
+          <Button
+            variant="outlined"
+            className={classes.button}
+            startIcon={<MailOutlineIcon />}
+            onClick={() => setShowForm(true)}
+          >
+            Continue with Email
+          </Button>
+        </Collapse>
+        <Collapse in={showForm}>
+          <LoginForm />
+        </Collapse>
       </div>
       <footer className={classes.footer}>
         <Typography variant="subtitle1" className={classes.footerItem}>
