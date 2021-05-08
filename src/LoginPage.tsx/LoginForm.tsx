@@ -1,9 +1,17 @@
 import React, { useState } from "react";
+import axios from "axios";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
-import { Box, Button, InputAdornment, TextField } from "@material-ui/core";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  InputAdornment,
+  TextField,
+  Typography,
+} from "@material-ui/core";
 //icons
 import MailOutlineIcon from "@material-ui/icons/MailOutline";
 import PersonOutlineIcon from "@material-ui/icons/PersonOutline";
@@ -58,12 +66,17 @@ export default function LoginForm() {
     email: "",
     password: "",
   });
-  const [signUpValues, setSignUpValues] = useState({
+  const [signupValues, setSignupValues] = useState({
     username: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
+
+  const [loginError, setLoginError] = useState("");
+  const [signupError, setSignupError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
   const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setTabValue(newValue);
   };
@@ -78,25 +91,77 @@ export default function LoginForm() {
     });
   };
 
-  const handleSignUpTextFieldChange = (
+  const handleSignupTextFieldChange = (
     e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
     field: "username" | "email" | "password" | "confirmPassword"
   ) => {
-    setSignUpValues({
-      ...signUpValues,
+    setSignupValues({
+      ...signupValues,
       [field]: e.target.value,
     });
   };
 
-  const canSignUp = () =>
+  const canLogin = () =>
+    Object.values(loginValues).every((value) => value.length > 0);
+
+  const canSignup = () =>
     isMatchingPassword() &&
-    Object.values(signUpValues).every((value) => value.length > 0);
+    Object.values(signupValues).every((value) => value.length > 0);
 
   const isMatchingPassword = () => {
-    if (signUpValues.password.length > 0) {
-      return signUpValues.confirmPassword === signUpValues.password;
+    if (signupValues.password.length > 0) {
+      return signupValues.confirmPassword === signupValues.password;
     }
     return true;
+  };
+
+  const handleLoginSubmit = () => {
+    setIsLoading(true);
+    setLoginError("");
+    axios
+      .post("/storymap-api/users/login", {
+        email: loginValues.email,
+        password: loginValues.password,
+      })
+      .then((result) => console.log("here"))
+      .catch((e) => {
+        if (e.request?.responseText?.includes("Invalid email format")) {
+          setLoginError("Invalid email format.");
+        } else if (e.response.status === 401) {
+          setLoginError("Email or password incorrect.");
+        } else {
+          setLoginError("Oops! Something went wrong.");
+        }
+      })
+      .finally(() => setIsLoading(false));
+  };
+
+  const handleSignupSubmit = () => {
+    setIsLoading(true);
+    setSignupError("");
+    axios
+      .post("/storymap-api/users", {
+        username: signupValues.username,
+        email: signupValues.email,
+        password: signupValues.password,
+      })
+      .then((result) => console.log("here"))
+      .catch((e) => {
+        if (
+          e.request?.responseText?.includes(
+            "Password must be at least 6 and at most 100 characters long."
+          )
+        ) {
+          setSignupError("Password must be 6-100 characters.");
+        } else if (e.request?.responseText?.includes("Invalid email format")) {
+          setSignupError("Invalid email format.");
+        } else if (e.response.status === 409) {
+          setSignupError(e.response.data);
+        } else {
+          setSignupError("Oops! Something went wrong.");
+        }
+      })
+      .finally(() => setIsLoading(false));
   };
 
   return (
@@ -108,8 +173,8 @@ export default function LoginForm() {
         textColor="primary"
         centered
       >
-        <Tab label="Login" />
-        <Tab label="Sign Up" />
+        <Tab label="Login" disabled={isLoading} />
+        <Tab label="Sign Up" disabled={isLoading} />
       </Tabs>
       <TabPanel value={tabValue} index={0}>
         <div className={classes.formContainer}>
@@ -130,6 +195,7 @@ export default function LoginForm() {
           <TextField
             placeholder="password"
             variant="outlined"
+            type={"password"}
             size="small"
             value={loginValues.password}
             onChange={(e) => handleLoginTextFieldChange(e, "password")}
@@ -142,9 +208,18 @@ export default function LoginForm() {
             }}
           />
         </div>
+        <Typography style={{ margin: 16 }} color={"error"}>
+          {loginError}
+        </Typography>
         <div className={classes.btnContainer}>
-          <Button size="small" variant={"contained"} color={"primary"}>
-            Login
+          <Button
+            size="small"
+            variant={"contained"}
+            color={"primary"}
+            disabled={!canLogin() || isLoading}
+            onClick={() => handleLoginSubmit()}
+          >
+            {isLoading ? <CircularProgress size={20} /> : "Login"}
           </Button>
         </div>
       </TabPanel>
@@ -154,8 +229,8 @@ export default function LoginForm() {
             placeholder="username"
             variant="outlined"
             size="small"
-            value={signUpValues.username}
-            onChange={(e) => handleSignUpTextFieldChange(e, "username")}
+            value={signupValues.username}
+            onChange={(e) => handleSignupTextFieldChange(e, "username")}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
@@ -168,8 +243,8 @@ export default function LoginForm() {
             placeholder="email"
             variant="outlined"
             size="small"
-            value={signUpValues.email}
-            onChange={(e) => handleSignUpTextFieldChange(e, "email")}
+            value={signupValues.email}
+            onChange={(e) => handleSignupTextFieldChange(e, "email")}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
@@ -181,9 +256,10 @@ export default function LoginForm() {
           <TextField
             placeholder="password"
             variant="outlined"
+            type={"password"}
             size="small"
-            value={signUpValues.password}
-            onChange={(e) => handleSignUpTextFieldChange(e, "password")}
+            value={signupValues.password}
+            onChange={(e) => handleSignupTextFieldChange(e, "password")}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
@@ -195,11 +271,12 @@ export default function LoginForm() {
           <TextField
             placeholder="confirm password"
             variant="outlined"
+            type={"password"}
             size="small"
             error={!isMatchingPassword()}
             helperText={!isMatchingPassword() ? "Passwords must match" : null}
-            value={signUpValues.confirmPassword}
-            onChange={(e) => handleSignUpTextFieldChange(e, "confirmPassword")}
+            value={signupValues.confirmPassword}
+            onChange={(e) => handleSignupTextFieldChange(e, "confirmPassword")}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
@@ -209,14 +286,18 @@ export default function LoginForm() {
             }}
           />
         </div>
+        <Typography style={{ margin: 16 }} color={"error"}>
+          {signupError}
+        </Typography>
         <div className={classes.btnContainer}>
           <Button
             size="small"
             variant={"contained"}
             color={"primary"}
-            disabled={!canSignUp()}
+            disabled={!canSignup() || isLoading}
+            onClick={() => handleSignupSubmit()}
           >
-            Sign Up
+            {isLoading ? <CircularProgress size={20} /> : "Sign Up"}
           </Button>
         </div>
       </TabPanel>
