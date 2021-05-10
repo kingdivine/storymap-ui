@@ -50,7 +50,6 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function MapPage() {
   const classes = useStyles();
-
   const [posts, setPosts] = useState([]);
   const [filter, setFilter] = useState<FilterObj>();
   const [isLoading, setIsLoading] = useState(false);

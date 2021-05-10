@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useHistory } from "react-router-dom";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Tabs from "@material-ui/core/Tabs";
@@ -16,6 +17,7 @@ import {
 import MailOutlineIcon from "@material-ui/icons/MailOutline";
 import PersonOutlineIcon from "@material-ui/icons/PersonOutline";
 import VpnKeyIcon from "@material-ui/icons/VpnKey";
+import { useLocalStorage } from "../hooks/useLocalStorage";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -60,6 +62,7 @@ function TabPanel(props: TabPanelProps) {
 
 export default function LoginForm() {
   const classes = useStyles();
+  let history = useHistory();
   const [tabValue, setTabValue] = useState(0);
 
   const [loginValues, setLoginValues] = useState({
@@ -76,6 +79,7 @@ export default function LoginForm() {
   const [loginError, setLoginError] = useState("");
   const [signupError, setSignupError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [, setCurrentUser] = useLocalStorage("currentUser", null);
 
   const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setTabValue(newValue);
@@ -123,7 +127,11 @@ export default function LoginForm() {
         email: loginValues.email,
         password: loginValues.password,
       })
-      .then((result) => console.log("here"))
+      .then((result) => {
+        const userObj = { ...result.data.user, token: result.data.token };
+        setCurrentUser(userObj);
+        history.push("/home");
+      })
       .catch((e) => {
         if (e.request?.responseText?.includes("Invalid email format")) {
           setLoginError("Invalid email format.");
@@ -132,8 +140,8 @@ export default function LoginForm() {
         } else {
           setLoginError("Oops! Something went wrong.");
         }
-      })
-      .finally(() => setIsLoading(false));
+        setIsLoading(false);
+      });
   };
 
   const handleSignupSubmit = () => {
@@ -145,7 +153,11 @@ export default function LoginForm() {
         email: signupValues.email,
         password: signupValues.password,
       })
-      .then((result) => console.log("here"))
+      .then((result) => {
+        const userObj = { ...result.data.user, token: result.data.token };
+        setCurrentUser(userObj);
+        history.push("/home");
+      })
       .catch((e) => {
         if (
           e.request?.responseText?.includes(
@@ -160,8 +172,8 @@ export default function LoginForm() {
         } else {
           setSignupError("Oops! Something went wrong.");
         }
-      })
-      .finally(() => setIsLoading(false));
+        setIsLoading(false);
+      });
   };
 
   return (
