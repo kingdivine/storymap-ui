@@ -4,6 +4,13 @@ import { TextField, Typography } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import { Tag } from "./Filter";
 
+const sanitiseTag = (tag: string) => {
+  if (tag.startsWith("#")) {
+    return tag.split("#")[1];
+  }
+  return tag;
+};
+
 export default function UserSearch(props: { onTagSelect: (tag: Tag) => void }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [options, setOptions] = useState<Tag[]>([]);
@@ -23,7 +30,7 @@ export default function UserSearch(props: { onTagSelect: (tag: Tag) => void }) {
       try {
         const response = await axios.get(`/storymap-api/tags/`, {
           params: {
-            title: searchString,
+            title: sanitiseTag(searchString),
           },
         });
         setOptions(response.data);

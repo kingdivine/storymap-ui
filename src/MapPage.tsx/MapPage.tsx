@@ -7,13 +7,16 @@ import {
   Theme,
   Chip,
   Snackbar,
+  Fab,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import PostDialog from "./PostDialog";
+import ViewPostDialog from "./ViewPostDialog";
 import Heading from "../Generic/Heading";
 import LocationSearch from "./LocationSearch";
 import Filter, { FilterObj } from "./Filter";
+import CreatePostForm from "./CreatePostForm";
 import Alert from "@material-ui/lab/Alert";
+import AddIcon from "@material-ui/icons/Add";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -45,6 +48,11 @@ const useStyles = makeStyles((theme: Theme) =>
     alert: {
       zIndex: 1,
     },
+    fab: {
+      position: "fixed",
+      bottom: theme.spacing(4),
+      right: theme.spacing(4),
+    },
   })
 );
 
@@ -58,6 +66,7 @@ export default function MapPage() {
   const [flyToLongLat, setFlyToLongLat] = useState<[number, number] | null>(
     null
   );
+  const [isCreatePostFormOpen, setIsCreatePostFormOpen] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -91,8 +100,16 @@ export default function MapPage() {
     setSelectedStoryId("");
   };
 
+  const handleCloseForm = () => {
+    setIsCreatePostFormOpen(false);
+  };
+
   const handleFilterChange = (newFilter: FilterObj) => {
     setFilter(newFilter);
+  };
+
+  const clearFilter = () => {
+    setFilter({ user: null, tag: null, followingOnly: null });
   };
 
   return (
@@ -106,6 +123,8 @@ export default function MapPage() {
 
       <div className={classes.searchAndFilter}>
         <LocationSearch
+          placeHolderText={"Fly to..."}
+          textFieldWidth={165}
           onLocationSelect={(coords) => setFlyToLongLat(coords)}
         />
         <Filter onFilterChange={handleFilterChange} />
@@ -115,6 +134,7 @@ export default function MapPage() {
               className={classes.chip}
               label={`@${filter?.user?.username}`}
               size="small"
+              onDelete={() => clearFilter()}
             />
           )}
           {filter?.followingOnly && (
@@ -122,6 +142,7 @@ export default function MapPage() {
               className={classes.chip}
               label={"Following Only"}
               size="small"
+              onDelete={() => clearFilter()}
             />
           )}
           {filter?.tag?.title && (
@@ -129,6 +150,7 @@ export default function MapPage() {
               className={classes.chip}
               label={`#${filter?.tag?.title}`}
               size="small"
+              onDelete={() => clearFilter()}
             />
           )}
         </div>
@@ -151,8 +173,16 @@ export default function MapPage() {
         </Snackbar>
       )}
       {selectedStoryId && (
-        <PostDialog storyId={selectedStoryId} closePost={handleClosePost} />
+        <ViewPostDialog storyId={selectedStoryId} closePost={handleClosePost} />
       )}
+      {isCreatePostFormOpen && <CreatePostForm closeForm={handleCloseForm} />}
+      <Fab
+        color="primary"
+        className={classes.fab}
+        onClick={() => setIsCreatePostFormOpen(true)}
+      >
+        <AddIcon />
+      </Fab>
     </>
   );
 }

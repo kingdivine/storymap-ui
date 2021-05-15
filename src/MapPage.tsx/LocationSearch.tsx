@@ -15,6 +15,8 @@ export interface MapboxGeocodeLocation extends GeoJSON.Feature<GeoJSON.Point> {
 }
 
 export default function LocationSearch(props: {
+  placeHolderText: string;
+  textFieldWidth: number;
   onLocationSelect: (longLat: [number, number]) => void;
 }) {
   const [searchTerm, setSearchTerm] = useState("");
@@ -55,7 +57,7 @@ export default function LocationSearch(props: {
   return (
     <>
       <Autocomplete
-        style={{ width: 150 }}
+        style={{ width: props.textFieldWidth }}
         size={"small"}
         getOptionLabel={(option) => option.place_name}
         options={options}
@@ -74,7 +76,11 @@ export default function LocationSearch(props: {
         noOptionsText={"No locations found."}
         loading={isLoading}
         renderInput={(params) => (
-          <TextField {...params} label="Fly to..." variant="outlined" />
+          <TextField
+            {...params}
+            label={props.placeHolderText}
+            variant="outlined"
+          />
         )}
         renderOption={(option) => (
           <div>

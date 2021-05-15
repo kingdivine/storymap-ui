@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function PostDialog(props: {
+export default function ViewPostDialog(props: {
   storyId: string;
   closePost: () => void;
 }) {
