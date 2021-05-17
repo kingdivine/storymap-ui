@@ -17,6 +17,7 @@ import {
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import LocationSearch from "./LocationSearch";
+import axios from "axios";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -33,26 +34,40 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
+const STORY_CONTENT_CHAR_LIMIT = 10000;
+const STORY_TITLE_CHAR_LIMIT = 80;
+const TAG_CHAR_LIMIT = 30;
+const TAGS_COUNT_LIMIT = 3;
+
 export default function CreatePostForm(props: { closeForm: () => void }) {
   const classes = useStyles();
 
   //form values
+  const [title, setTitle] = useState("");
+  const [location, setLocation] = useState<[number, number]>();
+  const [content, setContent] = useState("");
   const [tags, setTags] = useState<string[]>([]);
   const [isPrivate, setIsPrivate] = useState(false);
 
   //submission state
-  const [isLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [postError, setPostError] = useState("");
 
   const handleTagInputKeyUp = (event: any) => {
     if (event.key === "Enter" || event.key === " ") {
-      const newTag = event.target.value;
+      let newTag = "";
+      if (event.target.value.startsWith("#")) {
+        newTag = event.target.value.split("#")[1]?.trim();
+      } else {
+        newTag = event.target.value.trim();
+      }
 
       if (
-        newTag.trim().length > 0 &&
+        newTag?.length > 0 &&
         !tags.includes(newTag) &&
-        tags.length < 3
+        tags.length < TAGS_COUNT_LIMIT
       ) {
-        setTags([...tags, event.target.value]);
+        setTags([...tags, newTag]);
       }
       event.target.value = null;
     }
@@ -60,6 +75,35 @@ export default function CreatePostForm(props: { closeForm: () => void }) {
 
   const handleTagDelete = (tagToDelete: string) => {
     setTags((tags) => tags.filter((tag) => tag !== tagToDelete));
+  };
+
+  const canPost = () =>
+    content.length > 0 &&
+    content.length <= STORY_CONTENT_CHAR_LIMIT &&
+    title.length > 0 &&
+    title.length <= STORY_TITLE_CHAR_LIMIT &&
+    tags.length <= TAGS_COUNT_LIMIT &&
+    tags.every((tag) => tag.length > 0 && tag.length <= TAG_CHAR_LIMIT) &&
+    location;
+
+  const handlePostSubmit = () => {
+    setIsLoading(true);
+    setPostError("");
+    axios
+      .post("/storymap-api/stories", {
+        title,
+        content,
+        isPrivate,
+        tags,
+        location: location?.join(","),
+      })
+      .then((result) => {
+        props.closeForm(); //TODO: history.push(url of post)
+      })
+      .catch((e) => {
+        setPostError("Oops! Something went wrong.");
+        setIsLoading(false);
+      });
   };
 
   return (
@@ -81,25 +125,45 @@ export default function CreatePostForm(props: { closeForm: () => void }) {
 
         <DialogContent>
           <div className={classes.form}>
-            <TextField placeholder="Title" style={{ marginBottom: 16 }} />
+            <TextField
+              placeholder="Title"
+              value={title}
+              onChange={(e) =>
+                e.target.value.length <= STORY_TITLE_CHAR_LIMIT &&
+                setTitle(e.target.value)
+              }
+              style={{ marginBottom: 16 }}
+            />
             <LocationSearch
               placeHolderText={"Enter location..."}
               textFieldWidth={400}
-              onLocationSelect={() => {}}
+              onLocationSelect={(coords) => {
+                setLocation(coords);
+              }}
             />
             <TextField
+              value={content}
+              onChange={(e) =>
+                e.target.value.length <= STORY_CONTENT_CHAR_LIMIT &&
+                setContent(e.target.value)
+              }
               style={{ marginTop: 8 }}
               multiline
               placeholder={"Tell your story..."}
               variant="outlined"
               rows={8}
               rowsMax={8}
+              helperText={
+                content.length > STORY_CONTENT_CHAR_LIMIT * 0.75
+                  ? `${content.length}/${STORY_CONTENT_CHAR_LIMIT} characters.`
+                  : null
+              }
             />
             <OutlinedInput
               onKeyUp={handleTagInputKeyUp}
-              inputProps={{ maxLength: 30 }}
+              inputProps={{ maxLength: TAG_CHAR_LIMIT }}
               style={{ maxWidth: "100%", marginTop: 8 }}
-              disabled={tags.length === 3}
+              disabled={tags.length === TAGS_COUNT_LIMIT}
               startAdornment={tags.map((tag, index) => (
                 <Chip
                   key={index}
@@ -125,6 +189,9 @@ export default function CreatePostForm(props: { closeForm: () => void }) {
               label="Private (only you can see this)"
             />
           </div>
+          <Typography style={{ margin: 16 }} color={"error"}>
+            {postError}
+          </Typography>
         </DialogContent>
 
         <DialogActions>
@@ -133,8 +200,8 @@ export default function CreatePostForm(props: { closeForm: () => void }) {
             variant={"contained"}
             color={"primary"}
             style={{ margin: 8 }}
-            //disabled={!canPost() || isLoading}
-            //onClick={() => handlePostSubmit()}
+            disabled={!canPost() || isLoading}
+            onClick={() => handlePostSubmit()}
           >
             {isLoading ? <CircularProgress size={20} /> : "Post"}
           </Button>
