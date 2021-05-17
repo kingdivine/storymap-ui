@@ -12,6 +12,8 @@ import {
   FormControlLabel,
   DialogActions,
   Button,
+  Chip,
+  OutlinedInput,
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import LocationSearch from "./LocationSearch";
@@ -34,8 +36,31 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function CreatePostForm(props: { closeForm: () => void }) {
   const classes = useStyles();
 
-  const [isLoading] = useState(false);
+  //form values
+  const [tags, setTags] = useState<string[]>([]);
   const [isPrivate, setIsPrivate] = useState(false);
+
+  //submission state
+  const [isLoading] = useState(false);
+
+  const handleTagInputKeyUp = (event: any) => {
+    if (event.key === "Enter" || event.key === " ") {
+      const newTag = event.target.value;
+
+      if (
+        newTag.trim().length > 0 &&
+        !tags.includes(newTag) &&
+        tags.length < 3
+      ) {
+        setTags([...tags, event.target.value]);
+      }
+      event.target.value = null;
+    }
+  };
+
+  const handleTagDelete = (tagToDelete: string) => {
+    setTags((tags) => tags.filter((tag) => tag !== tagToDelete));
+  };
 
   return (
     <>
@@ -70,6 +95,24 @@ export default function CreatePostForm(props: { closeForm: () => void }) {
               rows={8}
               rowsMax={8}
             />
+            <OutlinedInput
+              onKeyUp={handleTagInputKeyUp}
+              inputProps={{ maxLength: 30 }}
+              style={{ maxWidth: "100%", marginTop: 8 }}
+              disabled={tags.length === 3}
+              startAdornment={tags.map((tag, index) => (
+                <Chip
+                  key={index}
+                  style={{ margin: 2 }}
+                  variant="outlined"
+                  label={tag.startsWith("#") ? tag : `#${tag}`}
+                  size="small"
+                  onDelete={() => handleTagDelete(tag)}
+                />
+              ))}
+              placeholder={tags.length === 0 ? "#tags #go #here" : undefined}
+            />
+
             <FormControlLabel
               style={{ marginTop: 8 }}
               control={
