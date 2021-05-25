@@ -20,12 +20,6 @@ import AddIcon from "@material-ui/icons/Add";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    headingContainer: {
-      zIndex: 1,
-      position: "absolute",
-      top: theme.spacing(1),
-      left: theme.spacing(2),
-    },
     searchAndFilter: {
       display: "flex",
       flexDirection: "column",
@@ -63,9 +57,8 @@ export default function MapPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [selectedStoryId, setSelectedStoryId] = useState<string>("");
-  const [flyToLongLat, setFlyToLongLat] = useState<[number, number] | null>(
-    null
-  );
+  const [flyToLongLat, setFlyToLongLat] =
+    useState<[number, number] | null>(null);
   const [isCreatePostFormOpen, setIsCreatePostFormOpen] = useState(false);
 
   useEffect(() => {
@@ -117,9 +110,8 @@ export default function MapPage() {
       {isLoading && (
         <LinearProgress className={classes.loadingBar} color={"secondary"} />
       )}
-      <div className={classes.headingContainer}>
-        <Heading />
-      </div>
+
+      <Heading />
 
       <div className={classes.searchAndFilter}>
         <LocationSearch

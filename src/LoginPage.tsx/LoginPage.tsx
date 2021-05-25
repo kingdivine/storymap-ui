@@ -11,6 +11,7 @@ import MailOutlineIcon from "@material-ui/icons/MailOutline";
 import Heading from "../Generic/Heading";
 import mapBackground from "../Generic/images/map-background.png";
 import LoginForm from "./LoginForm";
+import Footer from "../Generic/Footer";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -88,18 +89,7 @@ export default function LoginPage() {
           <LoginForm />
         </Collapse>
       </div>
-      <footer className={classes.footer}>
-        <Typography variant="subtitle1" className={classes.footerItem}>
-          Privacy Policy
-        </Typography>
-        <Typography variant="subtitle1" className={classes.footerItem}>
-          Contact
-        </Typography>
-        <Typography variant="subtitle1" className={classes.footerItem}>
-          <span style={{ textDecoration: "underline" }}>divinebuiltthis</span>{" "}
-          &#169; 2021
-        </Typography>
-      </footer>
+      <Footer />
     </div>
   );
 }

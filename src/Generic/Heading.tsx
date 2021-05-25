@@ -6,6 +6,11 @@ const useStyles = makeStyles((theme: Theme) =>
     container: {
       display: "flex",
       alignItems: "center",
+
+      zIndex: 1,
+      position: "absolute",
+      top: theme.spacing(1),
+      left: theme.spacing(2),
     },
     mapIcon: {
       fontSize: 50,

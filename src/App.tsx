@@ -7,6 +7,7 @@ import {
 import { useLocalStorage } from "./hooks/useLocalStorage";
 import LoginPage from "./LoginPage.tsx/LoginPage";
 import MapPage from "./MapPage.tsx/MapPage";
+import AccountPage from "./AccountPage/AcccountPage";
 
 function App() {
   const [currentUser] = useLocalStorage("currentUser", null);
@@ -18,8 +19,11 @@ function App() {
           <Route exact path="/login">
             {currentUser ? <Redirect to="/home" /> : <LoginPage />}
           </Route>
-          <Route path="/">
+          <Route path="/home">
             <MapPage />
+          </Route>
+          <Route exact path="/account">
+            <AccountPage />
           </Route>
         </Switch>
       </Router>
