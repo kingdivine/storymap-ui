@@ -4,7 +4,6 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import Avatar from "@material-ui/core/Avatar";
-import DialogTitle from "@material-ui/core/DialogTitle";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { IconButton, Typography } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
@@ -18,7 +17,9 @@ const useStyles = makeStyles((theme: Theme) =>
       display: "flex",
       alignItems: "center",
       justifyContent: "space-between",
+      padding: theme.spacing(1, 3, 0, 3),
     },
+    secondLineContainer: { padding: theme.spacing(1, 3, 2, 3) },
     userNameAndPicContainer: {
       display: "flex",
       alignItems: "center",
@@ -76,7 +77,7 @@ export default function ViewPostDialog(props: {
           onClose={props.closePost}
           style={{ border: "1px solid" }}
         >
-          <DialogTitle>
+          <div>
             <div className={classes.topLineContainer}>
               <div className={classes.userNameAndPicContainer}>
                 <Avatar src="/broken-image.jpg" style={{ marginLeft: -2 }} />
@@ -88,15 +89,20 @@ export default function ViewPostDialog(props: {
                 <Typography color={"textSecondary"}>
                   {moment(story.created_at).fromNow()}
                 </Typography>
-                <IconButton onClick={props.closePost}>
+                <IconButton style={{ marginLeft: 8 }} onClick={props.closePost}>
                   <CloseIcon />
                 </IconButton>
               </div>
             </div>
+          </div>
+          <div className={classes.secondLineContainer}>
             <Typography variant="h6" color={"secondary"}>
               {story.title}
             </Typography>
-          </DialogTitle>
+            <Typography variant="caption" color={"primary"}>
+              Null Island Theme Park{/* {story.locationName} */}
+            </Typography>
+          </div>
 
           <DialogContent>
             <DialogContentText color="textPrimary">

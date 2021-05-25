@@ -18,6 +18,7 @@ import {
 import CloseIcon from "@material-ui/icons/Close";
 import LocationSearch from "./LocationSearch";
 import axios from "axios";
+import { useLocalStorage } from "../hooks/useLocalStorage";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -41,6 +42,8 @@ const TAGS_COUNT_LIMIT = 3;
 
 export default function CreatePostForm(props: { closeForm: () => void }) {
   const classes = useStyles();
+
+  const [currentUser] = useLocalStorage("currentUser", null);
 
   //form values
   const [title, setTitle] = useState("");
@@ -90,13 +93,21 @@ export default function CreatePostForm(props: { closeForm: () => void }) {
     setIsLoading(true);
     setPostError("");
     axios
-      .post("/storymap-api/stories", {
-        title,
-        content,
-        isPrivate,
-        tags,
-        location: location?.join(","),
-      })
+      .post(
+        "/storymap-api/stories",
+        {
+          title,
+          content,
+          isPrivate,
+          tags,
+          location: `${location![1]},${location![0]}`,
+        },
+        {
+          headers: {
+            authorization: `Bearer ${currentUser.token}`,
+          },
+        }
+      )
       .then((result) => {
         props.closeForm(); //TODO: history.push(url of post)
       })
