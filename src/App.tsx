@@ -23,7 +23,7 @@ function App() {
             <MapPage />
           </Route>
           <Route exact path="/account">
-            <AccountPage />
+            {currentUser ? <AccountPage /> : <Redirect to="/login" />}
           </Route>
         </Switch>
       </Router>

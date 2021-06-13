@@ -7,6 +7,7 @@ import {
   Theme,
   Chip,
   Snackbar,
+  Button,
   Fab,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
@@ -16,7 +17,14 @@ import LocationSearch from "./LocationSearch";
 import Filter, { FilterObj } from "./Filter";
 import CreatePostForm from "./CreatePostForm";
 import Alert from "@material-ui/lab/Alert";
+
+import SettingsIcon from "@material-ui/icons/Settings";
+import FaceIcon from "@material-ui/icons/Face";
+import NotificationsActiveIcon from "@material-ui/icons/NotificationsActive";
+import HelpIcon from "@material-ui/icons/Help";
 import AddIcon from "@material-ui/icons/Add";
+
+import { useLocalStorage } from "../hooks/useLocalStorage";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -27,6 +35,18 @@ const useStyles = makeStyles((theme: Theme) =>
       position: "absolute",
       top: "15%",
       left: theme.spacing(2),
+    },
+    navBar: {
+      position: "fixed",
+      right: theme.spacing(5),
+      top: theme.spacing(4),
+      zIndex: 1,
+      display: "flex",
+      flexDirection: "row",
+    },
+    navLinkBtn: {
+      textTransform: "lowercase",
+      color: theme.palette.common.white,
     },
     chipContainer: {
       marginTop: theme.spacing(1),
@@ -44,13 +64,14 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     fab: {
       position: "fixed",
-      bottom: theme.spacing(4),
+      bottom: theme.spacing(5),
       right: theme.spacing(4),
     },
   })
 );
 
 export default function MapPage() {
+  const [currentUser] = useLocalStorage("currentUser", null);
   const classes = useStyles();
   const [posts, setPosts] = useState([]);
   const [filter, setFilter] = useState<FilterObj>();
@@ -147,6 +168,37 @@ export default function MapPage() {
           )}
         </div>
       </div>
+      <header className={classes.navBar}>
+        <Button
+          className={classes.navLinkBtn}
+          // href="#"
+          startIcon={<FaceIcon />}
+        >
+          my profile
+        </Button>
+        <Button
+          className={classes.navLinkBtn}
+          href="/account"
+          startIcon={<SettingsIcon />}
+        >
+          account
+        </Button>
+
+        <Button
+          className={classes.navLinkBtn}
+          // href="#"
+          startIcon={<NotificationsActiveIcon />}
+        >
+          notifications
+        </Button>
+        <Button
+          className={classes.navLinkBtn}
+          //href="#"
+          startIcon={<HelpIcon />}
+        >
+          help
+        </Button>
+      </header>
       <Map
         posts={posts}
         openPost={handleOpenPost}

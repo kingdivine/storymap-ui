@@ -6,7 +6,6 @@ const useStyles = makeStyles((theme: Theme) =>
     container: {
       display: "flex",
       alignItems: "center",
-
       zIndex: 1,
       position: "absolute",
       top: theme.spacing(1),

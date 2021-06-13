@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme: Theme) =>
     header: {
       position: "fixed",
       right: theme.spacing(5),
-      top: theme.spacing(2),
+      top: theme.spacing(5),
     },
     loginContainer: {
       marginTop: "25vh",
