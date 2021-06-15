@@ -96,11 +96,11 @@ export default function ViewPostDialog(props: {
             </div>
           </div>
           <div className={classes.secondLineContainer}>
-            <Typography variant="h6" color={"secondary"}>
+            <Typography variant="h5" color={"secondary"}>
               {story.title}
             </Typography>
-            <Typography variant="caption" color={"primary"}>
-              Null Island Theme Park{/* {story.locationName} */}
+            <Typography variant="h6" color={"primary"}>
+              {story.place_name}
             </Typography>
           </div>
 

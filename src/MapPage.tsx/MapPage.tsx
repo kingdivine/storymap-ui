@@ -71,7 +71,6 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 export default function MapPage() {
-  const [currentUser] = useLocalStorage("currentUser", null);
   const classes = useStyles();
   const [posts, setPosts] = useState([]);
   const [filter, setFilter] = useState<FilterObj>();
