@@ -17,14 +17,13 @@ import LocationSearch from "./LocationSearch";
 import Filter, { FilterObj } from "./Filter";
 import CreatePostForm from "./CreatePostForm";
 import Alert from "@material-ui/lab/Alert";
+import { useHistory } from "react-router-dom";
 
 import SettingsIcon from "@material-ui/icons/Settings";
 import FaceIcon from "@material-ui/icons/Face";
 import NotificationsActiveIcon from "@material-ui/icons/NotificationsActive";
 import HelpIcon from "@material-ui/icons/Help";
 import AddIcon from "@material-ui/icons/Add";
-
-import { useLocalStorage } from "../hooks/useLocalStorage";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -72,13 +71,15 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function MapPage() {
   const classes = useStyles();
+  let history = useHistory();
+
   const [posts, setPosts] = useState([]);
   const [filter, setFilter] = useState<FilterObj>();
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
-  const [selectedStoryId, setSelectedStoryId] = useState<string>("");
-  const [flyToLongLat, setFlyToLongLat] =
-    useState<[number, number] | null>(null);
+  const [flyToLongLat, setFlyToLongLat] = useState<[number, number] | null>(
+    null
+  );
   const [isCreatePostFormOpen, setIsCreatePostFormOpen] = useState(false);
 
   useEffect(() => {
@@ -105,14 +106,16 @@ export default function MapPage() {
     fetchData();
   }, [filter]);
 
-  const handleOpenPost = useCallback((postId: string) => {
-    setSelectedStoryId(postId);
-  }, []);
+  const handleOpenPost = useCallback(
+    (storySlug: string) => {
+      history.push(`/story/${storySlug}`);
+    },
+    [history]
+  );
 
   const handleClosePost = () => {
-    setSelectedStoryId("");
+    history.push(`/`);
   };
-
   const handleCloseForm = () => {
     setIsCreatePostFormOpen(false);
   };
@@ -215,8 +218,11 @@ export default function MapPage() {
           </Alert>
         </Snackbar>
       )}
-      {selectedStoryId && (
-        <ViewPostDialog storyId={selectedStoryId} closePost={handleClosePost} />
+      {history.location.pathname.includes("/story") && (
+        <ViewPostDialog
+          storySlug={history.location.pathname.split("/")[2]}
+          closePost={handleClosePost}
+        />
       )}
       {isCreatePostFormOpen && <CreatePostForm closeForm={handleCloseForm} />}
       <Fab
