@@ -17,7 +17,7 @@ export interface MapboxGeocodeLocation extends GeoJSON.Feature<GeoJSON.Point> {
 export default function LocationSearch(props: {
   placeHolderText: string;
   textFieldWidth: number;
-  onLocationSelect: (longLat: [number, number]) => void;
+  onLocationSelect: (longLat: [number, number], placeName: string) => void;
 }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [options, setOptions] = useState<MapboxGeocodeLocation[]>([]);
@@ -65,7 +65,7 @@ export default function LocationSearch(props: {
         onChange={(event: any, newValue: MapboxGeocodeLocation | null) => {
           const coords = newValue?.geometry.coordinates as [number, number];
           if (coords) {
-            props.onLocationSelect(coords);
+            props.onLocationSelect(coords, newValue?.place_name ?? "Unknown");
           }
         }}
         getOptionSelected={(option, value) => option.id === value.id}

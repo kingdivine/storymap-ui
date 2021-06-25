@@ -17,14 +17,14 @@ function App() {
       <Router>
         <Switch>
           <Route exact path="/login">
-            {currentUser ? <Redirect to="/home" /> : <LoginPage />}
+            {currentUser ? <Redirect to="/" /> : <LoginPage />}
           </Route>
-          <Route path="/home">
-            <MapPage />
-          </Route>
+          <Route path="/" exact component={MapPage}/>
           <Route exact path="/account">
             {currentUser ? <AccountPage /> : <Redirect to="/login" />}
           </Route>
+          <Route exact path="/story/:postSlug" component={MapPage}/>
+          <Route>NOT FOUND</Route>
         </Switch>
       </Router>
     </div>

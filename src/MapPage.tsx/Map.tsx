@@ -4,6 +4,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import postPinPng from "./images/post-pin.png";
 import clusterPinPng from "./images/cluster-pin.png";
 
+
 mapboxgl.accessToken =
   "pk.eyJ1IjoiZGl2aW5lYSIsImEiOiJja24wZ2lqbjkwY2J4Mm9scnY3bW1yZW5nIn0.GkVgq5TQlU19vuZLwggtjQ";
 const MAP_THEME = "mapbox://styles/mapbox/dark-v10";
@@ -24,7 +25,7 @@ const DEFAULT_ZOOM = 1.5;
 
 export default function Map(props: {
   posts: any[];
-  openPost: (postId: string) => void;
+  openPost: (storySlug:string) => void;
   flyToLongLat: [number, number] | null;
   onFlyEnd: () => void;
 }) {
@@ -53,6 +54,7 @@ export default function Map(props: {
       properties: {
         title: post.title,
         id: post.id,
+        slug: post.slug
       },
       geometry: JSON.parse(post.geo_json),
     }));
@@ -139,7 +141,7 @@ export default function Map(props: {
 
       // Display dialog
       map.on("click", "posts", function (e: any) {
-        openPost(e.features[0].properties.id);
+        openPost(e.features[0].properties.slug);
       });
     });
     // Change the cursor to a pointer when the it enters a feature in the 'symbols' layer.

@@ -47,6 +47,7 @@ export default function CreatePostForm(props: { closeForm: () => void }) {
 
   //form values
   const [title, setTitle] = useState("");
+  const [placeName, setPlaceName] = useState("");
   const [location, setLocation] = useState<[number, number]>();
   const [content, setContent] = useState("");
   const [tags, setTags] = useState<string[]>([]);
@@ -85,6 +86,7 @@ export default function CreatePostForm(props: { closeForm: () => void }) {
     content.length <= STORY_CONTENT_CHAR_LIMIT &&
     title.length > 0 &&
     title.length <= STORY_TITLE_CHAR_LIMIT &&
+    placeName &&
     tags.length <= TAGS_COUNT_LIMIT &&
     tags.every((tag) => tag.length > 0 && tag.length <= TAG_CHAR_LIMIT) &&
     location;
@@ -98,6 +100,7 @@ export default function CreatePostForm(props: { closeForm: () => void }) {
         {
           title,
           content,
+          placeName,
           isPrivate,
           tags,
           location: `${location![1]},${location![0]}`,
@@ -148,8 +151,9 @@ export default function CreatePostForm(props: { closeForm: () => void }) {
             <LocationSearch
               placeHolderText={"Enter location..."}
               textFieldWidth={400}
-              onLocationSelect={(coords) => {
+              onLocationSelect={(coords, place) => {
                 setLocation(coords);
+                setPlaceName(place);
               }}
             />
             <TextField

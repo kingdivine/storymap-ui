@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 export default function ViewPostDialog(props: {
-  storyId: string;
+  storySlug: string;
   closePost: () => void;
 }) {
   const classes = useStyles();
@@ -52,7 +52,7 @@ export default function ViewPostDialog(props: {
       setIsLoading(true);
       try {
         const response = await axios.get(
-          `/storymap-api/stories/${props.storyId}`
+          `/storymap-api/storiesBySlug/${props.storySlug}`
         );
         setStory(response.data);
       } catch (e) {
@@ -63,7 +63,7 @@ export default function ViewPostDialog(props: {
       }
     };
     fetchData();
-  }, [props.storyId]);
+  }, [props.storySlug]);
 
   return (
     <>
@@ -96,11 +96,11 @@ export default function ViewPostDialog(props: {
             </div>
           </div>
           <div className={classes.secondLineContainer}>
-            <Typography variant="h6" color={"secondary"}>
+            <Typography variant="h5" color={"secondary"}>
               {story.title}
             </Typography>
-            <Typography variant="caption" color={"primary"}>
-              Null Island Theme Park{/* {story.locationName} */}
+            <Typography variant="h6" color={"primary"}>
+              {story.place_name}
             </Typography>
           </div>
 

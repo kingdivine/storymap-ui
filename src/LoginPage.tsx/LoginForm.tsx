@@ -130,7 +130,7 @@ export default function LoginForm() {
       .then((result) => {
         const userObj = { ...result.data.user, token: result.data.token };
         setCurrentUser(userObj);
-        history.push("/home");
+        history.push("/");
       })
       .catch((e) => {
         if (e.request?.responseText?.includes("Invalid email format")) {
@@ -156,7 +156,7 @@ export default function LoginForm() {
       .then((result) => {
         const userObj = { ...result.data.user, token: result.data.token };
         setCurrentUser(userObj);
-        history.push("/home");
+        history.push("/");
       })
       .catch((e) => {
         if (
