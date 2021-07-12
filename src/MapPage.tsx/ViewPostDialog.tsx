@@ -7,9 +7,13 @@ import Avatar from "@material-ui/core/Avatar";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { IconButton, Typography } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
+import FavoriteIcon from "@material-ui/icons/Favorite";
 
 import axios from "axios";
 import moment from "moment";
+import { useLocalStorage } from "../hooks/useLocalStorage";
+
+import LoginToContinueDialog from "../Generic/LoginToContinueDialog";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -34,6 +38,14 @@ const useStyles = makeStyles((theme: Theme) =>
         marginRight: theme.spacing(1),
       },
     },
+    storyAction: {
+      display: "flex",
+      flexDirection: "row",
+      alignItems: "flex-end",
+      "&>*": {
+        marginRight: 2,
+      },
+    },
   })
 );
 
@@ -43,9 +55,14 @@ export default function ViewPostDialog(props: {
 }) {
   const classes = useStyles();
 
+  const [currentUser] = useLocalStorage("currentUser", null);
+
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [story, setStory] = useState<any>();
+
+  const [submitting, setSubmitting] = useState(false);
+  const [loginDialogOpen, setLoginDialogOpen] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -63,7 +80,70 @@ export default function ViewPostDialog(props: {
       }
     };
     fetchData();
-  }, [props.storySlug]);
+  }, [props.storySlug, currentUser?.id]);
+
+  const userLikedStory = () =>
+    story.likers.findIndex((l: any) => l.id === currentUser?.id) > -1;
+
+  const updateLikers = (operation: "add" | "remove") => {
+    if (operation === "add") {
+      const updatedLikers = [
+        ...story.likers,
+        { id: currentUser.id, username: currentUser.username },
+      ];
+      setStory({
+        ...story,
+        likers: updatedLikers,
+      });
+    } else {
+      const updatedLikers = story.likers.filter(
+        (l: any) => l.id !== currentUser?.id
+      );
+      setStory({ ...story, likers: updatedLikers });
+    }
+  };
+
+  const handleLikeClick = () => {
+    if (!currentUser) {
+      setLoginDialogOpen(true);
+      return;
+    }
+    if (submitting) {
+      return;
+    }
+    setSubmitting(true);
+    if (!userLikedStory()) {
+      updateLikers("add");
+      axios
+        .post(
+          `/storymap-api/stories/${story.id}/like`,
+          {},
+          {
+            headers: {
+              authorization: `Bearer ${currentUser.token}`,
+            },
+          }
+        )
+        .then((result) => {})
+        .catch((e) => {
+          updateLikers("remove");
+        })
+        .finally(() => setSubmitting(false));
+    } else {
+      updateLikers("remove");
+      axios
+        .delete(`/storymap-api/stories/${story.id}/like`, {
+          headers: {
+            authorization: `Bearer ${currentUser.token}`,
+          },
+        })
+        .then((result) => {})
+        .catch((e) => {
+          updateLikers("add");
+        })
+        .finally(() => setSubmitting(false));
+    }
+  };
 
   return (
     <>
@@ -113,8 +193,28 @@ export default function ViewPostDialog(props: {
                 <Typography color="primary">#{tag}</Typography>
               ))}
             </div>
+            <div className={classes.storyAction}>
+              <IconButton size="small" onClick={() => handleLikeClick()}>
+                <FavoriteIcon
+                  color={userLikedStory() ? "secondary" : "inherit"}
+                />
+              </IconButton>
+              <Typography>{story.likers.length} Likes</Typography>
+            </div>
           </DialogContent>
         </Dialog>
+      )}
+      {loginDialogOpen && (
+        <LoginToContinueDialog
+          icon={
+            <FavoriteIcon
+              style={{ width: "100%", height: "100%" }}
+              color={"secondary"}
+            />
+          }
+          message={`Join Storymap to like ${story.author_name}'s Story.`}
+          onCloseDialog={() => setLoginDialogOpen(false)}
+        />
       )}
     </>
   );
