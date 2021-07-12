@@ -9,6 +9,7 @@ import { IconButton, Typography } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import CommentIcon from "@material-ui/icons/Comment";
+import ShareIcon from "@material-ui/icons/Share";
 
 import axios from "axios";
 import moment from "moment";
@@ -237,6 +238,13 @@ export default function ViewPostDialog(props: {
                       />
                     </IconButton>
                     <Typography>{story.likers.length} Likes</Typography>
+                  </div>
+                  <div className={classes.storyAction}>
+                    {/** TODO: try -> Navigator.share(), if not -> document.execCommand("copy")} */}
+                    <IconButton size="small" onClick={() => {}} disabled>
+                      <ShareIcon />
+                    </IconButton>
+                    <Typography style={{ color: "grey" }}>Share</Typography>
                   </div>
                   <div className={classes.storyAction}>
                     <IconButton
