@@ -26,6 +26,12 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: "space-between",
       padding: theme.spacing(1, 3, 0, 3),
     },
+    loadingIndicator: {
+      marginLeft: "auto",
+      marginRight: "auto",
+      marginTop: 8,
+      marginBottom: 8,
+    },
     secondLineContainer: { padding: theme.spacing(1, 3, 2, 3) },
     userNameAndPicContainer: {
       display: "flex",
@@ -157,9 +163,7 @@ export default function ViewPostDialog(props: {
 
   return (
     <>
-      {isLoading && <CircularProgress color="secondary" />}
-      {isError && <div>Oops!</div>}
-      {story && !commentsViewOpen && (
+      {!commentsViewOpen && (
         <Dialog
           fullWidth={true}
           maxWidth={"md"}
@@ -167,62 +171,86 @@ export default function ViewPostDialog(props: {
           onClose={props.closePost}
           style={{ border: "1px solid" }}
         >
-          <div>
-            <div className={classes.topLineContainer}>
-              <div className={classes.userNameAndPicContainer}>
-                <Avatar src="/broken-image.jpg" style={{ marginLeft: -2 }} />
-                <Typography style={{ margin: 8 }}>
-                  {story.author_name}
-                </Typography>
-              </div>
-              <div className={classes.dateAndCloseBtn}>
-                <Typography color={"textSecondary"}>
-                  {moment(story.created_at).fromNow()}
-                </Typography>
+          {isLoading && (
+            <>
+              <div style={{ display: "flex", justifyContent: "flex-end" }}>
                 <IconButton style={{ marginLeft: 8 }} onClick={props.closePost}>
                   <CloseIcon />
                 </IconButton>
               </div>
-            </div>
-          </div>
-          <div className={classes.secondLineContainer}>
-            <Typography variant="h5" color={"secondary"}>
-              {story.title}
-            </Typography>
-            <Typography variant="h6" color={"primary"}>
-              {story.place_name}
-            </Typography>
-          </div>
+              <CircularProgress
+                className={classes.loadingIndicator}
+                color="secondary"
+              />
+            </>
+          )}
+          {isError && <div>Oops!</div>}
+          {!isLoading && !isError && story && (
+            <>
+              <div>
+                <div className={classes.topLineContainer}>
+                  <div className={classes.userNameAndPicContainer}>
+                    <Avatar
+                      src="/broken-image.jpg"
+                      style={{ marginLeft: -2 }}
+                    />
+                    <Typography style={{ margin: 8 }}>
+                      {story.author_name}
+                    </Typography>
+                  </div>
+                  <div className={classes.dateAndCloseBtn}>
+                    <Typography color={"textSecondary"}>
+                      {moment(story.created_at).fromNow()}
+                    </Typography>
+                    <IconButton
+                      style={{ marginLeft: 8 }}
+                      onClick={props.closePost}
+                    >
+                      <CloseIcon />
+                    </IconButton>
+                  </div>
+                </div>
+              </div>
+              <div className={classes.secondLineContainer}>
+                <Typography variant="h5" color={"secondary"}>
+                  {story.title}
+                </Typography>
+                <Typography variant="h6" color={"primary"}>
+                  {story.place_name}
+                </Typography>
+              </div>
 
-          <DialogContent>
-            <DialogContentText color="textPrimary">
-              {story.content}
-            </DialogContentText>
-            <div className={classes.tagsContainer}>
-              {story.tags.map((tag: string) => (
-                <Typography color="primary">#{tag}</Typography>
-              ))}
-            </div>
-            <div className={classes.storyActionsContainer}>
-              <div className={classes.storyAction}>
-                <IconButton size="small" onClick={() => handleLikeClick()}>
-                  <FavoriteIcon
-                    color={userLikedStory() ? "secondary" : "inherit"}
-                  />
-                </IconButton>
-                <Typography>{story.likers.length} Likes</Typography>
-              </div>
-              <div className={classes.storyAction}>
-                <IconButton
-                  size="small"
-                  onClick={() => setCommentsViewOpen(true)}
-                >
-                  <CommentIcon />
-                </IconButton>
-                <Typography>Comments</Typography>
-              </div>
-            </div>
-          </DialogContent>
+              <DialogContent>
+                <DialogContentText color="textPrimary">
+                  {story.content}
+                </DialogContentText>
+                <div className={classes.tagsContainer}>
+                  {story.tags.map((tag: string) => (
+                    <Typography color="primary">#{tag}</Typography>
+                  ))}
+                </div>
+                <div className={classes.storyActionsContainer}>
+                  <div className={classes.storyAction}>
+                    <IconButton size="small" onClick={() => handleLikeClick()}>
+                      <FavoriteIcon
+                        color={userLikedStory() ? "secondary" : "inherit"}
+                      />
+                    </IconButton>
+                    <Typography>{story.likers.length} Likes</Typography>
+                  </div>
+                  <div className={classes.storyAction}>
+                    <IconButton
+                      size="small"
+                      onClick={() => setCommentsViewOpen(true)}
+                    >
+                      <CommentIcon />
+                    </IconButton>
+                    <Typography>Comments</Typography>
+                  </div>
+                </div>
+              </DialogContent>
+            </>
+          )}
         </Dialog>
       )}
       {commentsViewOpen && (
