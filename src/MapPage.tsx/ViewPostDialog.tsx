@@ -234,6 +234,7 @@ export default function ViewPostDialog(props: {
                   <div className={classes.storyAction}>
                     <IconButton size="small" onClick={() => handleLikeClick()}>
                       <FavoriteIcon
+                        style={{ marginBottom: 2 }}
                         color={userLikedStory() ? "secondary" : "inherit"}
                       />
                     </IconButton>
