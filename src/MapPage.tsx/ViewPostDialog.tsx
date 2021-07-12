@@ -8,12 +8,15 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import { IconButton, Typography } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import FavoriteIcon from "@material-ui/icons/Favorite";
+import CommentIcon from "@material-ui/icons/Comment";
 
 import axios from "axios";
 import moment from "moment";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 
 import LoginToContinueDialog from "../Generic/LoginToContinueDialog";
+import CommentsDialog from "./CommentsDialog";
+import { StoryDetail } from "../types/StoryDetail";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -38,10 +41,15 @@ const useStyles = makeStyles((theme: Theme) =>
         marginRight: theme.spacing(1),
       },
     },
+    storyActionsContainer: {
+      display: "flex",
+      flexDirection: "row",
+      justifyContent: "space-evenly",
+    },
     storyAction: {
       display: "flex",
       flexDirection: "row",
-      alignItems: "flex-end",
+      alignItems: "center",
       "&>*": {
         marginRight: 2,
       },
@@ -59,10 +67,12 @@ export default function ViewPostDialog(props: {
 
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
-  const [story, setStory] = useState<any>();
+  const [story, setStory] = useState<StoryDetail>();
 
-  const [submitting, setSubmitting] = useState(false);
+  const [submittingLike, setSubmittingLike] = useState(false);
   const [loginDialogOpen, setLoginDialogOpen] = useState(false);
+
+  const [commentsViewOpen, setCommentsViewOpen] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -83,23 +93,23 @@ export default function ViewPostDialog(props: {
   }, [props.storySlug, currentUser?.id]);
 
   const userLikedStory = () =>
-    story.likers.findIndex((l: any) => l.id === currentUser?.id) > -1;
+    story!.likers.findIndex((l: any) => l.id === currentUser?.id) > -1;
 
   const updateLikers = (operation: "add" | "remove") => {
     if (operation === "add") {
       const updatedLikers = [
-        ...story.likers,
+        ...story!.likers,
         { id: currentUser.id, username: currentUser.username },
       ];
       setStory({
-        ...story,
+        ...story!,
         likers: updatedLikers,
       });
     } else {
-      const updatedLikers = story.likers.filter(
+      const updatedLikers = story!.likers.filter(
         (l: any) => l.id !== currentUser?.id
       );
-      setStory({ ...story, likers: updatedLikers });
+      setStory({ ...story!, likers: updatedLikers });
     }
   };
 
@@ -108,15 +118,15 @@ export default function ViewPostDialog(props: {
       setLoginDialogOpen(true);
       return;
     }
-    if (submitting) {
+    if (submittingLike) {
       return;
     }
-    setSubmitting(true);
+    setSubmittingLike(true);
     if (!userLikedStory()) {
       updateLikers("add");
       axios
         .post(
-          `/storymap-api/stories/${story.id}/like`,
+          `/storymap-api/stories/${story!.id}/like`,
           {},
           {
             headers: {
@@ -128,11 +138,11 @@ export default function ViewPostDialog(props: {
         .catch((e) => {
           updateLikers("remove");
         })
-        .finally(() => setSubmitting(false));
+        .finally(() => setSubmittingLike(false));
     } else {
       updateLikers("remove");
       axios
-        .delete(`/storymap-api/stories/${story.id}/like`, {
+        .delete(`/storymap-api/stories/${story!.id}/like`, {
           headers: {
             authorization: `Bearer ${currentUser.token}`,
           },
@@ -141,7 +151,7 @@ export default function ViewPostDialog(props: {
         .catch((e) => {
           updateLikers("add");
         })
-        .finally(() => setSubmitting(false));
+        .finally(() => setSubmittingLike(false));
     }
   };
 
@@ -149,7 +159,7 @@ export default function ViewPostDialog(props: {
     <>
       {isLoading && <CircularProgress color="secondary" />}
       {isError && <div>Oops!</div>}
-      {story && (
+      {story && !commentsViewOpen && (
         <Dialog
           fullWidth={true}
           maxWidth={"md"}
@@ -193,16 +203,33 @@ export default function ViewPostDialog(props: {
                 <Typography color="primary">#{tag}</Typography>
               ))}
             </div>
-            <div className={classes.storyAction}>
-              <IconButton size="small" onClick={() => handleLikeClick()}>
-                <FavoriteIcon
-                  color={userLikedStory() ? "secondary" : "inherit"}
-                />
-              </IconButton>
-              <Typography>{story.likers.length} Likes</Typography>
+            <div className={classes.storyActionsContainer}>
+              <div className={classes.storyAction}>
+                <IconButton size="small" onClick={() => handleLikeClick()}>
+                  <FavoriteIcon
+                    color={userLikedStory() ? "secondary" : "inherit"}
+                  />
+                </IconButton>
+                <Typography>{story.likers.length} Likes</Typography>
+              </div>
+              <div className={classes.storyAction}>
+                <IconButton
+                  size="small"
+                  onClick={() => setCommentsViewOpen(true)}
+                >
+                  <CommentIcon />
+                </IconButton>
+                <Typography>Comments</Typography>
+              </div>
             </div>
           </DialogContent>
         </Dialog>
+      )}
+      {commentsViewOpen && (
+        <CommentsDialog
+          storyId={story!.id}
+          onClose={() => setCommentsViewOpen(false)}
+        />
       )}
       {loginDialogOpen && (
         <LoginToContinueDialog
@@ -212,7 +239,7 @@ export default function ViewPostDialog(props: {
               color={"secondary"}
             />
           }
-          message={`Join Storymap to like ${story.author_name}'s Story.`}
+          message={`Join Storymap to like ${story!.author_name}'s Story.`}
           onCloseDialog={() => setLoginDialogOpen(false)}
         />
       )}
