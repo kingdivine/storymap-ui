@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme: Theme) =>
     topLineContainer: {
       display: "flex",
       flexDirection: "row",
-      justifyContent: "space-between",
+      justifyContent: "start",
       alignItems: "center",
       marginBottom: theme.spacing(1),
     },

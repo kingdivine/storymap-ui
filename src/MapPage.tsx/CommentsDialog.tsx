@@ -1,5 +1,6 @@
 import { createStyles, Theme, makeStyles } from "@material-ui/core/styles";
 import {
+  Button,
   CircularProgress,
   Dialog,
   IconButton,
@@ -13,6 +14,8 @@ import { useState } from "react";
 import axios from "axios";
 import { Comment } from "../types/Comment";
 import CommentListItem from "./CommentListItem";
+
+const COMMENTS_PER_PAGE = 50; //actually limited by backend
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -28,6 +31,19 @@ const useStyles = makeStyles((theme: Theme) =>
       marginRight: "auto",
       marginTop: 8,
       marginBottom: 8,
+    },
+    listContainer: {
+      maxHeight: "90%",
+      overflowY: "scroll",
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "center",
+    },
+    viewMoreBtn: {
+      alignSelf: "center",
+      width: "fit-content",
+      padding: theme.spacing(1),
+      margin: theme.spacing(1),
     },
     newCommentInput: {
       margin: theme.spacing(2),
@@ -51,6 +67,7 @@ function NoComments() {
 }
 
 export default function CommentsDialog(props: {
+  totalCommentCount: number;
   storyId: string;
   onClose: () => void;
 }) {
@@ -58,6 +75,9 @@ export default function CommentsDialog(props: {
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
   const [comments, setComments] = useState<Comment[]>([]);
+
+  const [offset, setOffset] = useState(0);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
 
   const [userInput, setUserInput] = useState("");
 
@@ -79,6 +99,23 @@ export default function CommentsDialog(props: {
     fetchData();
   }, [props.storyId]);
 
+  const fetchMoreComments = () => {
+    setIsLoadingMore(true);
+    const newOffset = offset + COMMENTS_PER_PAGE;
+    axios
+      .get(`/storymap-api/stories/${props.storyId}/comments`, {
+        params: {
+          offset: newOffset,
+        },
+      })
+      .then((results) => {
+        setComments([...comments].concat(results.data));
+        setOffset(newOffset);
+      })
+      .catch((e) => console.log(e))
+      .finally(() => setIsLoadingMore(false));
+  };
+
   return (
     <Dialog
       fullWidth={true}
@@ -90,7 +127,9 @@ export default function CommentsDialog(props: {
       <div className={classes.topLineContainer}>
         <div />
         <Typography style={{ width: "50%" }} color={"textSecondary"}>
-          {comments.length === 1 ? "1 comment" : `${comments.length} comments`}
+          {props.totalCommentCount === 1
+            ? "1 Comment"
+            : `${props.totalCommentCount} Comments`}
         </Typography>
         <IconButton onClick={props.onClose}>
           <CloseIcon />
@@ -105,9 +144,29 @@ export default function CommentsDialog(props: {
       {isError && <div>Oops!</div>}
       {!isError && !isLoading && (
         <>
-          <div style={{ maxHeight: "90%", overflowY: "scroll" }}>
-            {comments.length > 0 &&
-              comments.map((comment) => <CommentListItem comment={comment} />)}
+          <div className={classes.listContainer}>
+            {comments.length > 0 && (
+              <>
+                {comments.map((comment) => (
+                  <CommentListItem key={comment.id} comment={comment} />
+                ))}
+                {props.totalCommentCount >= comments.length && (
+                  <Button
+                    color="primary"
+                    size="small"
+                    className={classes.viewMoreBtn}
+                    disabled={isLoadingMore}
+                    onClick={() => fetchMoreComments()}
+                  >
+                    {isLoadingMore ? (
+                      <CircularProgress size={20} />
+                    ) : (
+                      "View more"
+                    )}
+                  </Button>
+                )}
+              </>
+            )}
             {comments.length === 0 && <NoComments />}
           </div>
           <TextField

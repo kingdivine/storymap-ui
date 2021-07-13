@@ -227,7 +227,9 @@ export default function ViewPostDialog(props: {
                 </DialogContentText>
                 <div className={classes.tagsContainer}>
                   {story.tags.map((tag: string) => (
-                    <Typography color="primary">#{tag}</Typography>
+                    <Typography key={tag} color="primary">
+                      #{tag}
+                    </Typography>
                   ))}
                 </div>
                 <div className={classes.storyActionsContainer}>
@@ -254,7 +256,11 @@ export default function ViewPostDialog(props: {
                     >
                       <CommentIcon />
                     </IconButton>
-                    <Typography> {story.comment_count} Comments</Typography>
+                    <Typography>
+                      {story.comment_count === "1"
+                        ? "1 Comment"
+                        : `${story.comment_count} Comments`}
+                    </Typography>
                   </div>
                 </div>
               </DialogContent>
@@ -262,9 +268,10 @@ export default function ViewPostDialog(props: {
           )}
         </Dialog>
       )}
-      {commentsViewOpen && (
+      {commentsViewOpen && story && (
         <CommentsDialog
-          storyId={story!.id}
+          totalCommentCount={parseInt(story.comment_count)}
+          storyId={story.id}
           onClose={() => setCommentsViewOpen(false)}
         />
       )}
