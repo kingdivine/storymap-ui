@@ -10,8 +10,8 @@ export interface StoryDetail {
   author_name: string;
   author_id: string;
   comment_count: string;
-  tags: any[];
-  likers: any[];
+  tags: string[];
+  likers: Liker[];
 }
 
 interface Liker {
