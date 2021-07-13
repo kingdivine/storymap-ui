@@ -254,7 +254,7 @@ export default function ViewPostDialog(props: {
                     >
                       <CommentIcon />
                     </IconButton>
-                    <Typography>Comments</Typography>
+                    <Typography> {story.comment_count} Comments</Typography>
                   </div>
                 </div>
               </DialogContent>
