@@ -9,8 +9,9 @@ export interface StoryDetail {
   is_private: boolean;
   author_name: string;
   author_id: string;
-  tags: string[];
-  likers: Liker[];
+  comment_count: string;
+  tags: any[];
+  likers: any[];
 }
 
 interface Liker {
