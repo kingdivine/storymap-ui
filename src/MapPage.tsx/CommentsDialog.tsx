@@ -33,8 +33,6 @@ const useStyles = makeStyles((theme: Theme) =>
       marginBottom: 8,
     },
     listContainer: {
-      maxHeight: "90%",
-      overflowY: "scroll",
       display: "flex",
       flexDirection: "column",
       justifyContent: "center",
@@ -122,7 +120,6 @@ export default function CommentsDialog(props: {
       maxWidth={"sm"}
       open={true}
       onClose={props.onClose}
-      style={{ border: "1px solid" }}
     >
       <div className={classes.topLineContainer}>
         <div />
