@@ -18,7 +18,7 @@ import SendIcon from "@material-ui/icons/Send";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 
 const COMMENTS_PER_PAGE = 50; //actually limited by backend
-const COMMENT_CHAR_LENGTH_LIMIT = 10;
+const COMMENT_CHAR_LENGTH_LIMIT = 1000;
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -139,7 +139,10 @@ export default function CommentsDialog(props: {
           },
         }
       )
-      .then((result) => {})
+      .then((result) => {
+        setUserInput("");
+        setComments([...comments].concat(result.data));
+      })
       .catch((e) => {
         setIsCreateCommentError(true);
       })
