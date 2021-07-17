@@ -16,6 +16,7 @@ import { Comment } from "../types/Comment";
 import CommentListItem from "./CommentListItem";
 import SendIcon from "@material-ui/icons/Send";
 import { useLocalStorage } from "../hooks/useLocalStorage";
+import { useHistory } from "react-router-dom";
 
 const COMMENTS_PER_PAGE = 50; //actually limited by backend
 const COMMENT_CHAR_LENGTH_LIMIT = 1000;
@@ -46,6 +47,11 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: theme.spacing(1),
       margin: theme.spacing(1),
     },
+    loginToCommentBtn: {
+      width: "fit-content",
+      margin: theme.spacing(2),
+      alignSelf: "center",
+    },
     newCommentInput: {
       margin: theme.spacing(1),
       padding: theme.spacing(1),
@@ -74,6 +80,8 @@ export default function CommentsDialog(props: {
   onClose: () => void;
 }) {
   const classes = useStyles();
+  let history = useHistory();
+
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
   const [comments, setComments] = useState<Comment[]>([]);
@@ -187,7 +195,7 @@ export default function CommentsDialog(props: {
                 {comments.map((comment) => (
                   <CommentListItem key={comment.id} comment={comment} />
                 ))}
-                {props.totalCommentCount >= comments.length && (
+                {props.totalCommentCount > comments.length && (
                   <Button
                     color="primary"
                     size="small"
@@ -206,39 +214,52 @@ export default function CommentsDialog(props: {
             )}
             {comments.length === 0 && <NoComments />}
           </div>
-          <TextField
-            className={classes.newCommentInput}
-            placeholder="Add comment..."
-            multiline
-            rowsMax={6}
-            variant="outlined"
-            error={isCreateCommentError}
-            onChange={(e) =>
-              e.target.value.length <= COMMENT_CHAR_LENGTH_LIMIT &&
-              setUserInput(e.target.value)
-            }
-            helperText={
-              userInput.length > COMMENT_CHAR_LENGTH_LIMIT * 0.75
-                ? `${userInput.length}/${COMMENT_CHAR_LENGTH_LIMIT} characters.`
-                : null
-            }
-            size="small"
-            value={userInput}
-            InputProps={{
-              endAdornment: (
-                <IconButton
-                  onClick={handleCommentSubmit}
-                  disabled={!canSubmit()}
-                >
-                  {isSubmittingComment ? (
-                    <CircularProgress size={20} />
-                  ) : (
-                    <SendIcon />
-                  )}
-                </IconButton>
-              ),
-            }}
-          />
+          {!currentUser && (
+            <Button
+              variant="contained"
+              className={classes.loginToCommentBtn}
+              color="primary"
+              onClick={() => history.push("/login")}
+            >
+              Login or Signup to leave a comment
+            </Button>
+          )}
+          {currentUser && (
+            <TextField
+              className={classes.newCommentInput}
+              placeholder="Add comment..."
+              multiline
+              rowsMax={6}
+              variant="outlined"
+              error={isCreateCommentError}
+              onChange={(e) =>
+                e.target.value.length <= COMMENT_CHAR_LENGTH_LIMIT &&
+                setUserInput(e.target.value)
+              }
+              helperText={
+                userInput.length > COMMENT_CHAR_LENGTH_LIMIT * 0.75
+                  ? `${userInput.length}/${COMMENT_CHAR_LENGTH_LIMIT} characters.`
+                  : null
+              }
+              size="small"
+              value={userInput}
+              InputProps={{
+                endAdornment: (
+                  <IconButton
+                    onClick={handleCommentSubmit}
+                    disabled={!canSubmit()}
+                  >
+                    {isSubmittingComment ? (
+                      <CircularProgress size={20} />
+                    ) : (
+                      <SendIcon fontSize={"small"} />
+                    )}
+                  </IconButton>
+                ),
+              }}
+            />
+          )}
+
           {isCreateCommentError && (
             <Typography style={{ margin: 16 }} color={"error"}>
               Oops! Something went wrong!
