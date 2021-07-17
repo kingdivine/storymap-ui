@@ -14,8 +14,11 @@ import { useState } from "react";
 import axios from "axios";
 import { Comment } from "../types/Comment";
 import CommentListItem from "./CommentListItem";
+import SendIcon from "@material-ui/icons/Send";
+import { useLocalStorage } from "../hooks/useLocalStorage";
 
 const COMMENTS_PER_PAGE = 50; //actually limited by backend
+const COMMENT_CHAR_LENGTH_LIMIT = 10;
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -44,7 +47,8 @@ const useStyles = makeStyles((theme: Theme) =>
       margin: theme.spacing(1),
     },
     newCommentInput: {
-      margin: theme.spacing(2),
+      margin: theme.spacing(1),
+      padding: theme.spacing(1),
     },
   })
 );
@@ -78,6 +82,10 @@ export default function CommentsDialog(props: {
   const [isLoadingMore, setIsLoadingMore] = useState(false);
 
   const [userInput, setUserInput] = useState("");
+  const [isSubmittingComment, setIsSubmittingComment] = useState(false);
+  const [isCreateCommentError, setIsCreateCommentError] = useState(false);
+
+  const [currentUser] = useLocalStorage("currentUser", null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -97,7 +105,7 @@ export default function CommentsDialog(props: {
     fetchData();
   }, [props.storyId]);
 
-  const fetchMoreComments = () => {
+  const handleFetchMoreClick = () => {
     setIsLoadingMore(true);
     const newOffset = offset + COMMENTS_PER_PAGE;
     axios
@@ -113,6 +121,35 @@ export default function CommentsDialog(props: {
       .catch((e) => console.log(e))
       .finally(() => setIsLoadingMore(false));
   };
+
+  const handleCommentSubmit = () => {
+    if (isSubmittingComment) {
+      return;
+    }
+    setIsSubmittingComment(true);
+    setIsCreateCommentError(false);
+
+    axios
+      .post(
+        `/storymap-api/comments`,
+        { content: userInput, storyId: props.storyId },
+        {
+          headers: {
+            authorization: `Bearer ${currentUser.token}`,
+          },
+        }
+      )
+      .then((result) => {})
+      .catch((e) => {
+        setIsCreateCommentError(true);
+      })
+      .finally(() => setIsSubmittingComment(false));
+  };
+
+  const canSubmit = () =>
+    userInput.length > 0 &&
+    userInput.length <= COMMENT_CHAR_LENGTH_LIMIT &&
+    !isSubmittingComment;
 
   return (
     <Dialog
@@ -153,7 +190,7 @@ export default function CommentsDialog(props: {
                     size="small"
                     className={classes.viewMoreBtn}
                     disabled={isLoadingMore}
-                    onClick={() => fetchMoreComments()}
+                    onClick={() => handleFetchMoreClick()}
                   >
                     {isLoadingMore ? (
                       <CircularProgress size={20} />
@@ -172,10 +209,38 @@ export default function CommentsDialog(props: {
             multiline
             rowsMax={6}
             variant="outlined"
+            error={isCreateCommentError}
+            onChange={(e) =>
+              e.target.value.length <= COMMENT_CHAR_LENGTH_LIMIT &&
+              setUserInput(e.target.value)
+            }
+            helperText={
+              userInput.length > COMMENT_CHAR_LENGTH_LIMIT * 0.75
+                ? `${userInput.length}/${COMMENT_CHAR_LENGTH_LIMIT} characters.`
+                : null
+            }
             size="small"
             value={userInput}
-            onChange={(e) => setUserInput(e.target.value)}
+            InputProps={{
+              endAdornment: (
+                <IconButton
+                  onClick={handleCommentSubmit}
+                  disabled={!canSubmit()}
+                >
+                  {isSubmittingComment ? (
+                    <CircularProgress size={20} />
+                  ) : (
+                    <SendIcon />
+                  )}
+                </IconButton>
+              ),
+            }}
           />
+          {isCreateCommentError && (
+            <Typography style={{ margin: 16 }} color={"error"}>
+              Oops! Something went wrong!
+            </Typography>
+          )}
         </>
       )}
     </Dialog>
