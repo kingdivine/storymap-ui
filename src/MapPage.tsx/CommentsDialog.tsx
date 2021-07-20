@@ -17,6 +17,8 @@ import CommentListItem from "./CommentListItem";
 import SendIcon from "@material-ui/icons/Send";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import { useHistory } from "react-router-dom";
+import LoginToContinueDialog from "../Generic/LoginToContinueDialog";
+import FavoriteIcon from "@material-ui/icons/Favorite";
 
 const COMMENTS_PER_PAGE = 50; //actually limited by backend
 const COMMENT_CHAR_LENGTH_LIMIT = 1000;
@@ -93,6 +95,9 @@ export default function CommentsDialog(props: {
   const [isSubmittingComment, setIsSubmittingComment] = useState(false);
   const [isCreateCommentError, setIsCreateCommentError] = useState(false);
 
+  const [submittingLike, setSubmittingLike] = useState(false);
+  const [loginDialogOpen, setLoginDialogOpen] = useState(false);
+
   const [currentUser] = useLocalStorage("currentUser", null);
 
   useEffect(() => {
@@ -162,111 +167,200 @@ export default function CommentsDialog(props: {
     userInput.length <= COMMENT_CHAR_LENGTH_LIMIT &&
     !isSubmittingComment;
 
+  const updateLikers = (operation: "add" | "remove", commentId: string) => {
+    if (operation === "add") {
+      const newComments = comments.map((c) => {
+        if (c.id !== commentId) {
+          return c;
+        } else {
+          return { ...c, liker_ids: [...(c.liker_ids ?? []), currentUser.id] };
+        }
+      });
+      setComments(newComments);
+    } else {
+      const newComments = comments.map((c) => {
+        if (c.id !== commentId) {
+          return c;
+        } else {
+          return {
+            ...c,
+            liker_ids: [...(c.liker_ids ?? [])].filter(
+              (id) => id !== currentUser?.id
+            ),
+          };
+        }
+      });
+      setComments(newComments);
+    }
+  };
+
+  const handleLikeClick = (operation: "add" | "remove", commentId: string) => {
+    if (!currentUser) {
+      setLoginDialogOpen(true);
+      return;
+    }
+    if (submittingLike) {
+      return;
+    }
+    setSubmittingLike(true);
+    if (operation === "add") {
+      updateLikers("add", commentId);
+      axios
+        .post(
+          `/storymap-api/comments/${commentId}/like`,
+          {},
+          {
+            headers: {
+              authorization: `Bearer ${currentUser.token}`,
+            },
+          }
+        )
+        .then((result) => {})
+        .catch((e) => {
+          updateLikers("remove", commentId);
+        })
+        .finally(() => setSubmittingLike(false));
+    } else {
+      updateLikers("remove", commentId);
+      axios
+        .delete(`/storymap-api/comments/${commentId}/like`, {
+          headers: {
+            authorization: `Bearer ${currentUser.token}`,
+          },
+        })
+        .then((result) => {})
+        .catch((e) => {
+          updateLikers("add", commentId);
+        })
+        .finally(() => setSubmittingLike(false));
+    }
+  };
+
   return (
-    <Dialog
-      fullWidth={true}
-      maxWidth={"sm"}
-      open={true}
-      onClose={props.onClose}
-    >
-      <div className={classes.topLineContainer}>
-        <div />
-        <Typography style={{ width: "50%" }} color={"textSecondary"}>
-          {props.totalCommentCount === 1
-            ? "1 Comment"
-            : `${props.totalCommentCount} Comments`}
-        </Typography>
-        <IconButton onClick={props.onClose}>
-          <CloseIcon />
-        </IconButton>
-      </div>
-      {isLoading && (
-        <CircularProgress
-          className={classes.loadingIndicator}
-          color="secondary"
+    <>
+      <Dialog
+        fullWidth={true}
+        maxWidth={"sm"}
+        open={true}
+        onClose={props.onClose}
+      >
+        <div className={classes.topLineContainer}>
+          <div />
+          <Typography style={{ width: "50%" }} color={"textSecondary"}>
+            {props.totalCommentCount === 1
+              ? "1 Comment"
+              : `${props.totalCommentCount} Comments`}
+          </Typography>
+          <IconButton onClick={props.onClose}>
+            <CloseIcon />
+          </IconButton>
+        </div>
+        {isLoading && (
+          <CircularProgress
+            className={classes.loadingIndicator}
+            color="secondary"
+          />
+        )}
+        {isError && <div>Oops!</div>}
+        {!isError && !isLoading && (
+          <>
+            <div className={classes.listContainer}>
+              {comments.length > 0 && (
+                <>
+                  {comments.map((comment) => (
+                    <CommentListItem
+                      key={comment.id}
+                      comment={comment}
+                      onLikeClick={handleLikeClick}
+                      isSubmittingLike={submittingLike}
+                      userId={currentUser?.id}
+                    />
+                  ))}
+                  {props.totalCommentCount > comments.length && (
+                    <Button
+                      color="primary"
+                      size="small"
+                      className={classes.viewMoreBtn}
+                      disabled={isLoadingMore}
+                      onClick={() => handleFetchMoreClick()}
+                    >
+                      {isLoadingMore ? (
+                        <CircularProgress size={20} />
+                      ) : (
+                        "View more"
+                      )}
+                    </Button>
+                  )}
+                </>
+              )}
+              {comments.length === 0 && <NoComments />}
+            </div>
+            {!currentUser && (
+              <Button
+                variant="contained"
+                className={classes.loginToCommentBtn}
+                color="primary"
+                onClick={() => history.push("/login")}
+              >
+                Login or Signup to leave a comment
+              </Button>
+            )}
+            {currentUser && (
+              <TextField
+                className={classes.newCommentInput}
+                placeholder="Add comment..."
+                multiline
+                rowsMax={6}
+                variant="outlined"
+                error={isCreateCommentError}
+                onChange={(e) =>
+                  e.target.value.length <= COMMENT_CHAR_LENGTH_LIMIT &&
+                  setUserInput(e.target.value)
+                }
+                helperText={
+                  userInput.length > COMMENT_CHAR_LENGTH_LIMIT * 0.75
+                    ? `${userInput.length}/${COMMENT_CHAR_LENGTH_LIMIT} characters.`
+                    : null
+                }
+                size="small"
+                value={userInput}
+                InputProps={{
+                  endAdornment: (
+                    <IconButton
+                      onClick={handleCommentSubmit}
+                      disabled={!canSubmit()}
+                    >
+                      {isSubmittingComment ? (
+                        <CircularProgress size={20} />
+                      ) : (
+                        <SendIcon fontSize={"small"} />
+                      )}
+                    </IconButton>
+                  ),
+                }}
+              />
+            )}
+
+            {isCreateCommentError && (
+              <Typography style={{ margin: 16 }} color={"error"}>
+                Oops! Something went wrong!
+              </Typography>
+            )}
+          </>
+        )}
+      </Dialog>
+      {loginDialogOpen && (
+        <LoginToContinueDialog
+          icon={
+            <FavoriteIcon
+              style={{ width: "100%", height: "100%" }}
+              color={"secondary"}
+            />
+          }
+          message={`Join Storymap to like comments.`}
+          onCloseDialog={() => setLoginDialogOpen(false)}
         />
       )}
-      {isError && <div>Oops!</div>}
-      {!isError && !isLoading && (
-        <>
-          <div className={classes.listContainer}>
-            {comments.length > 0 && (
-              <>
-                {comments.map((comment) => (
-                  <CommentListItem key={comment.id} comment={comment} />
-                ))}
-                {props.totalCommentCount > comments.length && (
-                  <Button
-                    color="primary"
-                    size="small"
-                    className={classes.viewMoreBtn}
-                    disabled={isLoadingMore}
-                    onClick={() => handleFetchMoreClick()}
-                  >
-                    {isLoadingMore ? (
-                      <CircularProgress size={20} />
-                    ) : (
-                      "View more"
-                    )}
-                  </Button>
-                )}
-              </>
-            )}
-            {comments.length === 0 && <NoComments />}
-          </div>
-          {!currentUser && (
-            <Button
-              variant="contained"
-              className={classes.loginToCommentBtn}
-              color="primary"
-              onClick={() => history.push("/login")}
-            >
-              Login or Signup to leave a comment
-            </Button>
-          )}
-          {currentUser && (
-            <TextField
-              className={classes.newCommentInput}
-              placeholder="Add comment..."
-              multiline
-              rowsMax={6}
-              variant="outlined"
-              error={isCreateCommentError}
-              onChange={(e) =>
-                e.target.value.length <= COMMENT_CHAR_LENGTH_LIMIT &&
-                setUserInput(e.target.value)
-              }
-              helperText={
-                userInput.length > COMMENT_CHAR_LENGTH_LIMIT * 0.75
-                  ? `${userInput.length}/${COMMENT_CHAR_LENGTH_LIMIT} characters.`
-                  : null
-              }
-              size="small"
-              value={userInput}
-              InputProps={{
-                endAdornment: (
-                  <IconButton
-                    onClick={handleCommentSubmit}
-                    disabled={!canSubmit()}
-                  >
-                    {isSubmittingComment ? (
-                      <CircularProgress size={20} />
-                    ) : (
-                      <SendIcon fontSize={"small"} />
-                    )}
-                  </IconButton>
-                ),
-              }}
-            />
-          )}
-
-          {isCreateCommentError && (
-            <Typography style={{ margin: 16 }} color={"error"}>
-              Oops! Something went wrong!
-            </Typography>
-          )}
-        </>
-      )}
-    </Dialog>
+    </>
   );
 }

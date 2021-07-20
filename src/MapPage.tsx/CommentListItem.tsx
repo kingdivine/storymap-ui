@@ -1,4 +1,4 @@
-import { Avatar, Typography } from "@material-ui/core";
+import { Avatar, IconButton, Typography } from "@material-ui/core";
 import { createStyles, Theme, makeStyles } from "@material-ui/core/styles";
 import { Comment } from "../types/Comment";
 
@@ -32,16 +32,36 @@ const useStyles = makeStyles((theme: Theme) =>
       textOverflow: "ellipsis",
       marginLeft: theme.spacing(6),
     },
+    likeBtnAndCountContainer: {
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+    },
     likeIcon: {
       alignSelf: "center",
-      marginLeft: theme.spacing(1),
     },
   })
 );
 
-export default function CommentListItem(props: { comment: Comment }) {
+export default function CommentListItem(props: {
+  comment: Comment;
+  onLikeClick: (operation: "add" | "remove", commentId: string) => void;
+  isSubmittingLike: boolean;
+  userId: string | null;
+}) {
   const classes = useStyles();
   const { comment } = props;
+
+  const userLikedComment = () =>
+    comment.liker_ids &&
+    comment.liker_ids.findIndex((id) => id === props.userId) > -1;
+
+  const getOperation = () => {
+    if (userLikedComment()) return "remove";
+    return "add";
+  };
+
   return (
     <div className={classes.itemContainer}>
       <div>
@@ -62,7 +82,19 @@ export default function CommentListItem(props: { comment: Comment }) {
         </div>
       </div>
 
-      <FavoriteIcon className={classes.likeIcon} />
+      <div className={classes.likeBtnAndCountContainer}>
+        <IconButton
+          size="small"
+          disabled={props.isSubmittingLike}
+          onClick={() => props.onLikeClick(getOperation(), comment.id)}
+        >
+          <FavoriteIcon
+            className={classes.likeIcon}
+            color={userLikedComment() ? "secondary" : "inherit"}
+          />
+        </IconButton>
+        <Typography>{comment.liker_ids?.length ?? 0}</Typography>
+      </div>
     </div>
   );
 }

@@ -6,6 +6,6 @@ export interface Comment {
   content: string;
   created_at: string;
   author_username: string;
-  liker_ids: string[] | null;
+  liker_ids: string[];
   reply_count: string;
 }
