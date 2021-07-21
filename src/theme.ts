@@ -20,6 +20,9 @@ export const theme = createMuiTheme({
     secondary: {
       main: "#FC693B",
     },
+    background: {
+      paper: "#303030",
+    },
   },
   typography: {
     fontFamily: [

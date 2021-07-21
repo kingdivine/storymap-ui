@@ -8,12 +8,16 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import { IconButton, Typography } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import FavoriteIcon from "@material-ui/icons/Favorite";
+import CommentIcon from "@material-ui/icons/Comment";
+import ShareIcon from "@material-ui/icons/Share";
 
 import axios from "axios";
 import moment from "moment";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 
 import LoginToContinueDialog from "../Generic/LoginToContinueDialog";
+import CommentsDialog from "./CommentsDialog";
+import { StoryDetail } from "../types/StoryDetail";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -22,6 +26,12 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: "center",
       justifyContent: "space-between",
       padding: theme.spacing(1, 3, 0, 3),
+    },
+    loadingIndicator: {
+      marginLeft: "auto",
+      marginRight: "auto",
+      marginTop: 8,
+      marginBottom: 8,
     },
     secondLineContainer: { padding: theme.spacing(1, 3, 2, 3) },
     userNameAndPicContainer: {
@@ -38,10 +48,15 @@ const useStyles = makeStyles((theme: Theme) =>
         marginRight: theme.spacing(1),
       },
     },
+    storyActionsContainer: {
+      display: "flex",
+      flexDirection: "row",
+      justifyContent: "space-evenly",
+    },
     storyAction: {
       display: "flex",
       flexDirection: "row",
-      alignItems: "flex-end",
+      alignItems: "center",
       "&>*": {
         marginRight: 2,
       },
@@ -59,10 +74,13 @@ export default function ViewPostDialog(props: {
 
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
-  const [story, setStory] = useState<any>();
+  const [story, setStory] = useState<StoryDetail>();
 
-  const [submitting, setSubmitting] = useState(false);
+  const [submittingLike, setSubmittingLike] = useState(false);
   const [loginDialogOpen, setLoginDialogOpen] = useState(false);
+
+  const [commentsViewOpen, setCommentsViewOpen] = useState(false);
+  const [commentCount, setCommentCount] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -82,24 +100,28 @@ export default function ViewPostDialog(props: {
     fetchData();
   }, [props.storySlug, currentUser?.id]);
 
+  useEffect(() => {
+    setCommentCount(parseInt(story?.comment_count ?? "0"));
+  }, [story?.comment_count]);
+
   const userLikedStory = () =>
-    story.likers.findIndex((l: any) => l.id === currentUser?.id) > -1;
+    story!.likers.findIndex((l: any) => l.id === currentUser?.id) > -1;
 
   const updateLikers = (operation: "add" | "remove") => {
     if (operation === "add") {
       const updatedLikers = [
-        ...story.likers,
+        ...story!.likers,
         { id: currentUser.id, username: currentUser.username },
       ];
       setStory({
-        ...story,
+        ...story!,
         likers: updatedLikers,
       });
     } else {
-      const updatedLikers = story.likers.filter(
+      const updatedLikers = story!.likers.filter(
         (l: any) => l.id !== currentUser?.id
       );
-      setStory({ ...story, likers: updatedLikers });
+      setStory({ ...story!, likers: updatedLikers });
     }
   };
 
@@ -108,15 +130,15 @@ export default function ViewPostDialog(props: {
       setLoginDialogOpen(true);
       return;
     }
-    if (submitting) {
+    if (submittingLike) {
       return;
     }
-    setSubmitting(true);
+    setSubmittingLike(true);
     if (!userLikedStory()) {
       updateLikers("add");
       axios
         .post(
-          `/storymap-api/stories/${story.id}/like`,
+          `/storymap-api/stories/${story!.id}/like`,
           {},
           {
             headers: {
@@ -128,11 +150,11 @@ export default function ViewPostDialog(props: {
         .catch((e) => {
           updateLikers("remove");
         })
-        .finally(() => setSubmitting(false));
+        .finally(() => setSubmittingLike(false));
     } else {
       updateLikers("remove");
       axios
-        .delete(`/storymap-api/stories/${story.id}/like`, {
+        .delete(`/storymap-api/stories/${story!.id}/like`, {
           headers: {
             authorization: `Bearer ${currentUser.token}`,
           },
@@ -141,15 +163,13 @@ export default function ViewPostDialog(props: {
         .catch((e) => {
           updateLikers("add");
         })
-        .finally(() => setSubmitting(false));
+        .finally(() => setSubmittingLike(false));
     }
   };
 
   return (
     <>
-      {isLoading && <CircularProgress color="secondary" />}
-      {isError && <div>Oops!</div>}
-      {story && (
+      {!commentsViewOpen && (
         <Dialog
           fullWidth={true}
           maxWidth={"md"}
@@ -157,52 +177,111 @@ export default function ViewPostDialog(props: {
           onClose={props.closePost}
           style={{ border: "1px solid" }}
         >
-          <div>
-            <div className={classes.topLineContainer}>
-              <div className={classes.userNameAndPicContainer}>
-                <Avatar src="/broken-image.jpg" style={{ marginLeft: -2 }} />
-                <Typography style={{ margin: 8 }}>
-                  {story.author_name}
-                </Typography>
-              </div>
-              <div className={classes.dateAndCloseBtn}>
-                <Typography color={"textSecondary"}>
-                  {moment(story.created_at).fromNow()}
-                </Typography>
+          {isLoading && (
+            <>
+              <div style={{ display: "flex", justifyContent: "flex-end" }}>
                 <IconButton style={{ marginLeft: 8 }} onClick={props.closePost}>
                   <CloseIcon />
                 </IconButton>
               </div>
-            </div>
-          </div>
-          <div className={classes.secondLineContainer}>
-            <Typography variant="h5" color={"secondary"}>
-              {story.title}
-            </Typography>
-            <Typography variant="h6" color={"primary"}>
-              {story.place_name}
-            </Typography>
-          </div>
+              <CircularProgress
+                className={classes.loadingIndicator}
+                color="secondary"
+              />
+            </>
+          )}
+          {isError && <div>Oops!</div>}
+          {!isLoading && !isError && story && (
+            <>
+              <div>
+                <div className={classes.topLineContainer}>
+                  <div className={classes.userNameAndPicContainer}>
+                    <Avatar
+                      src="/broken-image.jpg"
+                      style={{ marginLeft: -2 }}
+                    />
+                    <Typography style={{ margin: 8 }}>
+                      {story.author_name}
+                    </Typography>
+                  </div>
+                  <div className={classes.dateAndCloseBtn}>
+                    <Typography color={"textSecondary"}>
+                      {moment(story.created_at).fromNow()}
+                    </Typography>
+                    <IconButton
+                      style={{ marginLeft: 8 }}
+                      onClick={props.closePost}
+                    >
+                      <CloseIcon />
+                    </IconButton>
+                  </div>
+                </div>
+              </div>
+              <div className={classes.secondLineContainer}>
+                <Typography variant="h5" color={"secondary"}>
+                  {story.title}
+                </Typography>
+                <Typography variant="h6" color={"primary"}>
+                  {story.place_name}
+                </Typography>
+              </div>
 
-          <DialogContent>
-            <DialogContentText color="textPrimary">
-              {story.content}
-            </DialogContentText>
-            <div className={classes.tagsContainer}>
-              {story.tags.map((tag: string) => (
-                <Typography color="primary">#{tag}</Typography>
-              ))}
-            </div>
-            <div className={classes.storyAction}>
-              <IconButton size="small" onClick={() => handleLikeClick()}>
-                <FavoriteIcon
-                  color={userLikedStory() ? "secondary" : "inherit"}
-                />
-              </IconButton>
-              <Typography>{story.likers.length} Likes</Typography>
-            </div>
-          </DialogContent>
+              <DialogContent>
+                <DialogContentText color="textPrimary">
+                  {story.content}
+                </DialogContentText>
+                <div className={classes.tagsContainer}>
+                  {story.tags.map((tag: string) => (
+                    <Typography key={tag} color="primary">
+                      #{tag}
+                    </Typography>
+                  ))}
+                </div>
+                <div className={classes.storyActionsContainer}>
+                  <div className={classes.storyAction}>
+                    <IconButton size="small" onClick={() => handleLikeClick()}>
+                      <FavoriteIcon
+                        style={{ marginBottom: 2 }}
+                        color={userLikedStory() ? "secondary" : "inherit"}
+                      />
+                    </IconButton>
+                    <Typography>{story.likers.length} Likes</Typography>
+                  </div>
+                  <div className={classes.storyAction}>
+                    {/** TODO: try -> Navigator.share(), if not -> document.execCommand("copy")} */}
+                    <IconButton size="small" onClick={() => {}} disabled>
+                      <ShareIcon />
+                    </IconButton>
+                    <Typography style={{ color: "grey" }}>Share</Typography>
+                  </div>
+                  <div className={classes.storyAction}>
+                    <IconButton
+                      size="small"
+                      onClick={() => setCommentsViewOpen(true)}
+                    >
+                      <CommentIcon />
+                    </IconButton>
+                    <Typography>
+                      {commentCount === 1
+                        ? "1 Comment"
+                        : `${commentCount} Comments`}
+                    </Typography>
+                  </div>
+                </div>
+              </DialogContent>
+            </>
+          )}
         </Dialog>
+      )}
+      {commentsViewOpen && story && (
+        <CommentsDialog
+          totalCommentCount={commentCount}
+          updateCommentCount={(addition: number) =>
+            setCommentCount(commentCount + addition)
+          }
+          storyId={story.id}
+          onClose={() => setCommentsViewOpen(false)}
+        />
       )}
       {loginDialogOpen && (
         <LoginToContinueDialog
@@ -212,7 +291,7 @@ export default function ViewPostDialog(props: {
               color={"secondary"}
             />
           }
-          message={`Join Storymap to like ${story.author_name}'s Story.`}
+          message={`Join Storymap to like ${story!.author_name}'s Story.`}
           onCloseDialog={() => setLoginDialogOpen(false)}
         />
       )}
