@@ -78,6 +78,7 @@ function NoComments() {
 
 export default function CommentsDialog(props: {
   totalCommentCount: number;
+  updateCommentCount: (addition: number) => void;
   storyId: string;
   onClose: () => void;
 }) {
@@ -97,6 +98,8 @@ export default function CommentsDialog(props: {
 
   const [submittingLike, setSubmittingLike] = useState(false);
   const [loginDialogOpen, setLoginDialogOpen] = useState(false);
+
+  const [commentBeingDeleted, setCommentBeingDeleted] = useState("");
 
   const [currentUser] = useLocalStorage("currentUser", null);
 
@@ -154,6 +157,7 @@ export default function CommentsDialog(props: {
       )
       .then((result) => {
         setUserInput("");
+        props.updateCommentCount(1);
         setComments([...comments].concat(result.data));
       })
       .catch((e) => {
@@ -236,6 +240,27 @@ export default function CommentsDialog(props: {
     }
   };
 
+  const handleDeleteClick = (commentId: string) => {
+    if (commentBeingDeleted === commentId) {
+      return;
+    }
+    setCommentBeingDeleted(commentId);
+    axios
+      .delete(`/storymap-api/comments/${commentId}`, {
+        headers: {
+          authorization: `Bearer ${currentUser.token}`,
+        },
+      })
+      .then((result) => {
+        setComments(comments.filter((c) => c.id !== commentId));
+        props.updateCommentCount(-1);
+      })
+      .catch((e) => {
+        console.log(e);
+      })
+      .finally(() => setCommentBeingDeleted(""));
+  };
+
   return (
     <>
       <Dialog
@@ -272,7 +297,9 @@ export default function CommentsDialog(props: {
                       key={comment.id}
                       comment={comment}
                       onLikeClick={handleLikeClick}
+                      onDeleteClick={handleDeleteClick}
                       isSubmittingLike={submittingLike}
+                      commentBeingDeleted={commentBeingDeleted}
                       userId={currentUser?.id}
                     />
                   ))}

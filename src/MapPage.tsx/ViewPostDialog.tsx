@@ -80,6 +80,7 @@ export default function ViewPostDialog(props: {
   const [loginDialogOpen, setLoginDialogOpen] = useState(false);
 
   const [commentsViewOpen, setCommentsViewOpen] = useState(false);
+  const [commentCount, setCommentCount] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -98,6 +99,10 @@ export default function ViewPostDialog(props: {
     };
     fetchData();
   }, [props.storySlug, currentUser?.id]);
+
+  useEffect(() => {
+    setCommentCount(parseInt(story?.comment_count ?? "0"));
+  }, [story?.comment_count]);
 
   const userLikedStory = () =>
     story!.likers.findIndex((l: any) => l.id === currentUser?.id) > -1;
@@ -257,9 +262,9 @@ export default function ViewPostDialog(props: {
                       <CommentIcon />
                     </IconButton>
                     <Typography>
-                      {story.comment_count === "1"
+                      {commentCount === 1
                         ? "1 Comment"
-                        : `${story.comment_count} Comments`}
+                        : `${commentCount} Comments`}
                     </Typography>
                   </div>
                 </div>
@@ -270,7 +275,10 @@ export default function ViewPostDialog(props: {
       )}
       {commentsViewOpen && story && (
         <CommentsDialog
-          totalCommentCount={parseInt(story.comment_count)}
+          totalCommentCount={commentCount}
+          updateCommentCount={(addition: number) =>
+            setCommentCount(commentCount + addition)
+          }
           storyId={story.id}
           onClose={() => setCommentsViewOpen(false)}
         />
