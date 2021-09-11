@@ -37,6 +37,11 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: "flex-end",
       margin: theme.spacing(2),
     },
+    verificationEmailMsgContainer: {
+      display: "flex",
+      alignItems: "center",
+      flexDirection: "column",
+    },
   })
 );
 
@@ -80,6 +85,7 @@ export default function LoginForm() {
   const [signupError, setSignupError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [, setCurrentUser] = useLocalStorage("currentUser", null);
+  const [signupSuccess, setSignupSuccess] = useState(false);
 
   const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setTabValue(newValue);
@@ -154,9 +160,7 @@ export default function LoginForm() {
         password: signupValues.password,
       })
       .then((result) => {
-        const userObj = { ...result.data.user, token: result.data.token };
-        setCurrentUser(userObj);
-        history.push("/");
+        setSignupSuccess(true);
       })
       .catch((e) => {
         if (
@@ -236,82 +240,102 @@ export default function LoginForm() {
         </div>
       </TabPanel>
       <TabPanel value={tabValue} index={1}>
-        <div className={classes.formContainer}>
-          <TextField
-            placeholder="username"
-            variant="outlined"
-            size="small"
-            value={signupValues.username}
-            onChange={(e) => handleSignupTextFieldChange(e, "username")}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <PersonOutlineIcon fontSize={"small"} />
-                </InputAdornment>
-              ),
-            }}
-          />
-          <TextField
-            placeholder="email"
-            variant="outlined"
-            size="small"
-            value={signupValues.email}
-            onChange={(e) => handleSignupTextFieldChange(e, "email")}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <MailOutlineIcon fontSize={"small"} />
-                </InputAdornment>
-              ),
-            }}
-          />
-          <TextField
-            placeholder="password"
-            variant="outlined"
-            type={"password"}
-            size="small"
-            value={signupValues.password}
-            onChange={(e) => handleSignupTextFieldChange(e, "password")}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <VpnKeyIcon fontSize={"small"} />
-                </InputAdornment>
-              ),
-            }}
-          />
-          <TextField
-            placeholder="confirm password"
-            variant="outlined"
-            type={"password"}
-            size="small"
-            error={!isMatchingPassword()}
-            helperText={!isMatchingPassword() ? "Passwords must match" : null}
-            value={signupValues.confirmPassword}
-            onChange={(e) => handleSignupTextFieldChange(e, "confirmPassword")}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <VpnKeyIcon fontSize={"small"} />
-                </InputAdornment>
-              ),
-            }}
-          />
-        </div>
-        <Typography style={{ margin: 16 }} color={"error"}>
-          {signupError}
-        </Typography>
-        <div className={classes.btnContainer}>
-          <Button
-            size="small"
-            variant={"contained"}
-            color={"primary"}
-            disabled={!canSignup() || isLoading}
-            onClick={() => handleSignupSubmit()}
-          >
-            {isLoading ? <CircularProgress size={20} /> : "Sign Up"}
-          </Button>
-        </div>
+        {signupSuccess && (
+          <div className={classes.verificationEmailMsgContainer}>
+            <Typography> Hey {signupValues.username}!</Typography>
+            <br />
+            <Typography>
+              A verification email has been sent to {signupValues.email}.
+            </Typography>
+            <Typography>
+              Click the link in the email to complete signup.
+            </Typography>
+          </div>
+        )}
+        {!signupSuccess && (
+          <>
+            <div className={classes.formContainer}>
+              <TextField
+                placeholder="username"
+                variant="outlined"
+                size="small"
+                value={signupValues.username}
+                onChange={(e) => handleSignupTextFieldChange(e, "username")}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <PersonOutlineIcon fontSize={"small"} />
+                    </InputAdornment>
+                  ),
+                }}
+              />
+              <TextField
+                placeholder="email"
+                variant="outlined"
+                size="small"
+                value={signupValues.email}
+                onChange={(e) => handleSignupTextFieldChange(e, "email")}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <MailOutlineIcon fontSize={"small"} />
+                    </InputAdornment>
+                  ),
+                }}
+              />
+              <TextField
+                placeholder="password"
+                variant="outlined"
+                type={"password"}
+                size="small"
+                value={signupValues.password}
+                onChange={(e) => handleSignupTextFieldChange(e, "password")}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <VpnKeyIcon fontSize={"small"} />
+                    </InputAdornment>
+                  ),
+                }}
+              />
+              <TextField
+                placeholder="confirm password"
+                variant="outlined"
+                type={"password"}
+                size="small"
+                error={!isMatchingPassword()}
+                helperText={
+                  !isMatchingPassword() ? "Passwords must match" : null
+                }
+                value={signupValues.confirmPassword}
+                onChange={(e) =>
+                  handleSignupTextFieldChange(e, "confirmPassword")
+                }
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <VpnKeyIcon fontSize={"small"} />
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </div>
+            <Typography style={{ margin: 16 }} color={"error"}>
+              {signupError}
+            </Typography>
+            <div className={classes.btnContainer}>
+              <Button
+                size="small"
+                variant={"contained"}
+                color={"primary"}
+                disabled={!canSignup() || isLoading}
+                onClick={() => handleSignupSubmit()}
+              >
+                {isLoading ? <CircularProgress size={20} /> : "Sign Up"}
+              </Button>
+            </div>
+          </>
+        )}
       </TabPanel>
     </Paper>
   );
