@@ -41,17 +41,6 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: theme.spacing(1),
       borderColor: theme.palette.common.white,
     },
-    footer: {
-      display: "flex",
-      alignItems: "right",
-      position: "fixed",
-      right: theme.spacing(2),
-      bottom: theme.spacing(1),
-    },
-    footerItem: {
-      margin: theme.spacing(1),
-      color: theme.palette.grey[400],
-    },
   })
 );
 
