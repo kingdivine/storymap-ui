@@ -214,7 +214,7 @@ export default function MapPage() {
           onClose={() => setIsError(false)}
         >
           <Alert onClose={() => setIsError(false)} severity="error">
-            Oops! Something went wrong...
+            Oops! Something went wrong.
           </Alert>
         </Snackbar>
       )}

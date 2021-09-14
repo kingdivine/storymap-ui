@@ -235,7 +235,12 @@ export default function LoginForm() {
           {loginError}
         </Typography>
         <div className={classes.btnAndPassowrdLinkContainer}>
-          <Link href="/forgot-password" variant="subtitle2" color="textPrimary">
+          <Link
+            href="/forgot-password"
+            variant="subtitle2"
+            color="textPrimary"
+            style={{ marginLeft: 16 }}
+          >
             Forgot password?
           </Link>
           <div className={classes.btnContainer}>
