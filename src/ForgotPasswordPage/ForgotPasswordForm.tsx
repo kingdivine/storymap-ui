@@ -12,6 +12,7 @@ import {
 } from "@material-ui/core";
 
 import MailOutlineIcon from "@material-ui/icons/MailOutline";
+import { isValidEmail } from "../utils";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -56,6 +57,8 @@ export default function ForgotPasswordForm() {
       .finally(() => setIsLoading(false));
   };
 
+  const isValidInput = email.length > 0 && isValidEmail(email);
+
   return (
     <Paper style={{ padding: 32 }}>
       <Typography variant="h4" color="secondary">
@@ -81,12 +84,18 @@ export default function ForgotPasswordForm() {
                   </InputAdornment>
                 ),
               }}
+              error={email.length > 0 && !isValidInput}
+              helperText={
+                email.length > 0 && !isValidInput
+                  ? "Please enter a valid email."
+                  : null
+              }
             />
             <Button
               size="small"
               variant={"contained"}
               color={"primary"}
-              disabled={!email || isLoading}
+              disabled={email.length === 0 || !isValidInput || isLoading}
               onClick={() => handleSubmit()}
             >
               {isLoading ? <CircularProgress size={20} /> : "Get Link"}
