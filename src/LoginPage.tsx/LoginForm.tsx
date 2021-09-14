@@ -10,6 +10,7 @@ import {
   Button,
   CircularProgress,
   InputAdornment,
+  Link,
   TextField,
   Typography,
 } from "@material-ui/core";
@@ -31,6 +32,12 @@ const useStyles = makeStyles((theme: Theme) =>
       "&>*": {
         margin: theme.spacing(1),
       },
+    },
+    btnAndPassowrdLinkContainer: {
+      display: "flex",
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
     },
     btnContainer: {
       display: "flex",
@@ -227,16 +234,21 @@ export default function LoginForm() {
         <Typography style={{ margin: 16 }} color={"error"}>
           {loginError}
         </Typography>
-        <div className={classes.btnContainer}>
-          <Button
-            size="small"
-            variant={"contained"}
-            color={"primary"}
-            disabled={!canLogin() || isLoading}
-            onClick={() => handleLoginSubmit()}
-          >
-            {isLoading ? <CircularProgress size={20} /> : "Login"}
-          </Button>
+        <div className={classes.btnAndPassowrdLinkContainer}>
+          <Link href="/forgot-password" variant="subtitle2" color="textPrimary">
+            Forgot password?
+          </Link>
+          <div className={classes.btnContainer}>
+            <Button
+              size="small"
+              variant={"contained"}
+              color={"primary"}
+              disabled={!canLogin() || isLoading}
+              onClick={() => handleLoginSubmit()}
+            >
+              {isLoading ? <CircularProgress size={20} /> : "Login"}
+            </Button>
+          </div>
         </div>
       </TabPanel>
       <TabPanel value={tabValue} index={1}>
