@@ -9,6 +9,7 @@ import LoginPage from "./LoginPage.tsx/LoginPage";
 import MapPage from "./MapPage.tsx/MapPage";
 import AccountPage from "./AccountPage/AcccountPage";
 import VerificationPage from "./VerificationPage/VerificationPage";
+import ForgotPasswordPage from "./ForgotPasswordPage/ForgotPasswordPage";
 
 function App() {
   const [currentUser] = useLocalStorage("currentUser", null);
@@ -30,6 +31,7 @@ function App() {
             path="/users/:userId/verify/:verifcationCode"
             component={VerificationPage}
           />
+          <Route exact path="/forgot-password" component={ForgotPasswordPage} />
           <Route>NOT FOUND</Route>
         </Switch>
       </Router>
