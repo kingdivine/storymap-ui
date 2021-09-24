@@ -10,6 +10,7 @@ import MapPage from "./MapPage.tsx/MapPage";
 import AccountPage from "./AccountPage/AcccountPage";
 import VerificationPage from "./VerificationPage/VerificationPage";
 import ForgotPasswordPage from "./ForgotPasswordPage/ForgotPasswordPage";
+import NotificationsPage from "./NotificationsPage/NotificationsPage";
 
 function App() {
   const [currentUser] = useLocalStorage("currentUser", null);
@@ -32,6 +33,10 @@ function App() {
             component={VerificationPage}
           />
           <Route exact path="/forgot-password" component={ForgotPasswordPage} />
+          <Route exact path="/notifications">
+            {currentUser ? <NotificationsPage /> : <Redirect to="/login" />}
+          </Route>
+
           <Route>NOT FOUND</Route>
         </Switch>
       </Router>

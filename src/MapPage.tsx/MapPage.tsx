@@ -188,7 +188,7 @@ export default function MapPage() {
 
         <Button
           className={classes.navLinkBtn}
-          // href="#"
+          href="/notifications"
           startIcon={<NotificationsActiveIcon />}
         >
           notifications
