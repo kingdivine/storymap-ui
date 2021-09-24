@@ -4,7 +4,7 @@ export interface Comment {
   story_id: string | null;
   parent_comment_id: string | null;
   content: string;
-  created_at: string;
+  created_at: Date;
   author_username: string;
   liker_ids: string[];
   reply_count: string;
