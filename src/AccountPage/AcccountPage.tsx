@@ -1,4 +1,4 @@
-import { useLocalStorage } from "../hooks/useLocalStorage";
+import { useCurrentUser } from "../hooks/useCurrentUser";
 import {
   createStyles,
   makeStyles,
@@ -19,6 +19,7 @@ import EditIcon from "@material-ui/icons/Edit";
 import SaveIcon from "@material-ui/icons/Save";
 import LogoutIcon from "@material-ui/icons/ExitToApp";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
+import { useEffect } from "react";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -63,11 +64,11 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function AccountPage() {
   const classes = useStyles();
   let history = useHistory();
-  const [currentUser, setCurrentUser] = useLocalStorage("currentUser", null);
+  const [currentUser, setCurrentUser] = useCurrentUser();
 
-  const handleLogout = async () => {
-    await setCurrentUser(null);
-    history.push("/login");
+  const handleLogout = () => {
+    setCurrentUser(null);
+    history.push("/");
   };
 
   return (

@@ -4,8 +4,8 @@ export interface Notification {
   creator_id: string;
   created_at: Date;
   is_read: boolean;
-  action_type: string;
-  target_type: string;
+  action_type: "like" | "comment";
+  target_type: "story" | "comment";
   target_id: string;
   comment_id: string;
 }

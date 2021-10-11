@@ -13,7 +13,7 @@ import ShareIcon from "@material-ui/icons/Share";
 
 import axios from "axios";
 import moment from "moment";
-import { useLocalStorage } from "../hooks/useLocalStorage";
+import { useCurrentUser } from "../hooks/useCurrentUser";
 
 import LoginToContinueDialog from "../Generic/LoginToContinueDialog";
 import CommentsDialog from "./CommentsDialog";
@@ -70,7 +70,7 @@ export default function ViewPostDialog(props: {
 }) {
   const classes = useStyles();
 
-  const [currentUser] = useLocalStorage("currentUser", null);
+  const [currentUser] = useCurrentUser();
 
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
@@ -111,7 +111,7 @@ export default function ViewPostDialog(props: {
     if (operation === "add") {
       const updatedLikers = [
         ...story!.likers,
-        { id: currentUser.id, username: currentUser.username },
+        { id: currentUser!.id, username: currentUser!.username },
       ];
       setStory({
         ...story!,

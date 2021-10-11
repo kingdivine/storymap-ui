@@ -12,7 +12,7 @@ import Heading from "../Generic/Heading";
 import mapBackground from "../Generic/images/map-background.png";
 import Footer from "../Generic/Footer";
 import { useHistory } from "react-router-dom";
-import { useLocalStorage } from "../hooks/useLocalStorage";
+import { useCurrentUser } from "../hooks/useCurrentUser";
 import { useEffect } from "react";
 import axios from "axios";
 
@@ -50,7 +50,7 @@ export default function VerificationPage() {
   const classes = useStyles();
   let history = useHistory();
   const hasFetchedData = useRef(false);
-  const [currentUser, setCurrentUser] = useLocalStorage("currentUser", null);
+  const [currentUser, setCurrentUser] = useCurrentUser();
 
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");

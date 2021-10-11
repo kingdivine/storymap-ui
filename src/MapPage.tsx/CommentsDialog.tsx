@@ -15,7 +15,7 @@ import axios from "axios";
 import { Comment } from "../types/Comment";
 import CommentListItem from "./CommentListItem";
 import SendIcon from "@material-ui/icons/Send";
-import { useLocalStorage } from "../hooks/useLocalStorage";
+import { useCurrentUser } from "../hooks/useCurrentUser";
 import { useHistory } from "react-router-dom";
 import LoginToContinueDialog from "../Generic/LoginToContinueDialog";
 import FavoriteIcon from "@material-ui/icons/Favorite";
@@ -101,7 +101,7 @@ export default function CommentsDialog(props: {
 
   const [commentBeingDeleted, setCommentBeingDeleted] = useState("");
 
-  const [currentUser] = useLocalStorage("currentUser", null);
+  const [currentUser] = useCurrentUser();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -139,6 +139,9 @@ export default function CommentsDialog(props: {
   };
 
   const handleCommentSubmit = () => {
+    if (!currentUser) {
+      return; //TODO: Just don't call this func. Disable field.
+    }
     if (isSubmittingComment) {
       return;
     }
@@ -177,7 +180,7 @@ export default function CommentsDialog(props: {
         if (c.id !== commentId) {
           return c;
         } else {
-          return { ...c, liker_ids: [...(c.liker_ids ?? []), currentUser.id] };
+          return { ...c, liker_ids: [...(c.liker_ids ?? []), currentUser!.id] };
         }
       });
       setComments(newComments);
@@ -248,7 +251,7 @@ export default function CommentsDialog(props: {
     axios
       .delete(`/storymap-api/comments/${commentId}`, {
         headers: {
-          authorization: `Bearer ${currentUser.token}`,
+          authorization: `Bearer ${currentUser!.token}`,
         },
       })
       .then((result) => {
@@ -300,7 +303,7 @@ export default function CommentsDialog(props: {
                       onDeleteClick={handleDeleteClick}
                       isSubmittingLike={submittingLike}
                       commentBeingDeleted={commentBeingDeleted}
-                      userId={currentUser?.id}
+                      userId={currentUser?.id ?? null}
                     />
                   ))}
                   {props.totalCommentCount > comments.length && (

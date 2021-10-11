@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useLocalStorage } from "../hooks/useLocalStorage";
+import { useCurrentUser } from "../hooks/useCurrentUser";
 import {
   createStyles,
   makeStyles,
@@ -13,6 +13,7 @@ import Heading from "../Generic/Heading";
 import Footer from "../Generic/Footer";
 import { Notification } from "../types/Notification";
 import axios from "axios";
+import NotificationListItem from "./NotificationListItem";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -46,7 +47,7 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function NotificationsPage(props: {}) {
   const classes = useStyles();
 
-  const [currentUser] = useLocalStorage("currentUser", null);
+  const [currentUser] = useCurrentUser();
 
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
@@ -58,7 +59,7 @@ export default function NotificationsPage(props: {}) {
     axios
       .get(`/storymap-api/notifications`, {
         headers: {
-          authorization: `Bearer ${currentUser.token}`,
+          authorization: `Bearer ${currentUser?.token}`,
         },
         params: {
           offset,
@@ -79,7 +80,7 @@ export default function NotificationsPage(props: {}) {
         <div className={classes.userNameAndPicContainer}>
           <Avatar src="/broken-image.jpg" style={{ marginLeft: -2 }} />
           <Typography style={{ margin: 8 }} color="textPrimary">
-            {currentUser.username}
+            {currentUser?.username}
           </Typography>
         </div>
         <Divider style={{ margin: 8 }} />
@@ -109,8 +110,8 @@ export default function NotificationsPage(props: {}) {
         )}
         {!isLoading && (
           <div className={classes.section}>
-            {notifications.map((notif) => (
-              <div key={notif.id}> {notif.id} </div>
+            {notifications.map((notification) => (
+              <NotificationListItem notification={notification} />
             ))}
           </div>
         )}

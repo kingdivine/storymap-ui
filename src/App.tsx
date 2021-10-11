@@ -4,7 +4,7 @@ import {
   Route,
   Redirect,
 } from "react-router-dom";
-import { useLocalStorage } from "./hooks/useLocalStorage";
+import { useCurrentUser } from "./hooks/useCurrentUser";
 import LoginPage from "./LoginPage.tsx/LoginPage";
 import MapPage from "./MapPage.tsx/MapPage";
 import AccountPage from "./AccountPage/AcccountPage";
@@ -13,7 +13,7 @@ import ForgotPasswordPage from "./ForgotPasswordPage/ForgotPasswordPage";
 import NotificationsPage from "./NotificationsPage/NotificationsPage";
 
 function App() {
-  const [currentUser] = useLocalStorage("currentUser", null);
+  const [currentUser] = useCurrentUser();
 
   return (
     <div className="App">

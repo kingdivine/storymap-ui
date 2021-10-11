@@ -18,7 +18,7 @@ import {
 import CloseIcon from "@material-ui/icons/Close";
 import LocationSearch from "./LocationSearch";
 import axios from "axios";
-import { useLocalStorage } from "../hooks/useLocalStorage";
+import { useCurrentUser } from "../hooks/useCurrentUser";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -43,7 +43,7 @@ const TAGS_COUNT_LIMIT = 3;
 export default function CreatePostForm(props: { closeForm: () => void }) {
   const classes = useStyles();
 
-  const [currentUser] = useLocalStorage("currentUser", null);
+  const [currentUser] = useCurrentUser();
 
   //form values
   const [title, setTitle] = useState("");
@@ -107,7 +107,7 @@ export default function CreatePostForm(props: { closeForm: () => void }) {
         },
         {
           headers: {
-            authorization: `Bearer ${currentUser.token}`,
+            authorization: `Bearer ${currentUser?.token}`, //TODO: replace with !
           },
         }
       )
