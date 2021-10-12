@@ -3,7 +3,6 @@ import { createStyles, Theme, makeStyles } from "@material-ui/core/styles";
 import Dialog from "@material-ui/core/Dialog";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
-import Avatar from "@material-ui/core/Avatar";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { IconButton, Typography } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
@@ -18,6 +17,7 @@ import { useCurrentUser } from "../hooks/useCurrentUser";
 import LoginToContinueDialog from "../Generic/LoginToContinueDialog";
 import CommentsDialog from "./CommentsDialog";
 import { StoryDetail } from "../types/StoryDetail";
+import UsernameAndPic from "../Generic/UsernameandPic";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -34,10 +34,6 @@ const useStyles = makeStyles((theme: Theme) =>
       marginBottom: 8,
     },
     secondLineContainer: { padding: theme.spacing(1, 3, 2, 3) },
-    userNameAndPicContainer: {
-      display: "flex",
-      alignItems: "center",
-    },
     dateAndCloseBtn: {
       display: "flex",
       alignItems: "center",
@@ -195,15 +191,10 @@ export default function ViewPostDialog(props: {
             <>
               <div>
                 <div className={classes.topLineContainer}>
-                  <div className={classes.userNameAndPicContainer}>
-                    <Avatar
-                      src="/broken-image.jpg"
-                      style={{ marginLeft: -2 }}
-                    />
-                    <Typography style={{ margin: 8 }}>
-                      {story.author_name}
-                    </Typography>
-                  </div>
+                  <UsernameAndPic
+                    username={story.author_name}
+                    userId={story.author_id}
+                  />
                   <div className={classes.dateAndCloseBtn}>
                     <Typography color={"textSecondary"}>
                       {moment(story.created_at).fromNow()}

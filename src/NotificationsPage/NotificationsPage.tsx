@@ -5,7 +5,6 @@ import {
   makeStyles,
   Theme,
   Typography,
-  Avatar,
   Divider,
   CircularProgress,
 } from "@material-ui/core";
@@ -14,6 +13,7 @@ import Footer from "../Generic/Footer";
 import { Notification } from "../types/Notification";
 import axios from "axios";
 import NotificationListItem from "./NotificationListItem";
+import UsernameAndPic from "../Generic/UsernameandPic";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -23,11 +23,6 @@ const useStyles = makeStyles((theme: Theme) =>
       marginRight: "auto",
       width: "50%",
       textAlign: "center",
-    },
-    userNameAndPicContainer: {
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
     },
     section: {
       display: "flex",
@@ -74,49 +69,49 @@ export default function NotificationsPage(props: {}) {
   }, [offset, currentUser?.token]);
 
   return (
-    <>
-      <Heading />
-      <div className={classes.mainContent}>
-        <div className={classes.userNameAndPicContainer}>
-          <Avatar src="/broken-image.jpg" style={{ marginLeft: -2 }} />
-          <Typography style={{ margin: 8 }} color="textPrimary">
-            {currentUser?.username}
-          </Typography>
-        </div>
-        <Divider style={{ margin: 8 }} />
-        {isError && (
-          <>
-            <Typography
-              style={{ marginTop: 8 }}
-              variant="h5"
-              color={"secondary"}
-            >
-              Oops! Something went wrong.
-            </Typography>
-            <Typography
-              style={{ marginTop: 8 }}
-              variant={"h6"}
-              color="textPrimary"
-            >
-              Please check your internet connection and try again.
-            </Typography>
-          </>
-        )}
-        {isLoading && (
-          <CircularProgress
-            className={classes.loadingIndicator}
-            color="secondary"
+    currentUser && (
+      <>
+        <Heading />
+        <div className={classes.mainContent}>
+          <UsernameAndPic
+            username={currentUser.username}
+            userId={currentUser.id}
           />
-        )}
-        {!isLoading && (
-          <div className={classes.section}>
-            {notifications.map((notification) => (
-              <NotificationListItem notification={notification} />
-            ))}
-          </div>
-        )}
-      </div>
-      <Footer />
-    </>
+          <Divider style={{ margin: 8 }} />
+          {isError && (
+            <>
+              <Typography
+                style={{ marginTop: 8 }}
+                variant="h5"
+                color={"secondary"}
+              >
+                Oops! Something went wrong.
+              </Typography>
+              <Typography
+                style={{ marginTop: 8 }}
+                variant={"h6"}
+                color="textPrimary"
+              >
+                Please check your internet connection and try again.
+              </Typography>
+            </>
+          )}
+          {isLoading && (
+            <CircularProgress
+              className={classes.loadingIndicator}
+              color="secondary"
+            />
+          )}
+          {!isLoading && (
+            <div className={classes.section}>
+              {notifications.map((notification) => (
+                <NotificationListItem notification={notification} />
+              ))}
+            </div>
+          )}
+        </div>
+        <Footer />
+      </>
+    )
   );
 }
