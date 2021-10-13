@@ -30,8 +30,8 @@ const useStyles = makeStyles((theme: Theme) =>
     loadingIndicator: {
       marginLeft: "auto",
       marginRight: "auto",
-      marginTop: 8,
-      marginBottom: 8,
+      marginTop: theme.spacing(1),
+      marginBottom: theme.spacing(2),
     },
     secondLineContainer: { padding: theme.spacing(1, 3, 2, 3) },
     dateAndCloseBtn: {
@@ -186,7 +186,26 @@ export default function ViewPostDialog(props: {
               />
             </>
           )}
-          {isError && <div>Oops!</div>}
+          {isError && (
+            <>
+              <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                <IconButton style={{ marginLeft: 8 }} onClick={props.closePost}>
+                  <CloseIcon />
+                </IconButton>
+              </div>
+              <Typography
+                style={{ marginTop: 8, alignSelf: "center" }}
+                color={"secondary"}
+              >
+                Oops! Something went wrong.
+              </Typography>
+              <Typography
+                style={{ marginTop: 8, marginBottom: 24, alignSelf: "center" }}
+              >
+                Please check your internet connection and try again later.
+              </Typography>
+            </>
+          )}
           {!isLoading && !isError && story && (
             <>
               <div>
