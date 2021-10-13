@@ -13,8 +13,8 @@ export default function UsernameAndPic(props: {
         justifyContent: "center",
       }}
     >
-      <Avatar src="/broken-image.jpg" style={{ marginLeft: -2 }} />
-      <Typography style={{ margin: 8 }} color="textPrimary">
+      <Avatar src="/broken-image.jpg" />
+      <Typography style={{ marginLeft: 8 }} color="textPrimary">
         {username}
       </Typography>
     </div>

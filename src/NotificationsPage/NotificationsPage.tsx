@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: "15vh",
       marginLeft: "auto",
       marginRight: "auto",
-      width: "50%",
+      width: "65%",
       textAlign: "center",
     },
     section: {
@@ -105,7 +105,10 @@ export default function NotificationsPage(props: {}) {
           {!isLoading && (
             <div className={classes.section}>
               {notifications.map((notification) => (
-                <NotificationListItem notification={notification} />
+                <NotificationListItem
+                  key={notification.id}
+                  notification={notification}
+                />
               ))}
             </div>
           )}

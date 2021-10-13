@@ -8,5 +8,8 @@ export interface Notification {
   action_type: "like" | "comment";
   target_type: "story" | "comment";
   target_id: string;
-  comment_id: string;
+  comment_id?: string; //TODO: Change field in db to "new_comment_id"
+  target_story_title?: string;
+  target_story_slug: string;
+  target_comment_content?: string;
 }
