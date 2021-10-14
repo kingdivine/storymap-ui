@@ -45,7 +45,7 @@ export default function NotificationListItemCollapse(props: {
 
   if (comment) {
     return (
-      <div style={{ marginLeft: 48, marginBottom: 8 }}>
+      <div style={{ marginLeft: 48, marginRight: 48, marginBottom: 8 }}>
         <div style={{ display: "flex" }}>
           <Typography color={"textSecondary"}>Re:</Typography>
           <Typography style={{ marginLeft: 4 }}>
