@@ -141,7 +141,7 @@ export default function NotificationsPage(props: {}) {
                   notification={notification}
                 />
               ))}
-              <div>
+              <div className={classes.viewMoreBtnContainer}>
                 <Button
                   color="primary"
                   size="small"

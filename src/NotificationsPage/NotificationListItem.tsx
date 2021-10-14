@@ -22,7 +22,14 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: "space-between",
       alignItems: "center",
     },
-    nameAndText: {
+    unReadIndicator: {
+      height: 12,
+      width: 12,
+      borderRadius: "100%",
+      backgroundColor: theme.palette.secondary.main,
+      marginRight: theme.spacing(1),
+    },
+    nameAndTextAndInidicator: {
       display: "flex",
       alignItems: "center",
     },
@@ -56,7 +63,11 @@ export default function NotificationListItem(props: {
   return (
     <>
       <div className={classes.listItem}>
-        <div className={classes.nameAndText}>
+        <div className={classes.nameAndTextAndInidicator}>
+          <div
+            className={classes.unReadIndicator}
+            style={{ visibility: notification.is_read ? "hidden" : "visible" }}
+          />
           <UsernameAndPic
             username={notification.creator_username}
             userId={notification.creator_id}
