@@ -1,5 +1,7 @@
 import {
+  Collapse,
   createStyles,
+  IconButton,
   Link,
   makeStyles,
   Theme,
@@ -8,6 +10,10 @@ import {
 import moment from "moment";
 import UsernameAndPic from "../Generic/UsernameandPic";
 import { Notification } from "../types/Notification";
+import ExpandLess from "@material-ui/icons/ExpandLess";
+import ExpandMore from "@material-ui/icons/ExpandMore";
+import { useState } from "react";
+import NotificationListItemCollapse from "./NotificationListItemCollapse";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -15,13 +21,13 @@ const useStyles = makeStyles((theme: Theme) =>
       display: "flex",
       justifyContent: "space-between",
       alignItems: "center",
-      marginBottom: theme.spacing(1.5),
     },
     nameAndText: {
       display: "flex",
       alignItems: "center",
     },
     text: { display: "flex", marginLeft: theme.spacing(0.5) },
+    expandIconAndDate: { display: "flex", alignItems: "center" },
   })
 );
 
@@ -32,6 +38,7 @@ export default function NotificationListItem(props: {
   notification: Notification;
 }) {
   const classes = useStyles();
+  const [isCollapseOpen, setIsCollapseOpen] = useState(false);
 
   const { notification } = props;
   const actionText =
@@ -40,38 +47,58 @@ export default function NotificationListItem(props: {
     notification.target_type === "story"
       ? notification.target_story_title
       : `"${truncateString(notification.target_comment_content ?? "", 25)}"`;
+  const allowCollapse =
+    (notification.action_type === "like" &&
+      notification.target_type === "comment") ||
+    (notification.action_type === "comment" &&
+      notification.target_type === "story");
 
   return (
-    <div className={classes.listItem}>
-      <div className={classes.nameAndText}>
-        <UsernameAndPic
-          username={notification.creator_username}
-          userId={notification.creator_id}
-        />
-        <div className={classes.text}>
-          <Typography color={"textPrimary"}>
-            {`${actionText} your ${notification.target_type}`}
-          </Typography>
-          {notification.target_type === "story" ? (
-            <Typography style={{ marginLeft: 4 }}>
-              <Link
-                href={`/story/${notification.target_story_slug}`}
-                color="secondary"
-                underline="none"
-              >
+    <>
+      <div className={classes.listItem}>
+        <div className={classes.nameAndText}>
+          <UsernameAndPic
+            username={notification.creator_username}
+            userId={notification.creator_id}
+          />
+          <div className={classes.text}>
+            <Typography color={"textPrimary"}>
+              {`${actionText} your ${notification.target_type}`}
+            </Typography>
+            {notification.target_type === "story" ? (
+              <Typography style={{ marginLeft: 4 }}>
+                <Link
+                  href={`/story/${notification.target_story_slug}`}
+                  color="secondary"
+                  underline="none"
+                >
+                  {targetText}
+                </Link>
+              </Typography>
+            ) : (
+              <Typography style={{ marginLeft: 4 }} color="textPrimary">
                 {targetText}
-              </Link>
-            </Typography>
-          ) : (
-            <Typography style={{ marginLeft: 4 }} color="textPrimary">
-              {targetText}
-            </Typography>
-          )}
+              </Typography>
+            )}
+          </div>
+        </div>
+        <div className={classes.expandIconAndDate}>
+          <Typography color={"textSecondary"}>
+            {moment(notification.created_at).fromNow()}
+          </Typography>
+          <IconButton
+            style={{
+              visibility: allowCollapse ? "visible" : "hidden",
+            }}
+            onClick={() => setIsCollapseOpen(!isCollapseOpen)}
+          >
+            {isCollapseOpen ? <ExpandLess /> : <ExpandMore />}
+          </IconButton>
         </div>
       </div>
-      <Typography color={"textSecondary"}>
-        {moment(notification.created_at).fromNow()}
-      </Typography>
-    </div>
+      <Collapse in={isCollapseOpen} timeout={250} unmountOnExit>
+        <NotificationListItemCollapse notification={notification} />
+      </Collapse>
+    </>
   );
 }

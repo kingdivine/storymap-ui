@@ -195,7 +195,7 @@ export default function ViewPostDialog(props: {
               </div>
               <Typography
                 style={{ marginTop: 8, alignSelf: "center" }}
-                color={"secondary"}
+                color={"error"}
               >
                 Oops! Something went wrong.
               </Typography>
