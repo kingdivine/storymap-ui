@@ -20,7 +20,7 @@ import { useHistory } from "react-router-dom";
 import LoginToContinueDialog from "../Generic/LoginToContinueDialog";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 
-const COMMENTS_PER_PAGE = 50; //actually limited by backend
+const COMMENTS_PER_PAGE = 50; //matches backend
 const COMMENT_CHAR_LENGTH_LIMIT = 1000;
 
 const useStyles = makeStyles((theme: Theme) =>

@@ -46,18 +46,20 @@ export default function NotificationListItemCollapse(props: {
   if (comment) {
     return (
       <div style={{ marginLeft: 48, marginRight: 48, marginBottom: 8 }}>
-        <div style={{ display: "flex" }}>
-          <Typography color={"textSecondary"}>Re:</Typography>
-          <Typography style={{ marginLeft: 4 }}>
-            <Link
-              href={`/story/${comment.story_slug}`}
-              color="secondary"
-              underline="none"
-            >
-              {comment.story_title}
-            </Link>
-          </Typography>
-        </div>
+        {notification.target_type === "comment" && (
+          <div style={{ display: "flex" }}>
+            <Typography color={"textSecondary"}>Re:</Typography>
+            <Typography style={{ marginLeft: 4 }}>
+              <Link
+                href={`/story/${comment.story_slug}`}
+                color="secondary"
+                underline="none"
+              >
+                {comment.story_title}
+              </Link>
+            </Typography>
+          </div>
+        )}
         <Typography color={"textPrimary"}>{`"${comment.content}"`}</Typography>
       </div>
     );

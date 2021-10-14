@@ -7,6 +7,7 @@ import {
   Typography,
   Divider,
   CircularProgress,
+  Button,
 } from "@material-ui/core";
 import Heading from "../Generic/Heading";
 import Footer from "../Generic/Footer";
@@ -14,6 +15,8 @@ import { Notification } from "../types/Notification";
 import axios from "axios";
 import NotificationListItem from "./NotificationListItem";
 import UsernameAndPic from "../Generic/UsernameandPic";
+
+const NOTIFS_PER_PAGE = 20; //matches backend
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -25,16 +28,20 @@ const useStyles = makeStyles((theme: Theme) =>
       textAlign: "center",
     },
     section: {
-      display: "flex",
-      flexDirection: "column",
       textAlign: "start",
       marginTop: theme.spacing(3),
+      maxHeight: "65vh",
+      overflowY: "scroll",
     },
     loadingIndicator: {
       marginLeft: "auto",
       marginRight: "auto",
       marginTop: 8,
       marginBottom: 8,
+    },
+    viewMoreBtnContainer: {
+      textAlign: "center",
+      margin: theme.spacing(1),
     },
   })
 );
@@ -44,11 +51,11 @@ export default function NotificationsPage(props: {}) {
 
   const [currentUser] = useCurrentUser();
 
+  const [offset, setOffset] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
-
-  const [offset] = useState(0);
 
   useEffect(() => {
     axios
@@ -57,16 +64,40 @@ export default function NotificationsPage(props: {}) {
           authorization: `Bearer ${currentUser?.token}`,
         },
         params: {
-          offset,
+          offset: 0,
         },
       })
-      .then((response) => setNotifications(response.data))
+      .then((response) =>
+        setNotifications(
+          response.data.concat(response.data.concat(response.data))
+        )
+      )
       .catch((e) => {
         setIsError(true);
         console.log(e);
       })
       .finally(() => setIsLoading(false));
-  }, [offset, currentUser?.token]);
+  }, [currentUser?.token]);
+
+  const handleFetchMoreClick = () => {
+    setIsLoadingMore(true);
+    const newOffset = offset + NOTIFS_PER_PAGE;
+    axios
+      .get(`/storymap-api/notifications`, {
+        headers: {
+          authorization: `Bearer ${currentUser?.token}`,
+        },
+        params: {
+          offset: newOffset,
+        },
+      })
+      .then((results) => {
+        setNotifications(notifications.concat(results.data));
+        setOffset(newOffset);
+      })
+      .catch((e) => console.log(e))
+      .finally(() => setIsLoadingMore(false));
+  };
 
   return (
     currentUser && (
@@ -104,12 +135,22 @@ export default function NotificationsPage(props: {}) {
           )}
           {!isLoading && (
             <div className={classes.section}>
-              {notifications.map((notification) => (
+              {notifications.map((notification, i) => (
                 <NotificationListItem
-                  key={notification.id}
+                  key={notification.id + i}
                   notification={notification}
                 />
               ))}
+              <div>
+                <Button
+                  color="primary"
+                  size="small"
+                  disabled={isLoadingMore}
+                  onClick={() => handleFetchMoreClick()}
+                >
+                  {isLoadingMore ? <CircularProgress size={20} /> : "View more"}
+                </Button>
+              </div>
             </div>
           )}
         </div>
