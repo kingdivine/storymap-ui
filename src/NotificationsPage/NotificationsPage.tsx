@@ -67,11 +67,7 @@ export default function NotificationsPage(props: {}) {
           offset: 0,
         },
       })
-      .then((response) =>
-        setNotifications(
-          response.data.concat(response.data.concat(response.data))
-        )
-      )
+      .then((response) => setNotifications(response.data))
       .catch((e) => {
         setIsError(true);
         console.log(e);
@@ -135,9 +131,9 @@ export default function NotificationsPage(props: {}) {
           )}
           {!isLoading && (
             <div className={classes.section}>
-              {notifications.map((notification, i) => (
+              {notifications.map((notification) => (
                 <NotificationListItem
-                  key={notification.id + i}
+                  key={notification.id}
                   notification={notification}
                 />
               ))}

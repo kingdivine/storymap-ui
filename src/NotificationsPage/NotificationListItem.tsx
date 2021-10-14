@@ -23,8 +23,8 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: "center",
     },
     unReadIndicator: {
-      height: 12,
-      width: 12,
+      height: 8,
+      width: 8,
       borderRadius: "100%",
       backgroundColor: theme.palette.secondary.main,
       marginRight: theme.spacing(1),
