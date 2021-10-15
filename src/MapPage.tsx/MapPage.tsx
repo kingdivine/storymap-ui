@@ -217,7 +217,6 @@ export default function MapPage() {
           className={classes.navLinkBtn}
           href="/account"
           startIcon={<SettingsIcon />}
-          endIcon
         >
           account
         </Button>
