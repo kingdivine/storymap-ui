@@ -95,6 +95,30 @@ export default function NotificationsPage(props: {}) {
       .catch((e) => console.log(e));
   }, [currentUser]);
 
+  //mark as read call
+  useEffect(() => {
+    if (notifications.length === 0 || !currentUser) {
+      return;
+    }
+    const notificationIds = notifications
+      .filter((n) => !n.is_read)
+      .map((n) => n.id);
+    axios
+      .post(
+        `/storymap-api/notifications`,
+        { notificationIds },
+        {
+          headers: {
+            authorization: `Bearer ${currentUser.token}`,
+          },
+        }
+      )
+      .then((result) => {})
+      .catch((e) => {
+        console.log(e);
+      });
+  }, [currentUser, notifications]);
+
   const handleFetchMoreClick = () => {
     setIsLoadingMore(true);
     const newOffset = offset + NOTIFS_PER_PAGE;
