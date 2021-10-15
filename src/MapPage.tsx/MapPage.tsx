@@ -119,7 +119,7 @@ export default function MapPage() {
     axios
       .get<NotificationCounts>("/storymap-api/notifications/counts", {
         headers: {
-          authorization: `Bearer ${currentUser?.token}`,
+          authorization: `Bearer ${currentUser.token}`,
         },
       })
       .then((response) => setUnreadNotifsCount(response.data.un_read))

@@ -15,6 +15,7 @@ import { Notification } from "../types/Notification";
 import axios from "axios";
 import NotificationListItem from "./NotificationListItem";
 import UsernameAndPic from "../Generic/UsernameandPic";
+import { NotificationCounts } from "../types/NotificationCounts";
 
 const NOTIFS_PER_PAGE = 20; //matches backend
 
@@ -39,6 +40,10 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: 8,
       marginBottom: 8,
     },
+    noDataContainer: {
+      textAlign: "center",
+      margin: theme.spacing(1),
+    },
     viewMoreBtnContainer: {
       textAlign: "center",
       margin: theme.spacing(1),
@@ -56,6 +61,7 @@ export default function NotificationsPage(props: {}) {
   const [isError, setIsError] = useState(false);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [totalNotifsCount, setTotalNotifsCount] = useState(0);
 
   useEffect(() => {
     axios
@@ -74,6 +80,20 @@ export default function NotificationsPage(props: {}) {
       })
       .finally(() => setIsLoading(false));
   }, [currentUser?.token]);
+
+  useEffect(() => {
+    if (!currentUser) {
+      return;
+    }
+    axios
+      .get<NotificationCounts>("/storymap-api/notifications/counts", {
+        headers: {
+          authorization: `Bearer ${currentUser.token}`,
+        },
+      })
+      .then((response) => setTotalNotifsCount(response.data.total))
+      .catch((e) => console.log(e));
+  }, [currentUser]);
 
   const handleFetchMoreClick = () => {
     setIsLoadingMore(true);
@@ -131,22 +151,38 @@ export default function NotificationsPage(props: {}) {
           )}
           {!isLoading && (
             <div className={classes.section}>
+              {notifications.length === 0 && (
+                <div className={classes.noDataContainer}>
+                  <Typography color="secondary">
+                    You're all caught up!
+                  </Typography>
+                  <Typography color="textPrimary">
+                    No recent notifications to show.
+                  </Typography>
+                </div>
+              )}
               {notifications.map((notification) => (
                 <NotificationListItem
                   key={notification.id}
                   notification={notification}
                 />
               ))}
-              <div className={classes.viewMoreBtnContainer}>
-                <Button
-                  color="primary"
-                  size="small"
-                  disabled={isLoadingMore}
-                  onClick={() => handleFetchMoreClick()}
-                >
-                  {isLoadingMore ? <CircularProgress size={20} /> : "View more"}
-                </Button>
-              </div>
+              {totalNotifsCount > notifications.length && (
+                <div className={classes.viewMoreBtnContainer}>
+                  <Button
+                    color="primary"
+                    size="small"
+                    disabled={isLoadingMore}
+                    onClick={() => handleFetchMoreClick()}
+                  >
+                    {isLoadingMore ? (
+                      <CircularProgress size={20} />
+                    ) : (
+                      "View more"
+                    )}
+                  </Button>
+                </div>
+              )}
             </div>
           )}
         </div>
