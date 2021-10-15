@@ -64,6 +64,7 @@ export default function LoginToContinueDialog(props: {
           variant="contained"
           color="primary"
           onClick={() => history.push("/login")}
+          style={{ marginBottom: 24 }}
         >
           Login or Signup
         </Button>
