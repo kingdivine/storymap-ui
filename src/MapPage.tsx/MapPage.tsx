@@ -9,6 +9,7 @@ import {
   Snackbar,
   Button,
   Fab,
+  Badge,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import ViewPostDialog from "./ViewPostDialog";
@@ -24,6 +25,8 @@ import FaceIcon from "@material-ui/icons/Face";
 import NotificationsActiveIcon from "@material-ui/icons/NotificationsActive";
 import HelpIcon from "@material-ui/icons/Help";
 import AddIcon from "@material-ui/icons/Add";
+import { NotificationCounts } from "../types/NotificationCounts";
+import { useCurrentUser } from "../hooks/useCurrentUser";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -73,7 +76,10 @@ export default function MapPage() {
   const classes = useStyles();
   let history = useHistory();
 
+  const [currentUser] = useCurrentUser();
+
   const [posts, setPosts] = useState([]);
+  const [unreadNotifsCount, setUnreadNotifsCount] = useState(0);
   const [filter, setFilter] = useState<FilterObj>();
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
@@ -105,6 +111,20 @@ export default function MapPage() {
 
     fetchData();
   }, [filter]);
+
+  useEffect(() => {
+    if (!currentUser) {
+      return;
+    }
+    axios
+      .get<NotificationCounts>("/storymap-api/notifications/counts", {
+        headers: {
+          authorization: `Bearer ${currentUser.token}`,
+        },
+      })
+      .then((response) => setUnreadNotifsCount(response.data.un_read))
+      .catch((e) => console.log(e));
+  }, [currentUser]);
 
   const handleOpenPost = useCallback(
     (storySlug: string) => {
@@ -171,6 +191,21 @@ export default function MapPage() {
         </div>
       </div>
       <header className={classes.navBar}>
+        <Badge
+          badgeContent={unreadNotifsCount}
+          max={99}
+          showZero={false}
+          color="secondary"
+          style={{ marginRight: unreadNotifsCount > 0 ? 16 : 0 }}
+        >
+          <Button
+            className={classes.navLinkBtn}
+            href="/notifications"
+            startIcon={<NotificationsActiveIcon />}
+          >
+            notifications
+          </Button>
+        </Badge>
         <Button
           className={classes.navLinkBtn}
           // href="#"
@@ -184,14 +219,6 @@ export default function MapPage() {
           startIcon={<SettingsIcon />}
         >
           account
-        </Button>
-
-        <Button
-          className={classes.navLinkBtn}
-          // href="#"
-          startIcon={<NotificationsActiveIcon />}
-        >
-          notifications
         </Button>
         <Button
           className={classes.navLinkBtn}

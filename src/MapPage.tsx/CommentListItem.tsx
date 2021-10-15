@@ -1,14 +1,10 @@
-import {
-  Avatar,
-  CircularProgress,
-  IconButton,
-  Typography,
-} from "@material-ui/core";
+import { CircularProgress, IconButton, Typography } from "@material-ui/core";
 import { createStyles, Theme, makeStyles } from "@material-ui/core/styles";
 import { Comment } from "../types/Comment";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import DeleteOutlinedIcon from "@material-ui/icons/DeleteOutlined";
 import moment from "moment";
+import UsernameAndPic from "../Generic/UsernameandPic";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -26,10 +22,6 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: "start",
       alignItems: "center",
       marginBottom: theme.spacing(1),
-    },
-    userNameAndPicContainer: {
-      display: "flex",
-      alignItems: "center",
     },
     content: {
       maxHeight: "90px",
@@ -75,12 +67,10 @@ export default function CommentListItem(props: {
     <div className={classes.itemContainer}>
       <div>
         <div className={classes.topLineContainer}>
-          <div className={classes.userNameAndPicContainer}>
-            <Avatar src="/broken-image.jpg" style={{ marginLeft: -2 }} />
-            <Typography style={{ margin: 8 }}>
-              {comment.author_username}
-            </Typography>
-          </div>
+          <UsernameAndPic
+            username={comment.author_username}
+            userId={comment.author_id}
+          />
           <Typography color={"textSecondary"}>
             {moment(comment.created_at).fromNow()}
           </Typography>

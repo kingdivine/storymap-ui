@@ -3,7 +3,7 @@ export interface StoryDetail {
   title: string;
   place_name: string;
   slug: string;
-  created_at: string;
+  created_at: Date;
   geo_json: string;
   content: string;
   is_private: boolean;

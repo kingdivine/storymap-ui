@@ -18,7 +18,7 @@ import {
 import MailOutlineIcon from "@material-ui/icons/MailOutline";
 import PersonOutlineIcon from "@material-ui/icons/PersonOutline";
 import VpnKeyIcon from "@material-ui/icons/VpnKey";
-import { useLocalStorage } from "../hooks/useLocalStorage";
+import { useCurrentUser } from "../hooks/useCurrentUser";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -91,7 +91,7 @@ export default function LoginForm() {
   const [loginError, setLoginError] = useState("");
   const [signupError, setSignupError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [, setCurrentUser] = useLocalStorage("currentUser", null);
+  const [, setCurrentUser] = useCurrentUser();
   const [signupSuccess, setSignupSuccess] = useState(false);
 
   const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
