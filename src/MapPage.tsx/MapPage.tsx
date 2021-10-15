@@ -25,8 +25,10 @@ import FaceIcon from "@material-ui/icons/Face";
 import NotificationsActiveIcon from "@material-ui/icons/NotificationsActive";
 import HelpIcon from "@material-ui/icons/Help";
 import AddIcon from "@material-ui/icons/Add";
+import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import { NotificationCounts } from "../types/NotificationCounts";
 import { useCurrentUser } from "../hooks/useCurrentUser";
+import LoginToContinueDialog from "../Generic/LoginToContinueDialog";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -87,6 +89,7 @@ export default function MapPage() {
     null
   );
   const [isCreatePostFormOpen, setIsCreatePostFormOpen] = useState(false);
+  const [loginDialogOpen, setLoginDialogOpen] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -146,6 +149,14 @@ export default function MapPage() {
 
   const clearFilter = () => {
     setFilter({ user: null, tag: null, followingOnly: null });
+  };
+
+  const handleCreatePostClick = () => {
+    if (currentUser) {
+      setIsCreatePostFormOpen(true);
+    } else {
+      setLoginDialogOpen(true);
+    }
   };
 
   return (
@@ -252,10 +263,22 @@ export default function MapPage() {
         />
       )}
       {isCreatePostFormOpen && <CreatePostForm closeForm={handleCloseForm} />}
+      {loginDialogOpen && (
+        <LoginToContinueDialog
+          icon={
+            <AccountCircleIcon
+              style={{ width: "100%", height: "100%" }}
+              color={"secondary"}
+            />
+          }
+          message={`Join Storymap to create Stories.`}
+          onCloseDialog={() => setLoginDialogOpen(false)}
+        />
+      )}
       <Fab
         color="primary"
         className={classes.fab}
-        onClick={() => setIsCreatePostFormOpen(true)}
+        onClick={() => handleCreatePostClick()}
       >
         <AddIcon />
       </Fab>
