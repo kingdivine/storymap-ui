@@ -1,8 +1,16 @@
-import { CircularProgress, IconButton, Typography } from "@material-ui/core";
+import { useState } from "react";
+import {
+  CircularProgress,
+  IconButton,
+  Menu,
+  MenuItem,
+  Typography,
+} from "@material-ui/core";
 import { createStyles, Theme, makeStyles } from "@material-ui/core/styles";
 import { Comment } from "../types/Comment";
 import FavoriteIcon from "@material-ui/icons/Favorite";
-import DeleteOutlinedIcon from "@material-ui/icons/DeleteOutlined";
+import ContextMenuIcon from "@material-ui/icons/MoreVert";
+import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import moment from "moment";
 import UsernameAndPic from "../Generic/UsernameandPic";
 
@@ -29,7 +37,7 @@ const useStyles = makeStyles((theme: Theme) =>
       textOverflow: "ellipsis",
       marginLeft: theme.spacing(6),
     },
-    likeBtnAndCountContainer: {
+    actionsContainer: {
       display: "flex",
       flexDirection: "column",
       alignItems: "center",
@@ -52,6 +60,9 @@ export default function CommentListItem(props: {
   const classes = useStyles();
   const { comment } = props;
 
+  const [contextMenuAnchor, setContextMenuAnchor] =
+    useState<null | HTMLElement>(null);
+
   const userLikedComment = () =>
     comment.liker_ids &&
     comment.liker_ids.findIndex((id) => id === props.userId) > -1;
@@ -71,23 +82,9 @@ export default function CommentListItem(props: {
             username={comment.author_username}
             userId={comment.author_id}
           />
-          <Typography color={"textSecondary"}>
+          <Typography color={"textSecondary"} style={{ marginLeft: 8 }}>
             {moment(comment.created_at).fromNow()}
           </Typography>
-          {comment.author_id === props.userId && (
-            <IconButton
-              size="small"
-              //prevent deletion of multiple comments at once
-              disabled={props.commentBeingDeleted !== ""}
-              onClick={() => props.onDeleteClick(comment.id)}
-            >
-              {isBeingDeleted() ? (
-                <CircularProgress size={20} />
-              ) : (
-                <DeleteOutlinedIcon color={"inherit"} />
-              )}
-            </IconButton>
-          )}
         </div>
 
         <div className={classes.content}>
@@ -95,7 +92,36 @@ export default function CommentListItem(props: {
         </div>
       </div>
 
-      <div className={classes.likeBtnAndCountContainer}>
+      <div className={classes.actionsContainer}>
+        {comment.author_id === props.userId && (
+          <IconButton
+            onClick={(e) => setContextMenuAnchor(e.currentTarget)}
+            size="small"
+          >
+            <ContextMenuIcon />
+          </IconButton>
+        )}
+        <Menu
+          id="simple-menu"
+          anchorEl={contextMenuAnchor}
+          keepMounted
+          open={Boolean(contextMenuAnchor)}
+          onClose={() => setContextMenuAnchor(null)}
+        >
+          <MenuItem
+            //prevent deletion of multiple comments at once
+            disabled={props.commentBeingDeleted !== ""}
+            onClick={() => props.onDeleteClick(comment.id)}
+            style={{ display: "flex", alignItems: "flex-start" }}
+          >
+            {isBeingDeleted() ? (
+              <CircularProgress size={20} style={{ marginRight: 4 }} />
+            ) : (
+              <DeleteForeverIcon fontSize="small" style={{ marginRight: 4 }} />
+            )}
+            Delete
+          </MenuItem>
+        </Menu>
         <IconButton
           size="small"
           disabled={props.isSubmittingLike || isBeingDeleted()}
