@@ -41,6 +41,9 @@ const useStyles = makeStyles((theme: Theme) =>
       borderColor: theme.palette.common.white,
       width: "fit-content",
     },
+    deleteBtn: {
+      color: theme.palette.text.secondary,
+    },
   })
 );
 
@@ -94,8 +97,7 @@ export default function AccountPage() {
               </Button>
               <Button
                 variant="outlined"
-                className={classes.btn}
-                color="secondary"
+                className={`${classes.btn} ${classes.deleteBtn}`}
                 startIcon={<DeleteForeverIcon />}
                 onClick={() => setIsDeleteDialogOpen(true)}
               >
