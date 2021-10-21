@@ -19,6 +19,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import LocationSearch from "./LocationSearch";
 import axios from "axios";
 import { useCurrentUser } from "../hooks/useCurrentUser";
+import { useHistory } from "react-router";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -42,6 +43,7 @@ const TAGS_COUNT_LIMIT = 3;
 
 export default function CreatePostForm(props: { closeForm: () => void }) {
   const classes = useStyles();
+  let history = useHistory();
 
   const [currentUser] = useCurrentUser();
 
@@ -112,7 +114,8 @@ export default function CreatePostForm(props: { closeForm: () => void }) {
         }
       )
       .then((result) => {
-        props.closeForm(); //TODO: history.push(url of post)
+        history.push(`/story/${result.data.slug}`);
+        props.closeForm();
       })
       .catch((e) => {
         setPostError("Oops! Something went wrong.");
