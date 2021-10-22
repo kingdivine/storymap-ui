@@ -4,11 +4,13 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import { IconButton, Typography } from "@material-ui/core";
+import { IconButton, Menu, MenuItem, Typography } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import CommentIcon from "@material-ui/icons/Comment";
 import ShareIcon from "@material-ui/icons/Share";
+import ContextMenuIcon from "@material-ui/icons/MoreVert";
+import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 
 import axios from "axios";
 import moment from "moment";
@@ -18,6 +20,7 @@ import LoginToContinueDialog from "../Generic/LoginToContinueDialog";
 import CommentsDialog from "./CommentsDialog";
 import { StoryDetail } from "../types/StoryDetail";
 import UsernameAndPic from "../Generic/UsernameandPic";
+import DeleteStoryDialog from "./DeleteStoryDialog";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -73,10 +76,14 @@ export default function ViewPostDialog(props: {
   const [story, setStory] = useState<StoryDetail>();
 
   const [submittingLike, setSubmittingLike] = useState(false);
-  const [loginDialogOpen, setLoginDialogOpen] = useState(false);
+  const [isLoginDialogOpen, setIsLoginDialogOpen] = useState(false);
 
-  const [commentsViewOpen, setCommentsViewOpen] = useState(false);
+  const [isCommentsViewOpen, setIsCommentsViewOpen] = useState(false);
   const [commentCount, setCommentCount] = useState(0);
+
+  const [contextMenuAnchor, setContextMenuAnchor] =
+    useState<null | HTMLElement>(null);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -123,7 +130,7 @@ export default function ViewPostDialog(props: {
 
   const handleLikeClick = () => {
     if (!currentUser) {
-      setLoginDialogOpen(true);
+      setIsLoginDialogOpen(true);
       return;
     }
     if (submittingLike) {
@@ -165,7 +172,7 @@ export default function ViewPostDialog(props: {
 
   return (
     <>
-      {!commentsViewOpen && (
+      {!isCommentsViewOpen && (
         <Dialog
           fullWidth={true}
           maxWidth={"md"}
@@ -218,10 +225,36 @@ export default function ViewPostDialog(props: {
                     <Typography color={"textSecondary"}>
                       {moment(story.created_at).fromNow()}
                     </Typography>
-                    <IconButton
-                      style={{ marginLeft: 8 }}
-                      onClick={props.closePost}
+                    {story.author_id === currentUser?.id && (
+                      <IconButton
+                        onClick={(e) => setContextMenuAnchor(e.currentTarget)}
+                      >
+                        <ContextMenuIcon />
+                      </IconButton>
+                    )}
+
+                    <Menu
+                      id="simple-menu"
+                      anchorEl={contextMenuAnchor}
+                      keepMounted
+                      open={Boolean(contextMenuAnchor)}
+                      onClose={() => setContextMenuAnchor(null)}
                     >
+                      <MenuItem
+                        onClick={() => {
+                          setContextMenuAnchor(null);
+                          setIsDeleteDialogOpen(true);
+                        }}
+                        style={{ display: "flex", alignItems: "flex-start" }}
+                      >
+                        <DeleteForeverIcon
+                          fontSize="small"
+                          style={{ marginRight: 4 }}
+                        />{" "}
+                        Delete
+                      </MenuItem>
+                    </Menu>
+                    <IconButton onClick={props.closePost}>
                       <CloseIcon />
                     </IconButton>
                   </div>
@@ -267,7 +300,7 @@ export default function ViewPostDialog(props: {
                   <div className={classes.storyAction}>
                     <IconButton
                       size="small"
-                      onClick={() => setCommentsViewOpen(true)}
+                      onClick={() => setIsCommentsViewOpen(true)}
                     >
                       <CommentIcon />
                     </IconButton>
@@ -283,17 +316,17 @@ export default function ViewPostDialog(props: {
           )}
         </Dialog>
       )}
-      {commentsViewOpen && story && (
+      {isCommentsViewOpen && story && (
         <CommentsDialog
           totalCommentCount={commentCount}
           updateCommentCount={(addition: number) =>
             setCommentCount(commentCount + addition)
           }
           storyId={story.id}
-          onClose={() => setCommentsViewOpen(false)}
+          onClose={() => setIsCommentsViewOpen(false)}
         />
       )}
-      {loginDialogOpen && (
+      {isLoginDialogOpen && (
         <LoginToContinueDialog
           icon={
             <FavoriteIcon
@@ -302,7 +335,13 @@ export default function ViewPostDialog(props: {
             />
           }
           message={`Join Storymap to like ${story!.author_name}'s Story.`}
-          onCloseDialog={() => setLoginDialogOpen(false)}
+          onCloseDialog={() => setIsLoginDialogOpen(false)}
+        />
+      )}
+      {isDeleteDialogOpen && (
+        <DeleteStoryDialog
+          story={story!}
+          onCloseDialog={() => setIsDeleteDialogOpen(false)}
         />
       )}
     </>
