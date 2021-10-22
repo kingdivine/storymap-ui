@@ -39,12 +39,13 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     actionsContainer: {
       display: "flex",
+      flexDirection: "row",
+      alignItems: "flex-start",
+    },
+    likeBtnAndCount: {
+      display: "flex",
       flexDirection: "column",
       alignItems: "center",
-      justifyContent: "center",
-    },
-    likeIcon: {
-      alignSelf: "center",
     },
   })
 );
@@ -93,46 +94,52 @@ export default function CommentListItem(props: {
       </div>
 
       <div className={classes.actionsContainer}>
-        {comment.author_id === props.userId && (
+        <div>
+          {comment.author_id === props.userId && (
+            <IconButton
+              onClick={(e) => setContextMenuAnchor(e.currentTarget)}
+              size="small"
+            >
+              <ContextMenuIcon />
+            </IconButton>
+          )}
+          <Menu
+            id="simple-menu"
+            anchorEl={contextMenuAnchor}
+            keepMounted
+            open={Boolean(contextMenuAnchor)}
+            onClose={() => setContextMenuAnchor(null)}
+          >
+            <MenuItem
+              //prevent deletion of multiple comments at once
+              disabled={props.commentBeingDeleted !== ""}
+              onClick={() => props.onDeleteClick(comment.id)}
+              style={{ display: "flex", alignItems: "flex-start" }}
+            >
+              {isBeingDeleted() ? (
+                <CircularProgress size={20} style={{ marginRight: 4 }} />
+              ) : (
+                <DeleteForeverIcon
+                  fontSize="small"
+                  style={{ marginRight: 4 }}
+                />
+              )}
+              Delete
+            </MenuItem>
+          </Menu>
+        </div>
+        <div className={classes.likeBtnAndCount}>
           <IconButton
-            onClick={(e) => setContextMenuAnchor(e.currentTarget)}
             size="small"
+            disabled={props.isSubmittingLike || isBeingDeleted()}
+            onClick={() => props.onLikeClick(getOperation(), comment.id)}
           >
-            <ContextMenuIcon />
+            <FavoriteIcon
+              color={userLikedComment() ? "secondary" : "inherit"}
+            />
           </IconButton>
-        )}
-        <Menu
-          id="simple-menu"
-          anchorEl={contextMenuAnchor}
-          keepMounted
-          open={Boolean(contextMenuAnchor)}
-          onClose={() => setContextMenuAnchor(null)}
-        >
-          <MenuItem
-            //prevent deletion of multiple comments at once
-            disabled={props.commentBeingDeleted !== ""}
-            onClick={() => props.onDeleteClick(comment.id)}
-            style={{ display: "flex", alignItems: "flex-start" }}
-          >
-            {isBeingDeleted() ? (
-              <CircularProgress size={20} style={{ marginRight: 4 }} />
-            ) : (
-              <DeleteForeverIcon fontSize="small" style={{ marginRight: 4 }} />
-            )}
-            Delete
-          </MenuItem>
-        </Menu>
-        <IconButton
-          size="small"
-          disabled={props.isSubmittingLike || isBeingDeleted()}
-          onClick={() => props.onLikeClick(getOperation(), comment.id)}
-        >
-          <FavoriteIcon
-            className={classes.likeIcon}
-            color={userLikedComment() ? "secondary" : "inherit"}
-          />
-        </IconButton>
-        <Typography>{comment.liker_ids?.length ?? 0}</Typography>
+          <Typography>{comment.liker_ids?.length ?? 0}</Typography>
+        </div>
       </div>
     </div>
   );
