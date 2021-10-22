@@ -20,7 +20,7 @@ import LoginToContinueDialog from "../Generic/LoginToContinueDialog";
 import CommentsDialog from "./CommentsDialog";
 import { StoryDetail } from "../types/StoryDetail";
 import UsernameAndPic from "../Generic/UsernameandPic";
-import DeleteDialog from "./DeleteDialog";
+import DeleteStoryDialog from "./DeleteStoryDialog";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -339,8 +339,8 @@ export default function ViewPostDialog(props: {
         />
       )}
       {isDeleteDialogOpen && (
-        <DeleteDialog
-          story={story}
+        <DeleteStoryDialog
+          story={story!}
           onCloseDialog={() => setIsDeleteDialogOpen(false)}
         />
       )}

@@ -12,14 +12,13 @@ import { useTheme } from "@material-ui/styles";
 import axios from "axios";
 import { useCurrentUser } from "../hooks/useCurrentUser";
 import { StoryDetail } from "../types/StoryDetail";
-import { Comment } from "../types/Comment";
 
-export default function DeleteDialog(props: {
-  story?: StoryDetail;
-  comment?: Comment;
+export default function DeleteStoryDialog(props: {
+  story: StoryDetail;
   onCloseDialog: () => void;
 }) {
   const theme: Theme = useTheme();
+  const { story } = props;
 
   const [currentUser] = useCurrentUser();
 
@@ -27,15 +26,11 @@ export default function DeleteDialog(props: {
   const [isSuccess, setIsSuccess] = useState(false);
   const [isError, setIsError] = useState(false);
 
-  const entityName = props.story ? "Story" : "Comment";
-
   const handleSubmit = () => {
     setIsLoading(true);
     setIsError(false);
-    const endpoint = props.story ? "stories" : "comments";
-    const id = props.story ? props.story.id : props.comment?.id;
     axios
-      .delete(`/storymap-api/${endpoint}/${id}`, {
+      .delete(`/storymap-api/stories/${story.id}`, {
         headers: {
           authorization: `Bearer ${currentUser!.token}`,
         },
@@ -53,7 +48,7 @@ export default function DeleteDialog(props: {
       <Dialog open={true}>
         <div style={{ margin: 16, padding: 16, textAlign: "center" }}>
           <Typography variant={"h5"} style={{ marginBottom: 8 }}>
-            {entityName} Deleted
+            Story Deleted
           </Typography>
 
           <Button variant="contained" color="primary" href={`/`}>
@@ -75,14 +70,14 @@ export default function DeleteDialog(props: {
           }}
         >
           <Typography variant={"h5"} color={"textPrimary"}>
-            Delete {entityName}
+            Delete Story
           </Typography>
           <IconButton onClick={props.onCloseDialog}>
             <CloseIcon />
           </IconButton>
         </div>
         <Typography variant={"h6"}>
-          Are you sure you want to delete your {entityName}?
+          Are you sure you want to delete your Story?
         </Typography>
 
         <div style={{ display: "flex", justifyContent: "end", marginTop: 16 }}>
