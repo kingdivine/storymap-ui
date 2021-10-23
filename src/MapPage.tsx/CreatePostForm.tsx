@@ -196,7 +196,7 @@ export default function CreatePostForm(props: { closeForm: () => void }) {
             />
 
             <FormControlLabel
-              style={{ marginTop: 8 }}
+              style={{ marginTop: 8, width: "fit-content" }}
               control={
                 <Switch
                   checked={isPrivate}
@@ -204,7 +204,7 @@ export default function CreatePostForm(props: { closeForm: () => void }) {
                   color="primary"
                 />
               }
-              label="Private (only you can see this)"
+              label="Private (only you can see this Story)"
             />
           </div>
           <Typography style={{ margin: 16 }} color={"error"}>
