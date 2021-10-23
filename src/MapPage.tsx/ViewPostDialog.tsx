@@ -11,6 +11,7 @@ import CommentIcon from "@material-ui/icons/Comment";
 import ShareIcon from "@material-ui/icons/Share";
 import ContextMenuIcon from "@material-ui/icons/MoreVert";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
+import LockIcon from "@material-ui/icons/Lock";
 
 import axios from "axios";
 import moment from "moment";
@@ -36,6 +37,10 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: theme.spacing(1),
       marginBottom: theme.spacing(2),
     },
+    titleAndLockIcon: {
+      display: "flex",
+      alignItems: "center",
+    },
     secondLineContainer: { padding: theme.spacing(1, 3, 2, 3) },
     dateAndCloseBtn: {
       display: "flex",
@@ -46,6 +51,7 @@ const useStyles = makeStyles((theme: Theme) =>
       "&>*": {
         marginRight: theme.spacing(1),
       },
+      marginBottom: theme.spacing(2),
     },
     storyActionsContainer: {
       display: "flex",
@@ -89,8 +95,16 @@ export default function ViewPostDialog(props: {
     const fetchData = async () => {
       setIsLoading(true);
       try {
+        const headers = currentUser
+          ? {
+              authorization: `Bearer ${currentUser?.token}`,
+            }
+          : null;
         const response = await axios.get(
-          `/storymap-api/storiesBySlug/${props.storySlug}`
+          `/storymap-api/storiesBySlug/${props.storySlug}`,
+          {
+            headers,
+          }
         );
         setStory(response.data);
       } catch (e) {
@@ -101,7 +115,7 @@ export default function ViewPostDialog(props: {
       }
     };
     fetchData();
-  }, [props.storySlug, currentUser?.id]);
+  }, [props.storySlug, currentUser]);
 
   useEffect(() => {
     setCommentCount(parseInt(story?.comment_count ?? "0"));
@@ -261,16 +275,27 @@ export default function ViewPostDialog(props: {
                 </div>
               </div>
               <div className={classes.secondLineContainer}>
-                <Typography variant="h5" color={"secondary"}>
-                  {story.title}
-                </Typography>
+                <div className={classes.titleAndLockIcon}>
+                  <Typography variant="h5" color={"secondary"}>
+                    {story.title}
+                  </Typography>
+                  {story.is_private && (
+                    <div>
+                      <LockIcon style={{ marginLeft: 8 }} color="disabled" />
+                    </div>
+                  )}
+                </div>
+
                 <Typography variant="h6" color={"primary"}>
                   {story.place_name}
                 </Typography>
               </div>
 
               <DialogContent>
-                <DialogContentText color="textPrimary">
+                <DialogContentText
+                  color="textPrimary"
+                  style={{ marginBottom: 16 }}
+                >
                   {story.content}
                 </DialogContentText>
                 <div className={classes.tagsContainer}>
@@ -280,37 +305,42 @@ export default function ViewPostDialog(props: {
                     </Typography>
                   ))}
                 </div>
-                <div className={classes.storyActionsContainer}>
-                  <div className={classes.storyAction}>
-                    <IconButton size="small" onClick={() => handleLikeClick()}>
-                      <FavoriteIcon
-                        style={{ marginBottom: 2 }}
-                        color={userLikedStory() ? "secondary" : "inherit"}
-                      />
-                    </IconButton>
-                    <Typography>{story.likers.length} Likes</Typography>
+                {!story.is_private && (
+                  <div className={classes.storyActionsContainer}>
+                    <div className={classes.storyAction}>
+                      <IconButton
+                        size="small"
+                        onClick={() => handleLikeClick()}
+                      >
+                        <FavoriteIcon
+                          style={{ marginBottom: 2 }}
+                          color={userLikedStory() ? "secondary" : "inherit"}
+                        />
+                      </IconButton>
+                      <Typography>{story.likers.length} Likes</Typography>
+                    </div>
+                    <div className={classes.storyAction}>
+                      {/** TODO: try -> Navigator.share(), if not -> document.execCommand("copy")} */}
+                      <IconButton size="small" onClick={() => {}} disabled>
+                        <ShareIcon />
+                      </IconButton>
+                      <Typography style={{ color: "grey" }}>Share</Typography>
+                    </div>
+                    <div className={classes.storyAction}>
+                      <IconButton
+                        size="small"
+                        onClick={() => setIsCommentsViewOpen(true)}
+                      >
+                        <CommentIcon />
+                      </IconButton>
+                      <Typography>
+                        {commentCount === 1
+                          ? "1 Comment"
+                          : `${commentCount} Comments`}
+                      </Typography>
+                    </div>
                   </div>
-                  <div className={classes.storyAction}>
-                    {/** TODO: try -> Navigator.share(), if not -> document.execCommand("copy")} */}
-                    <IconButton size="small" onClick={() => {}} disabled>
-                      <ShareIcon />
-                    </IconButton>
-                    <Typography style={{ color: "grey" }}>Share</Typography>
-                  </div>
-                  <div className={classes.storyAction}>
-                    <IconButton
-                      size="small"
-                      onClick={() => setIsCommentsViewOpen(true)}
-                    >
-                      <CommentIcon />
-                    </IconButton>
-                    <Typography>
-                      {commentCount === 1
-                        ? "1 Comment"
-                        : `${commentCount} Comments`}
-                    </Typography>
-                  </div>
-                </div>
+                )}
               </DialogContent>
             </>
           )}
