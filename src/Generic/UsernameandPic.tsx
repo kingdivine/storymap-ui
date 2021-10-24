@@ -58,9 +58,13 @@ export default function UsernameAndPic(props: {
   username: string;
   userId: string;
   avatar: string;
+  small?: Boolean;
 }) {
   const { username } = props;
   const validAvatar = AVATAR_NAMES.includes(props.avatar);
+  const size = props.small
+    ? { width: 30, height: 30 }
+    : { width: 40, height: 40 };
   return (
     <div
       style={{
@@ -73,12 +77,17 @@ export default function UsernameAndPic(props: {
         <Avatar
           alt={props.username}
           src={require(`./images/avatars/${props.avatar}.svg`).default}
+          style={size}
         />
       ) : (
-        <Avatar alt={props.username} src={"./broken-img"} />
+        <Avatar alt={props.username} src={"./broken-img"} style={size} />
       )}
 
-      <Typography style={{ marginLeft: 8 }} color="textPrimary">
+      <Typography
+        style={{ marginLeft: 8 }}
+        variant={props.small ? "subtitle1" : "h6"}
+        color="textPrimary"
+      >
         {username}
       </Typography>
     </div>

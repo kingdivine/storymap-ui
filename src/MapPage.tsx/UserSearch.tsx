@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { TextField, Typography } from "@material-ui/core";
+import { TextField } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import { User } from "./Filter";
+import UsernameAndPic from "../Generic/UsernameandPic";
 
 export default function UserSearch(props: {
   onUserSelect: (user: User) => void;
@@ -65,9 +66,12 @@ export default function UserSearch(props: {
           <TextField {...params} label="Username" variant="outlined" />
         )}
         renderOption={(option) => (
-          <div>
-            <Typography variant="body1"> {`@${option.username}`}</Typography>
-          </div>
+          <UsernameAndPic
+            userId={option.id}
+            username={option.username}
+            avatar={option.avatar}
+            small
+          />
         )}
       />
     </>

@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export type User = { username: string; id: string };
+export type User = { username: string; id: string; avatar: string };
 export type Tag = { title: string; id: string };
 export interface FilterObj {
   user: User | null;
