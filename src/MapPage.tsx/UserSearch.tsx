@@ -26,6 +26,7 @@ export default function UserSearch(props: {
         const response = await axios.get(`/storymap-api/users/`, {
           params: {
             username: searchString,
+            offset: 0,
           },
         });
         setOptions(response.data);
