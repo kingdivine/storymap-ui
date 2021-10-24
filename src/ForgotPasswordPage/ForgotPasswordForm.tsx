@@ -106,7 +106,7 @@ export default function ForgotPasswordForm() {
 
       {isError && (
         <>
-          <Typography style={{ marginTop: 8 }} color={"secondary"}>
+          <Typography style={{ marginTop: 8 }} color={"error"}>
             Oops! Something went wrong.
           </Typography>
           <Typography style={{ marginTop: 8 }}>
