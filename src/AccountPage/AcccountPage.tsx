@@ -67,6 +67,7 @@ export default function AccountPage() {
           <UsernameAndPic
             username={currentUser.username}
             userId={currentUser.id}
+            avatar={currentUser.avatar}
           />
           <Divider style={{ margin: 8 }} />
 

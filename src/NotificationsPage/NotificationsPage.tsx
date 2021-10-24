@@ -147,6 +147,7 @@ export default function NotificationsPage(props: {}) {
           <UsernameAndPic
             username={currentUser.username}
             userId={currentUser.id}
+            avatar={currentUser.avatar}
           />
           <Divider style={{ margin: 8 }} />
           {isError && (
