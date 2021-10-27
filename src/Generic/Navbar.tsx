@@ -5,9 +5,11 @@ import { createStyles, Theme, Button, Badge } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import FaceIcon from "@material-ui/icons/Face";
 import NotificationsActiveIcon from "@material-ui/icons/NotificationsActive";
+import PersonPinIcon from "@material-ui/icons/PersonPin";
 import HelpIcon from "@material-ui/icons/Help";
 import { NotificationCounts } from "../types/NotificationCounts";
 import Heading from "./Heading";
+import { useHistory } from "react-router";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -30,6 +32,7 @@ export default function NavBar(props: { fetchNotifs: boolean }) {
   const classes = useStyles();
 
   const [currentUser] = useCurrentUser();
+  const history = useHistory();
 
   const [unreadNotifsCount, setUnreadNotifsCount] = useState(0);
 
@@ -46,6 +49,17 @@ export default function NavBar(props: { fetchNotifs: boolean }) {
       .then((response) => setUnreadNotifsCount(response.data.un_read))
       .catch((e) => console.log(e));
   }, [currentUser, props.fetchNotifs]);
+
+  if (history.location.pathname === "/login") {
+    return (
+      <>
+        <Heading />
+        <header className={classes.navBar}>
+          <Button style={{ textTransform: "none" }}>What is Storymap?</Button>
+        </header>
+      </>
+    );
+  }
 
   return (
     <>
@@ -79,11 +93,17 @@ export default function NavBar(props: { fetchNotifs: boolean }) {
           </Button>
         )}
 
-        <Button
-          className={classes.navLinkBtn}
-          //href="#"
-          startIcon={<HelpIcon />}
-        >
+        {!currentUser && (
+          <Button
+            className={classes.navLinkBtn}
+            href={`/login`}
+            startIcon={<PersonPinIcon />}
+          >
+            login or sign up
+          </Button>
+        )}
+
+        <Button className={classes.navLinkBtn} startIcon={<HelpIcon />}>
           help
         </Button>
       </header>
