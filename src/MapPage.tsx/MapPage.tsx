@@ -169,7 +169,7 @@ export default function MapPage() {
           )}
         </div>
       </div>
-      <Navbar />
+      <Navbar fetchNotifs />
       <Map
         posts={posts}
         openPost={handleOpenPost}

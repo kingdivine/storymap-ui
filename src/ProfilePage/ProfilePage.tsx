@@ -7,7 +7,6 @@ import {
   Button,
   Divider,
 } from "@material-ui/core";
-import Heading from "../Generic/Heading";
 import { useHistory } from "react-router-dom";
 import EditIcon from "@material-ui/icons/Edit";
 import LogoutIcon from "@material-ui/icons/ExitToApp";
@@ -15,6 +14,7 @@ import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import UsernameAndPic from "../Generic/UsernameandPic";
 import { useState } from "react";
 import DeleteAccountDialog from "./DeleteAccountDialog";
+import NavBar from "../Generic/Navbar";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -61,7 +61,7 @@ export default function ProfilePage() {
   return (
     currentUser && (
       <>
-        <Heading />
+        <NavBar fetchNotifs />
         <div className={classes.mainContent}>
           <UsernameAndPic
             username={currentUser.username}
