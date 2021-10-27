@@ -1,4 +1,10 @@
-import { createStyles, makeStyles, Theme, Typography } from "@material-ui/core";
+import {
+  createStyles,
+  Link,
+  makeStyles,
+  Theme,
+  Typography,
+} from "@material-ui/core";
 import MapIcon from "@material-ui/icons/Map";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -29,10 +35,10 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function Heading() {
   const classes = useStyles();
   return (
-    <div className={classes.container}>
+    <Link className={classes.container} href={"/"} underline={"none"}>
       <MapIcon fontSize={"large"} className={classes.mapIcon} />
       <Typography className={classes.storyText}>story</Typography>
       <Typography className={classes.mapText}>map</Typography>
-    </div>
+    </Link>
   );
 }
