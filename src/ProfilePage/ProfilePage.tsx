@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function AccountPage() {
+export default function ProfilePage() {
   const classes = useStyles();
   let history = useHistory();
   const [currentUser, setCurrentUser] = useCurrentUser();

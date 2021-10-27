@@ -3,7 +3,6 @@ import { useCurrentUser } from "../hooks/useCurrentUser";
 import axios from "axios";
 import { createStyles, Theme, Button, Badge } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import SettingsIcon from "@material-ui/icons/Settings";
 import FaceIcon from "@material-ui/icons/Face";
 import NotificationsActiveIcon from "@material-ui/icons/NotificationsActive";
 import HelpIcon from "@material-ui/icons/Help";
@@ -48,35 +47,34 @@ export default function NavBar() {
   }, [currentUser]);
   return (
     <header className={classes.navBar}>
-      <Badge
-        badgeContent={unreadNotifsCount}
-        max={99}
-        showZero={false}
-        color="secondary"
-        style={{ marginRight: unreadNotifsCount > 0 ? 16 : 0 }}
-      >
+      {currentUser && (
+        <Badge
+          badgeContent={unreadNotifsCount}
+          max={99}
+          showZero={false}
+          color="secondary"
+          style={{ marginRight: unreadNotifsCount > 0 ? 16 : 0 }}
+        >
+          <Button
+            className={classes.navLinkBtn}
+            href="/notifications"
+            startIcon={<NotificationsActiveIcon />}
+          >
+            notifications
+          </Button>
+        </Badge>
+      )}
+
+      {currentUser && (
         <Button
           className={classes.navLinkBtn}
-          href="/notifications"
-          startIcon={<NotificationsActiveIcon />}
+          href={`/users/${currentUser.username}`}
+          startIcon={<FaceIcon />}
         >
-          notifications
+          my profile
         </Button>
-      </Badge>
-      <Button
-        className={classes.navLinkBtn}
-        // href="#"
-        startIcon={<FaceIcon />}
-      >
-        my profile
-      </Button>
-      <Button
-        className={classes.navLinkBtn}
-        href="/account"
-        startIcon={<SettingsIcon />}
-      >
-        account
-      </Button>
+      )}
+
       <Button
         className={classes.navLinkBtn}
         //href="#"
