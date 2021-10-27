@@ -10,7 +10,6 @@ import {
 } from "@material-ui/core";
 import Heading from "../Generic/Heading";
 import mapBackground from "../Generic/images/map-background.png";
-import Footer from "../Generic/Footer";
 import { useHistory } from "react-router-dom";
 import { useCurrentUser } from "../hooks/useCurrentUser";
 import { useEffect } from "react";
@@ -132,7 +131,6 @@ export default function VerificationPage() {
           )}
         </Paper>
       </div>
-      <Footer />
     </div>
   );
 }

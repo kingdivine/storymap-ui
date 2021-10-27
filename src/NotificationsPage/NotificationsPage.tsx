@@ -9,13 +9,12 @@ import {
   CircularProgress,
   Button,
 } from "@material-ui/core";
-import Heading from "../Generic/Heading";
-import Footer from "../Generic/Footer";
 import { Notification } from "../types/Notification";
 import axios from "axios";
 import NotificationListItem from "./NotificationListItem";
 import UsernameAndPic from "../Generic/UsernameandPic";
 import { NotificationCounts } from "../types/NotificationCounts";
+import NavBar from "../Generic/Navbar";
 
 const NOTIFS_PER_PAGE = 20; //matches backend
 
@@ -142,7 +141,7 @@ export default function NotificationsPage(props: {}) {
   return (
     currentUser && (
       <>
-        <Heading />
+        <NavBar fetchNotifs={false} />
         <div className={classes.mainContent}>
           <UsernameAndPic
             username={currentUser.username}
@@ -207,7 +206,6 @@ export default function NotificationsPage(props: {}) {
             </div>
           )}
         </div>
-        <Footer />
       </>
     )
   );

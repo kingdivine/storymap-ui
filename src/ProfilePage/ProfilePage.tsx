@@ -7,8 +7,6 @@ import {
   Button,
   Divider,
 } from "@material-ui/core";
-import Heading from "../Generic/Heading";
-import Footer from "../Generic/Footer";
 import { useHistory } from "react-router-dom";
 import EditIcon from "@material-ui/icons/Edit";
 import LogoutIcon from "@material-ui/icons/ExitToApp";
@@ -16,6 +14,7 @@ import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import UsernameAndPic from "../Generic/UsernameandPic";
 import { useState } from "react";
 import DeleteAccountDialog from "./DeleteAccountDialog";
+import NavBar from "../Generic/Navbar";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -47,7 +46,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function AccountPage() {
+export default function ProfilePage() {
   const classes = useStyles();
   let history = useHistory();
   const [currentUser, setCurrentUser] = useCurrentUser();
@@ -62,7 +61,7 @@ export default function AccountPage() {
   return (
     currentUser && (
       <>
-        <Heading />
+        <NavBar fetchNotifs />
         <div className={classes.mainContent}>
           <UsernameAndPic
             username={currentUser.username}
@@ -112,7 +111,6 @@ export default function AccountPage() {
             onCloseDialog={() => setIsDeleteDialogOpen(false)}
           />
         )}
-        <Footer />
       </>
     )
   );

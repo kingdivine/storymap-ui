@@ -19,7 +19,9 @@ import TagSearch from "./TagSearch";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    filterContainer: { marginTop: theme.spacing(3) },
+    filterContainer: {
+      marginTop: theme.spacing(3),
+    },
     form: {
       display: "flex",
       flexDirection: "column",
@@ -27,6 +29,7 @@ const useStyles = makeStyles((theme: Theme) =>
       "&>*": {
         margin: theme.spacing(1),
       },
+      marginBottom: theme.spacing(2),
     },
     closeButton: {
       position: "absolute",
@@ -90,9 +93,11 @@ export default function Filter(props: {
               setFormOpen(false);
             }}
           />
-          <Typography variant="body2">OR</Typography>
+          <Typography style={{ display: "none" }} variant="body2">
+            OR
+          </Typography>
           <FormControlLabel
-            disabled
+            style={{ display: "none" }}
             control={
               <Checkbox
                 checked={true}

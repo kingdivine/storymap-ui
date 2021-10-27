@@ -8,10 +8,9 @@ import {
   Collapse,
 } from "@material-ui/core";
 import MailOutlineIcon from "@material-ui/icons/MailOutline";
-import Heading from "../Generic/Heading";
 import mapBackground from "../Generic/images/map-background.png";
 import LoginForm from "./LoginForm";
-import Footer from "../Generic/Footer";
+import NavBar from "../Generic/Navbar";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -48,37 +47,33 @@ export default function LoginPage() {
   const classes = useStyles();
   const [showForm, setShowForm] = useState(false);
   return (
-    <div className={classes.pageContainer}>
-      <header className={classes.header}>
-        <Typography variant="body1" color={"textPrimary"}>
-          What is Storymap?
-        </Typography>
-      </header>
-      <div className={classes.loginContainer}>
-        <Heading />
-        <Typography
-          variant="h6"
-          color={"textPrimary"}
-          className={classes.strapLine}
-        >
-          Your Online Travel Diary
-        </Typography>
-
-        <Collapse in={!showForm}>
-          <Button
-            variant="outlined"
-            className={classes.button}
-            startIcon={<MailOutlineIcon />}
-            onClick={() => setShowForm(true)}
+    <>
+      <NavBar fetchNotifs={false} />
+      <div className={classes.pageContainer}>
+        <div className={classes.loginContainer}>
+          <Typography
+            variant="h6"
+            color={"textPrimary"}
+            className={classes.strapLine}
           >
-            Continue with Email
-          </Button>
-        </Collapse>
-        <Collapse in={showForm}>
-          <LoginForm />
-        </Collapse>
+            Your Online Travel Diary
+          </Typography>
+
+          <Collapse in={!showForm}>
+            <Button
+              variant="outlined"
+              className={classes.button}
+              startIcon={<MailOutlineIcon />}
+              onClick={() => setShowForm(true)}
+            >
+              Continue with Email
+            </Button>
+          </Collapse>
+          <Collapse in={showForm}>
+            <LoginForm />
+          </Collapse>
+        </div>
       </div>
-      <Footer />
-    </div>
+    </>
   );
 }

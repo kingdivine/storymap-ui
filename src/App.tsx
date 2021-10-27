@@ -7,7 +7,7 @@ import {
 import { useCurrentUser } from "./hooks/useCurrentUser";
 import LoginPage from "./LoginPage.tsx/LoginPage";
 import MapPage from "./MapPage.tsx/MapPage";
-import AccountPage from "./AccountPage/AcccountPage";
+import ProfilePage from "./ProfilePage/ProfilePage";
 import VerificationPage from "./VerificationPage/VerificationPage";
 import ForgotPasswordPage from "./ForgotPasswordPage/ForgotPasswordPage";
 import NotificationsPage from "./NotificationsPage/NotificationsPage";
@@ -23,8 +23,8 @@ function App() {
             {currentUser ? <Redirect to="/" /> : <LoginPage />}
           </Route>
           <Route path="/" exact component={MapPage} />
-          <Route exact path="/account">
-            {currentUser ? <AccountPage /> : <Redirect to="/login" />}
+          <Route exact path="/users/:username">
+            {currentUser ? <ProfilePage /> : <Redirect to="/login" />}
           </Route>
           <Route exact path="/story/:postSlug" component={MapPage} />
           <Route
