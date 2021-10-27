@@ -1,6 +1,6 @@
 import { Typography, Avatar } from "@material-ui/core";
 
-const AVATAR_NAMES = [
+export const AVATAR_NAMES = [
   "boy-01",
   "boy-02",
   "boy-03",
@@ -23,9 +23,6 @@ const AVATAR_NAMES = [
   "boy-20",
   "boy-21",
   "boy-22",
-  "boy-23",
-  "boy-24",
-  "boy-25",
   "girl-01",
   "girl-02",
   "girl-03",
