@@ -6,6 +6,7 @@ export interface Comment {
   content: string;
   created_at: Date;
   author_username: string;
+  author_avatar: string;
   liker_ids: string[];
   reply_count: string;
 }

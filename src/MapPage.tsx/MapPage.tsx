@@ -29,6 +29,7 @@ import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import { NotificationCounts } from "../types/NotificationCounts";
 import { useCurrentUser } from "../hooks/useCurrentUser";
 import LoginToContinueDialog from "../Generic/LoginToContinueDialog";
+import { Story } from "../types/Story";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -80,7 +81,7 @@ export default function MapPage() {
 
   const [currentUser] = useCurrentUser();
 
-  const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useState<Story[]>([]);
   const [unreadNotifsCount, setUnreadNotifsCount] = useState(0);
   const [filter, setFilter] = useState<FilterObj>();
   const [isLoading, setIsLoading] = useState(false);

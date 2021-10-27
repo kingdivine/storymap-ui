@@ -234,6 +234,7 @@ export default function ViewPostDialog(props: {
                   <UsernameAndPic
                     username={story.author_name}
                     userId={story.author_id}
+                    avatar={story.author_avatar}
                   />
                   <div className={classes.dateAndCloseBtn}>
                     <Typography color={"textSecondary"}>

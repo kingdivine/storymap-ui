@@ -1,13 +1,69 @@
 import { useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import { makeStyles } from "@material-ui/core/styles";
-import postPinPng from "./images/post-pin.png";
-import clusterPinPng from "./images/cluster-pin.png";
-
+import { Story } from "../types/Story";
 
 mapboxgl.accessToken =
   "pk.eyJ1IjoiZGl2aW5lYSIsImEiOiJja24wZ2lqbjkwY2J4Mm9scnY3bW1yZW5nIn0.GkVgq5TQlU19vuZLwggtjQ";
+
 const MAP_THEME = "mapbox://styles/mapbox/dark-v10";
+const DEFAULT_LONG_LAT: mapboxgl.LngLatLike = [9, 25];
+const DEFAULT_ZOOM = 1.5;
+
+const ICON_MAPPING = {
+  "boy-01": "0",
+  "boy-02": "1",
+  "boy-03": "2",
+  "boy-04": "3",
+  "boy-05": "4",
+  "boy-06": "5",
+  "boy-07": "6",
+  "boy-08": "7",
+  "boy-09": "8",
+  "boy-10": "9",
+  "boy-11": "10",
+  "boy-12": "11",
+  "boy-13": "12",
+  "boy-14": "13",
+  "boy-15": "14",
+  "boy-16": "15",
+  "boy-17": "16",
+  "boy-18": "17",
+  "boy-19": "18",
+  "boy-20": "19",
+  "boy-21": "20",
+  "boy-22": "21",
+  "girl-01": "22",
+  "girl-02": "23",
+  "girl-03": "24",
+  "girl-04": "25",
+  "girl-05": "26",
+  "girl-06": "27",
+  "girl-07": "28",
+  "girl-08": "29",
+  "girl-09": "30",
+  "girl-10": "31",
+  "girl-11": "32",
+  "girl-12": "33",
+  "girl-13": "34",
+  "girl-14": "35",
+  "girl-15": "36",
+  "girl-16": "37",
+  "girl-17": "38",
+  "girl-18": "39",
+  "girl-19": "40",
+  "girl-20": "41",
+  "girl-21": "42",
+  "girl-22": "43",
+  "girl-23": "44",
+  "girl-24": "45",
+  "girl-25": "46",
+  "girl-26": "47",
+  "cluster-pin": "48",
+};
+const MARKER_PNGS = Object.keys(ICON_MAPPING).map(
+  (name) => require(`../Generic/images/markers/${name}-marker.png`).default
+);
 
 const useStyles = makeStyles({
   mapContainer: {
@@ -19,13 +75,9 @@ const useStyles = makeStyles({
   },
 });
 
-const markerImages = [postPinPng, clusterPinPng];
-const DEFAULT_LONG_LAT: mapboxgl.LngLatLike = [9, 25];
-const DEFAULT_ZOOM = 1.5;
-
 export default function Map(props: {
-  posts: any[];
-  openPost: (storySlug:string) => void;
+  posts: Story[];
+  openPost: (storySlug: string) => void;
   flyToLongLat: [number, number] | null;
   onFlyEnd: () => void;
 }) {
@@ -54,7 +106,9 @@ export default function Map(props: {
       properties: {
         title: post.title,
         id: post.id,
-        slug: post.slug
+        slug: post.slug,
+        //@ts-ignore
+        avatarIndex: ICON_MAPPING[post.author_avatar],
       },
       geometry: JSON.parse(post.geo_json),
     }));
@@ -76,7 +130,7 @@ export default function Map(props: {
     map.on("load", () => {
       // Add an image to use as a custom marker
       Promise.all(
-        markerImages.map(
+        MARKER_PNGS.map(
           (img, idx) =>
             new Promise<void>((resolve, reject) => {
               map.loadImage(img, (error, res) => {
@@ -103,7 +157,7 @@ export default function Map(props: {
             type: "symbol",
             source: "posts",
             layout: {
-              "icon-image": "0",
+              "icon-image": ["get", "avatarIndex"],
               "icon-anchor": "bottom",
               "text-field": ["get", "title"],
               "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
@@ -122,7 +176,7 @@ export default function Map(props: {
             source: "posts",
             filter: ["has", "point_count"],
             layout: {
-              "icon-image": "1",
+              "icon-image": ICON_MAPPING["cluster-pin"],
               "icon-anchor": "bottom",
               "text-field": "{point_count_abbreviated} posts",
               "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
@@ -130,7 +184,7 @@ export default function Map(props: {
               "text-size": 12,
             },
             paint: {
-              "text-color": "#FFE600",
+              "text-color": "white",
             },
           });
           setIsLoaded(true);

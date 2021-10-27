@@ -71,6 +71,7 @@ export default function NotificationListItem(props: {
           <UsernameAndPic
             username={notification.creator_username}
             userId={notification.creator_id}
+            avatar={notification.creator_avatar}
           />
           <div className={classes.text}>
             <Typography color={"textPrimary"}>

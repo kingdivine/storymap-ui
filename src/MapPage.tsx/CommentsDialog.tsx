@@ -108,7 +108,12 @@ export default function CommentsDialog(props: {
       setIsLoading(true);
       try {
         const response = await axios.get(
-          `/storymap-api/stories/${props.storyId}/comments`
+          `/storymap-api/stories/${props.storyId}/comments`,
+          {
+            params: {
+              offset: offset,
+            },
+          }
         );
         setComments(response.data);
       } catch (e) {
@@ -119,7 +124,7 @@ export default function CommentsDialog(props: {
       }
     };
     fetchData();
-  }, [props.storyId]);
+  }, [props.storyId, offset]);
 
   const handleFetchMoreClick = () => {
     setIsLoadingMore(true);
@@ -289,7 +294,16 @@ export default function CommentsDialog(props: {
             color="secondary"
           />
         )}
-        {isError && <div>Oops!</div>}
+        {isError && (
+          <div style={{ textAlign: "center", marginBottom: 24 }}>
+            <Typography style={{ marginTop: 8 }} color={"error"}>
+              Oops! Something went wrong.
+            </Typography>
+            <Typography style={{ marginTop: 8 }}>
+              Please check your internet connection and try again later.
+            </Typography>
+          </div>
+        )}
         {!isError && !isLoading && (
           <>
             <div className={classes.listContainer}>

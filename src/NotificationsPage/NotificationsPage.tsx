@@ -147,15 +147,12 @@ export default function NotificationsPage(props: {}) {
           <UsernameAndPic
             username={currentUser.username}
             userId={currentUser.id}
+            avatar={currentUser.avatar}
           />
           <Divider style={{ margin: 8 }} />
           {isError && (
             <>
-              <Typography
-                style={{ marginTop: 8 }}
-                variant="h5"
-                color={"secondary"}
-              >
+              <Typography style={{ marginTop: 8 }} variant="h5" color={"error"}>
                 Oops! Something went wrong.
               </Typography>
               <Typography

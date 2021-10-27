@@ -82,6 +82,7 @@ export default function CommentListItem(props: {
           <UsernameAndPic
             username={comment.author_username}
             userId={comment.author_id}
+            avatar={comment.author_avatar}
           />
           <Typography color={"textSecondary"} style={{ marginLeft: 8 }}>
             {moment(comment.created_at).fromNow()}

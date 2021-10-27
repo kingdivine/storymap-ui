@@ -3,6 +3,7 @@ export interface Notification {
   recipient_id: string;
   creator_id: string;
   creator_username: string;
+  creator_avatar: string;
   created_at: Date;
   is_read: boolean;
   action_type: "like" | "comment";
