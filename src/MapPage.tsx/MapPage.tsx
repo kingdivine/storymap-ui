@@ -7,9 +7,7 @@ import {
   Theme,
   Chip,
   Snackbar,
-  Button,
   Fab,
-  Badge,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import ViewPostDialog from "./ViewPostDialog";
@@ -20,16 +18,12 @@ import CreatePostForm from "./CreatePostForm";
 import Alert from "@material-ui/lab/Alert";
 import { useHistory } from "react-router-dom";
 
-import SettingsIcon from "@material-ui/icons/Settings";
-import FaceIcon from "@material-ui/icons/Face";
-import NotificationsActiveIcon from "@material-ui/icons/NotificationsActive";
-import HelpIcon from "@material-ui/icons/Help";
 import AddIcon from "@material-ui/icons/Add";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
-import { NotificationCounts } from "../types/NotificationCounts";
 import { useCurrentUser } from "../hooks/useCurrentUser";
 import LoginToContinueDialog from "../Generic/LoginToContinueDialog";
 import { Story } from "../types/Story";
+import Navbar from "../Generic/Navbar";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -40,18 +34,6 @@ const useStyles = makeStyles((theme: Theme) =>
       position: "absolute",
       top: "15%",
       left: theme.spacing(2),
-    },
-    navBar: {
-      position: "fixed",
-      right: theme.spacing(5),
-      top: theme.spacing(4),
-      zIndex: 1,
-      display: "flex",
-      flexDirection: "row",
-    },
-    navLinkBtn: {
-      textTransform: "lowercase",
-      color: theme.palette.common.white,
     },
     chipContainer: {
       marginTop: theme.spacing(1),
@@ -82,7 +64,6 @@ export default function MapPage() {
   const [currentUser] = useCurrentUser();
 
   const [posts, setPosts] = useState<Story[]>([]);
-  const [unreadNotifsCount, setUnreadNotifsCount] = useState(0);
   const [filter, setFilter] = useState<FilterObj>();
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
@@ -115,20 +96,6 @@ export default function MapPage() {
 
     fetchData();
   }, [filter]);
-
-  useEffect(() => {
-    if (!currentUser) {
-      return;
-    }
-    axios
-      .get<NotificationCounts>("/storymap-api/notifications/counts", {
-        headers: {
-          authorization: `Bearer ${currentUser.token}`,
-        },
-      })
-      .then((response) => setUnreadNotifsCount(response.data.un_read))
-      .catch((e) => console.log(e));
-  }, [currentUser]);
 
   const handleOpenPost = useCallback(
     (storySlug: string) => {
@@ -202,44 +169,7 @@ export default function MapPage() {
           )}
         </div>
       </div>
-      <header className={classes.navBar}>
-        <Badge
-          badgeContent={unreadNotifsCount}
-          max={99}
-          showZero={false}
-          color="secondary"
-          style={{ marginRight: unreadNotifsCount > 0 ? 16 : 0 }}
-        >
-          <Button
-            className={classes.navLinkBtn}
-            href="/notifications"
-            startIcon={<NotificationsActiveIcon />}
-          >
-            notifications
-          </Button>
-        </Badge>
-        <Button
-          className={classes.navLinkBtn}
-          // href="#"
-          startIcon={<FaceIcon />}
-        >
-          my profile
-        </Button>
-        <Button
-          className={classes.navLinkBtn}
-          href="/account"
-          startIcon={<SettingsIcon />}
-        >
-          account
-        </Button>
-        <Button
-          className={classes.navLinkBtn}
-          //href="#"
-          startIcon={<HelpIcon />}
-        >
-          help
-        </Button>
-      </header>
+      <Navbar />
       <Map
         posts={posts}
         openPost={handleOpenPost}
