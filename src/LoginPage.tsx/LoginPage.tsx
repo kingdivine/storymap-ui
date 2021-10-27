@@ -11,7 +11,6 @@ import MailOutlineIcon from "@material-ui/icons/MailOutline";
 import Heading from "../Generic/Heading";
 import mapBackground from "../Generic/images/map-background.png";
 import LoginForm from "./LoginForm";
-import Footer from "../Generic/Footer";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -78,7 +77,6 @@ export default function LoginPage() {
           <LoginForm />
         </Collapse>
       </div>
-      <Footer />
     </div>
   );
 }

@@ -1,9 +1,7 @@
 import { createStyles, makeStyles, Theme, Typography } from "@material-ui/core";
-
 import Heading from "../Generic/Heading";
 import mapBackground from "../Generic/images/map-background.png";
 import ForgotPasswordForm from "./ForgotPasswordForm";
-import Footer from "../Generic/Footer";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -42,7 +40,6 @@ export default function LoginPage() {
         <Heading />
         <ForgotPasswordForm />
       </div>
-      <Footer />
     </div>
   );
 }

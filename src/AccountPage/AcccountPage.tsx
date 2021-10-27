@@ -8,7 +8,6 @@ import {
   Divider,
 } from "@material-ui/core";
 import Heading from "../Generic/Heading";
-import Footer from "../Generic/Footer";
 import { useHistory } from "react-router-dom";
 import EditIcon from "@material-ui/icons/Edit";
 import LogoutIcon from "@material-ui/icons/ExitToApp";
@@ -112,7 +111,6 @@ export default function AccountPage() {
             onCloseDialog={() => setIsDeleteDialogOpen(false)}
           />
         )}
-        <Footer />
       </>
     )
   );

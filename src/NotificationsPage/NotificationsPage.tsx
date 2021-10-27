@@ -10,7 +10,6 @@ import {
   Button,
 } from "@material-ui/core";
 import Heading from "../Generic/Heading";
-import Footer from "../Generic/Footer";
 import { Notification } from "../types/Notification";
 import axios from "axios";
 import NotificationListItem from "./NotificationListItem";
@@ -207,7 +206,6 @@ export default function NotificationsPage(props: {}) {
             </div>
           )}
         </div>
-        <Footer />
       </>
     )
   );
