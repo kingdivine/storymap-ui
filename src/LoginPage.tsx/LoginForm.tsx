@@ -19,6 +19,7 @@ import MailOutlineIcon from "@material-ui/icons/MailOutline";
 import PersonOutlineIcon from "@material-ui/icons/PersonOutline";
 import VpnKeyIcon from "@material-ui/icons/VpnKey";
 import { useCurrentUser } from "../hooks/useCurrentUser";
+import AvatarSelector from "./AvatarSelector";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -86,6 +87,7 @@ export default function LoginForm() {
     email: "",
     password: "",
     confirmPassword: "",
+    avatar: "",
   });
 
   const [loginError, setLoginError] = useState("");
@@ -165,6 +167,7 @@ export default function LoginForm() {
         username: signupValues.username,
         email: signupValues.email,
         password: signupValues.password,
+        avatar: signupValues.avatar,
       })
       .then((result) => {
         setSignupSuccess(true);
@@ -335,6 +338,15 @@ export default function LoginForm() {
                     </InputAdornment>
                   ),
                 }}
+              />
+              <AvatarSelector
+                onSelect={(selected) =>
+                  setSignupValues({
+                    ...signupValues,
+                    avatar: selected,
+                  })
+                }
+                selected={signupValues.avatar}
               />
             </div>
             <Typography style={{ margin: 16 }} color={"error"}>
