@@ -277,7 +277,7 @@ export default function ViewPostDialog(props: {
               </div>
               <div className={classes.secondLineContainer}>
                 <div className={classes.titleAndLockIcon}>
-                  <Typography variant="h5" color={"secondary"}>
+                  <Typography variant="h5" color={"primary"}>
                     {story.title}
                   </Typography>
                   {story.is_private && (
@@ -287,7 +287,7 @@ export default function ViewPostDialog(props: {
                   )}
                 </div>
 
-                <Typography variant="h6" color={"primary"}>
+                <Typography variant="h6" color={"secondary"}>
                   {story.place_name}
                 </Typography>
               </div>
