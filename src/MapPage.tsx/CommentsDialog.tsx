@@ -38,11 +38,6 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: 8,
       marginBottom: 8,
     },
-    listContainer: {
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "center",
-    },
     viewMoreBtn: {
       alignSelf: "center",
       width: "fit-content",
@@ -306,7 +301,7 @@ export default function CommentsDialog(props: {
         )}
         {!isError && !isLoading && (
           <>
-            <div className={classes.listContainer}>
+            <div>
               {comments.length > 0 && (
                 <>
                   {comments.map((comment) => (

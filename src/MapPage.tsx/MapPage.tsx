@@ -24,6 +24,7 @@ import { useCurrentUser } from "../hooks/useCurrentUser";
 import LoginToContinueDialog from "../Generic/LoginToContinueDialog";
 import { Story } from "../types/Story";
 import Navbar from "../Generic/Navbar";
+import StoryClusterDialog from "./StoryClusterDialog";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -71,7 +72,11 @@ export default function MapPage() {
     null
   );
   const [isCreatePostFormOpen, setIsCreatePostFormOpen] = useState(false);
-  const [loginDialogOpen, setLoginDialogOpen] = useState(false);
+  const [isLoginDialogOpen, setIsLoginDialogOpen] = useState(false);
+
+  const [selectedClusteredPostIds, setSelectedClusteredPostIds] = useState<
+    string[]
+  >([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -104,6 +109,10 @@ export default function MapPage() {
     [history]
   );
 
+  const handleOpenClusteredPostsMenu = (ids: string[]) => {
+    setSelectedClusteredPostIds(ids);
+  };
+
   const handleClosePost = () => {
     history.push(`/`);
   };
@@ -123,7 +132,7 @@ export default function MapPage() {
     if (currentUser) {
       setIsCreatePostFormOpen(true);
     } else {
-      setLoginDialogOpen(true);
+      setIsLoginDialogOpen(true);
     }
   };
 
@@ -172,7 +181,8 @@ export default function MapPage() {
       <Navbar fetchNotifs />
       <Map
         posts={posts}
-        openPost={handleOpenPost}
+        onPostClick={handleOpenPost}
+        onClusterClick={handleOpenClusteredPostsMenu}
         flyToLongLat={flyToLongLat}
         onFlyEnd={() => setFlyToLongLat(null)}
       />
@@ -194,7 +204,7 @@ export default function MapPage() {
         />
       )}
       {isCreatePostFormOpen && <CreatePostForm closeForm={handleCloseForm} />}
-      {loginDialogOpen && (
+      {isLoginDialogOpen && (
         <LoginToContinueDialog
           icon={
             <AccountCircleIcon
@@ -203,7 +213,15 @@ export default function MapPage() {
             />
           }
           message={`Join Storymap to create Stories.`}
-          onCloseDialog={() => setLoginDialogOpen(false)}
+          onCloseDialog={() => setIsLoginDialogOpen(false)}
+        />
+      )}
+      {selectedClusteredPostIds.length > 0 && (
+        <StoryClusterDialog
+          posts={posts.filter((post) =>
+            selectedClusteredPostIds.includes(post.id)
+          )}
+          onCloseDialog={() => setSelectedClusteredPostIds([])}
         />
       )}
       <Fab

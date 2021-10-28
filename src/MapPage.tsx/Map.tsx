@@ -77,12 +77,13 @@ const useStyles = makeStyles({
 
 export default function Map(props: {
   posts: Story[];
-  openPost: (storySlug: string) => void;
+  onPostClick: (storySlug: string) => void;
+  onClusterClick: (postIds: string[]) => void;
   flyToLongLat: [number, number] | null;
   onFlyEnd: () => void;
 }) {
   const classes = useStyles();
-  const { posts, openPost, flyToLongLat, onFlyEnd } = props;
+  const { posts, onPostClick, onClusterClick, flyToLongLat, onFlyEnd } = props;
   const mapContainer = useRef(null);
   const [map, setMap] = useState<mapboxgl.Map>();
   const [isLoaded, setIsLoaded] = useState(false);
@@ -107,8 +108,10 @@ export default function Map(props: {
         title: post.title,
         id: post.id,
         slug: post.slug,
+        authorName: post.author_username,
         //@ts-ignore
-        avatarIndex: ICON_MAPPING[post.author_avatar],
+        avatarIconIndex: ICON_MAPPING[post.author_avatar],
+        avatar: post.author_avatar,
       },
       geometry: JSON.parse(post.geo_json),
     }));
@@ -157,7 +160,7 @@ export default function Map(props: {
             type: "symbol",
             source: "posts",
             layout: {
-              "icon-image": ["get", "avatarIndex"],
+              "icon-image": ["get", "avatarIconIndex"],
               "icon-anchor": "bottom",
               "text-field": ["get", "title"],
               "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
@@ -178,7 +181,7 @@ export default function Map(props: {
             layout: {
               "icon-image": ICON_MAPPING["cluster-pin"],
               "icon-anchor": "bottom",
-              "text-field": "{point_count_abbreviated} posts",
+              "text-field": "{point_count_abbreviated} Stories",
               "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
               "text-anchor": "top",
               "text-size": 12,
@@ -193,21 +196,53 @@ export default function Map(props: {
           console.log(e);
         });
 
-      // Display dialog
+      // Listen for post click
       map.on("click", "posts", function (e: any) {
-        openPost(e.features[0].properties.slug);
+        onPostClick(e.features[0].properties.slug);
+      });
+
+      // Listen for cluster click
+      map.on("click", "cluster-count", function (e: any) {
+        const features = map.queryRenderedFeatures(e.point, {
+          layers: ["cluster-count"],
+        });
+        const clusterId = features[0]?.properties?.cluster_id;
+        const pointCount = features[0]?.properties?.point_count;
+        const clusterSource = map.getSource("posts");
+
+        // Get all points under a cluster
+        //@ts-ignore
+        clusterSource.getClusterLeaves(
+          clusterId,
+          pointCount,
+          0,
+          function (err: any, pointFeatures: mapboxgl.MapboxGeoJSONFeature[]) {
+            const postIds = pointFeatures.map((pf) => pf.properties?.id);
+            onClusterClick(postIds);
+          }
+        );
       });
     });
-    // Change the cursor to a pointer when the it enters a feature in the 'symbols' layer.
+    // Change the cursor to a pointer when the it enters a post.
     map.on("mouseenter", "posts", () => {
       map.getCanvas().style.cursor = "pointer";
     });
 
-    // Change it back to a pointer when it leaves.
+    // Change it back to a pointer when it leaves a post.
     map.on("mouseleave", "posts", () => {
       map.getCanvas().style.cursor = "";
     });
-  }, [map, posts, openPost, isLoaded]);
+
+    // Change the cursor to a pointer when the it enters a cluster.
+    map.on("mouseenter", "cluster-count", () => {
+      map.getCanvas().style.cursor = "pointer";
+    });
+
+    // Change it back to a pointer when it leaves a cluster.
+    map.on("mouseleave", "cluster-count", () => {
+      map.getCanvas().style.cursor = "";
+    });
+  }, [map, posts, onPostClick, onClusterClick, isLoaded]);
 
   useEffect(() => {
     if (flyToLongLat && map) {
