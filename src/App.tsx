@@ -24,7 +24,7 @@ function App() {
           </Route>
           <Route path="/" exact component={MapPage} />
           <Route exact path="/users/:username">
-            {currentUser ? <ProfilePage /> : <Redirect to="/login" />}
+            <ProfilePage />
           </Route>
           <Route exact path="/story/:postSlug" component={MapPage} />
           <Route

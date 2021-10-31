@@ -1,4 +1,4 @@
-import { Typography, Avatar } from "@material-ui/core";
+import { Typography, Avatar, Link } from "@material-ui/core";
 
 export const AVATAR_NAMES = [
   "boy-01",
@@ -57,36 +57,53 @@ export default function UsernameAndPic(props: {
   avatar: string;
   small?: Boolean;
 }) {
-  const { username } = props;
-  const validAvatar = AVATAR_NAMES.includes(props.avatar);
-  const size = props.small
-    ? { width: 30, height: 30 }
-    : { width: 40, height: 40 };
+  const { username, avatar, small } = props;
+  const validAvatar = AVATAR_NAMES.includes(avatar);
+  const size = small ? { width: 30, height: 30 } : { width: 40, height: 40 };
+
+  if (!validAvatar) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Avatar src={"./broken-img"} style={size} />
+        <Typography
+          style={{ marginLeft: 8 }}
+          variant={small ? "subtitle1" : "h6"}
+          color="textPrimary"
+        >
+          {username}
+        </Typography>
+      </div>
+    );
+  }
   return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      {validAvatar ? (
+    <Link href={`/users/${username}`} underline="none">
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
         <Avatar
-          alt={props.username}
-          src={require(`./images/avatars/${props.avatar}.svg`).default}
+          alt={username}
+          src={require(`./images/avatars/${avatar}.svg`).default}
           style={size}
         />
-      ) : (
-        <Avatar alt={props.username} src={"./broken-img"} style={size} />
-      )}
 
-      <Typography
-        style={{ marginLeft: 8 }}
-        variant={props.small ? "subtitle1" : "h6"}
-        color="textPrimary"
-      >
-        {username}
-      </Typography>
-    </div>
+        <Typography
+          style={{ marginLeft: 8 }}
+          variant={small ? "subtitle1" : "h6"}
+          color="textPrimary"
+        >
+          {username}
+        </Typography>
+      </div>
+    </Link>
   );
 }

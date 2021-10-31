@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { TextField } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import { User } from "./Filter";
+import { User } from "../types/User";
 import UsernameAndPic from "../Generic/UsernameandPic";
 
 export default function UserSearch(props: {
