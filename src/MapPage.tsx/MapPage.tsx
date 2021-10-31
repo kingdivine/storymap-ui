@@ -131,9 +131,9 @@ export default function MapPage() {
     [history]
   );
 
-  const handleOpenClusteredPostsMenu = (ids: string[]) => {
+  const handleOpenClusteredPostsMenu = useCallback((ids: string[]) => {
     setSelectedClusteredPostIds(ids);
-  };
+  }, []);
 
   const handleClosePost = () => {
     history.push(`/`);
