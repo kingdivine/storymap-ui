@@ -86,7 +86,6 @@ export default function Map(props: {
   const { posts, onPostClick, onClusterClick, flyToLongLat, onFlyEnd } = props;
   const mapContainer = useRef(null);
   const [map, setMap] = useState<mapboxgl.Map>();
-  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
     const initialMap = new mapboxgl.Map({
@@ -96,12 +95,6 @@ export default function Map(props: {
       zoom: DEFAULT_ZOOM,
     });
 
-    setMap(initialMap);
-
-    return () => initialMap.remove();
-  }, []);
-
-  useEffect(() => {
     const features = posts.map((post) => ({
       type: "Feature",
       properties: {
@@ -119,26 +112,16 @@ export default function Map(props: {
       type: "FeatureCollection",
       features: [...features],
     };
-    if (!map) return;
 
-    if (isLoaded) {
-      const source: any = map.getSource("posts");
-      source.setData(featureCollection as any);
-      map.flyTo({
-        center: DEFAULT_LONG_LAT,
-      });
-      return;
-    }
-
-    map.on("load", () => {
+    initialMap.on("load", () => {
       // Add an image to use as a custom marker
       Promise.all(
         MARKER_PNGS.map(
           (img, idx) =>
             new Promise<void>((resolve, reject) => {
-              map.loadImage(img, (error, res) => {
+              initialMap.loadImage(img, (error, res) => {
                 if (error) throw error;
-                map.addImage(idx.toString(), res!);
+                initialMap.addImage(idx.toString(), res!);
                 resolve();
               });
             })
@@ -146,7 +129,7 @@ export default function Map(props: {
       )
         .then(() => {
           // Add data source
-          map.addSource("posts", {
+          initialMap.addSource("posts", {
             type: "geojson",
             data: featureCollection as any,
             cluster: true,
@@ -155,7 +138,7 @@ export default function Map(props: {
           });
 
           // Add posts symbol layer
-          map.addLayer({
+          initialMap.addLayer({
             id: "posts",
             type: "symbol",
             source: "posts",
@@ -173,7 +156,7 @@ export default function Map(props: {
           });
 
           // Add clusters symbol layer
-          map.addLayer({
+          initialMap.addLayer({
             id: "cluster-count",
             type: "symbol",
             source: "posts",
@@ -190,25 +173,24 @@ export default function Map(props: {
               "text-color": "white",
             },
           });
-          setIsLoaded(true);
         })
         .catch((e) => {
           console.log(e);
         });
 
       // Listen for post click
-      map.on("click", "posts", function (e: any) {
+      initialMap.on("click", "posts", function (e: any) {
         onPostClick(e.features[0].properties.slug);
       });
 
       // Listen for cluster click
-      map.on("click", "cluster-count", function (e: any) {
-        const features = map.queryRenderedFeatures(e.point, {
+      initialMap.on("click", "cluster-count", function (e: any) {
+        const features = initialMap.queryRenderedFeatures(e.point, {
           layers: ["cluster-count"],
         });
         const clusterId = features[0]?.properties?.cluster_id;
         const pointCount = features[0]?.properties?.point_count;
-        const clusterSource = map.getSource("posts");
+        const clusterSource = initialMap.getSource("posts");
 
         // Get all points under a cluster
         //@ts-ignore
@@ -224,25 +206,28 @@ export default function Map(props: {
       });
     });
     // Change the cursor to a pointer when the it enters a post.
-    map.on("mouseenter", "posts", () => {
-      map.getCanvas().style.cursor = "pointer";
+    initialMap.on("mouseenter", "posts", () => {
+      initialMap.getCanvas().style.cursor = "pointer";
     });
 
-    // Change it back to a pointer when it leaves a post.
-    map.on("mouseleave", "posts", () => {
-      map.getCanvas().style.cursor = "";
+    // Change it back when it leaves a post.
+    initialMap.on("mouseleave", "posts", () => {
+      initialMap.getCanvas().style.cursor = "";
     });
 
     // Change the cursor to a pointer when the it enters a cluster.
-    map.on("mouseenter", "cluster-count", () => {
-      map.getCanvas().style.cursor = "pointer";
+    initialMap.on("mouseenter", "cluster-count", () => {
+      initialMap.getCanvas().style.cursor = "pointer";
     });
 
-    // Change it back to a pointer when it leaves a cluster.
-    map.on("mouseleave", "cluster-count", () => {
-      map.getCanvas().style.cursor = "";
+    // Change it back when it leaves a cluster.
+    initialMap.on("mouseleave", "cluster-count", () => {
+      initialMap.getCanvas().style.cursor = "";
     });
-  }, [map, posts, onPostClick, onClusterClick, isLoaded]);
+
+    setMap(initialMap);
+    return () => initialMap.remove();
+  }, [posts, onPostClick, onClusterClick]);
 
   useEffect(() => {
     if (flyToLongLat && map) {
