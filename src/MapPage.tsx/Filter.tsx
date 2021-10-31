@@ -16,6 +16,7 @@ import FilterListIcon from "@material-ui/icons/FilterList";
 import UserSearch from "./UserSearch";
 import CloseIcon from "@material-ui/icons/Close";
 import TagSearch from "./TagSearch";
+import { User } from "../types/User";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -40,7 +41,6 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export type User = { username: string; id: string; avatar: string };
 export type Tag = { title: string; id: string };
 export interface FilterObj {
   user: User | null;

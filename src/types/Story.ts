@@ -6,4 +6,6 @@ export interface Story {
   slug: string;
   geo_json: string;
   author_avatar: string;
+  created_at: string;
+  place_name: string;
 }

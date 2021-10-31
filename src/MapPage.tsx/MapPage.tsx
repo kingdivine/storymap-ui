@@ -83,11 +83,33 @@ export default function MapPage() {
       setIsLoading(true);
       setIsError(false);
       try {
-        const response = await axios.get("/storymap-api/stories/top", {
+        const response = await axios.get("/storymap-api/stories/top");
+        setPosts(response.data);
+      } catch (e) {
+        setIsError(true);
+        console.log(e);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (!filter) {
+      return;
+    }
+    const fetchData = async () => {
+      setIsLoading(true);
+      setIsError(false);
+      try {
+        const response = await axios.get("/storymap-api/stories", {
           params: {
             userId: filter?.user?.id,
             tag: filter?.tag?.title,
             followingOnly: filter?.followingOnly,
+            offset: 0,
           },
         });
         setPosts(response.data);
