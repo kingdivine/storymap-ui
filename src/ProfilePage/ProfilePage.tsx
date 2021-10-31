@@ -6,9 +6,7 @@ import {
   Typography,
   Button,
   Divider,
-  CircularProgress,
 } from "@material-ui/core";
-import { useHistory } from "react-router-dom";
 import EditIcon from "@material-ui/icons/Edit";
 import LogoutIcon from "@material-ui/icons/ExitToApp";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
@@ -16,11 +14,12 @@ import UsernameAndPic from "../Generic/UsernameandPic";
 import { useEffect, useState } from "react";
 import DeleteAccountDialog from "./DeleteAccountDialog";
 import NavBar from "../Generic/Navbar";
-import { Story } from "../types/Story";
 import axios from "axios";
-import moment from "moment";
+
 import { User } from "../types/User";
 import { Skeleton } from "@material-ui/lab";
+import { useHistory } from "react-router-dom";
+import StoriesSection from "./StoriesSection";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -44,22 +43,6 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: theme.spacing(3),
     },
     sectionBody: { maxHeight: "30vh", overflowY: "scroll" },
-    noDataContainer: {
-      textAlign: "center",
-      margin: theme.spacing(1),
-    },
-    listItem: {
-      marginBottom: theme.spacing(1),
-      "&:hover": {
-        background: theme.palette.background.paper,
-      },
-      cursor: "pointer",
-    },
-    listItemTopLine: {
-      display: "flex",
-      flexDirection: "row",
-      justifyContent: "space-between",
-    },
     btn: {
       marginRight: theme.spacing(1),
       borderColor: theme.palette.common.white,
@@ -73,20 +56,16 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function ProfilePage() {
   const classes = useStyles();
-  let history = useHistory();
 
   const [currentUser, setCurrentUser] = useCurrentUser();
   const [user, setUser] = useState<User>();
-  const [isLoadingUser, setIsLoadingUser] = useState(true);
-  const [isUserError, setIsUserError] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
 
-  const [stories, setStories] = useState<Story[]>([]);
-  const [isLoadingStories, setIsLoadingStories] = useState(false);
-  const [isStoriesError, setIsStoriesError] = useState(false);
+  const history = useHistory();
 
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
-  //get user
   useEffect(() => {
     if (currentUser?.username === history.location.pathname.split("/")[2]) {
       setUser({
@@ -94,7 +73,7 @@ export default function ProfilePage() {
         id: currentUser.id,
         avatar: currentUser.avatar,
       });
-      setIsLoadingUser(false);
+      setIsLoading(false);
     } else {
       axios
         .get(
@@ -103,33 +82,10 @@ export default function ProfilePage() {
           }`
         )
         .then((response) => setUser(response.data))
-        .catch((e) => setIsUserError(true))
-        .finally(() => setIsLoadingUser(false));
+        .catch((e) => setIsError(true))
+        .finally(() => setIsLoading(false));
     }
   }, [currentUser, history.location.pathname]);
-
-  //get stories
-  useEffect(() => {
-    if (!user) {
-      return;
-    }
-
-    setIsStoriesError(false);
-    setIsLoadingStories(true);
-    axios
-      .get("/storymap-api/stories", {
-        params: {
-          userId: user.id,
-          offset: 0,
-        },
-      })
-      .then((response) => setStories(response.data))
-      .catch((e) => {
-        setIsStoriesError(true);
-        console.log(e);
-      })
-      .finally(() => setIsLoadingStories(false));
-  }, [user]);
 
   const handleLogout = () => {
     setCurrentUser(null);
@@ -140,20 +96,20 @@ export default function ProfilePage() {
     <>
       <NavBar fetchNotifs />
       <div className={classes.mainContent}>
-        {isLoadingUser && (
+        {isLoading && (
           <div className={classes.skeletonContainer}>
             <Skeleton variant="circle" width={40} height={40} />
             <Skeleton variant="rect" width={100} />
           </div>
         )}
-        {isUserError && (
+        {isError && (
           <UsernameAndPic
             username={"unknown"}
             userId={"unknown"}
             avatar={"unknown"}
           />
         )}
-        {!isLoadingUser && !isUserError && user && (
+        {user && (
           <UsernameAndPic
             username={user.username}
             userId={user.id}
@@ -174,7 +130,8 @@ export default function ProfilePage() {
           )}
 
           <div className={classes.sectionBody}>
-            {isStoriesError && (
+            {user && <StoriesSection user={user} />}
+            {isError && (
               <div style={{ textAlign: "center" }}>
                 <Typography
                   style={{ marginTop: 8, alignSelf: "center" }}
@@ -194,49 +151,6 @@ export default function ProfilePage() {
                 </Typography>
               </div>
             )}
-            {isLoadingStories && (
-              <div style={{ margin: 16, textAlign: "center" }}>
-                <CircularProgress size={20} />
-              </div>
-            )}
-            {!isStoriesError &&
-              !isLoadingStories &&
-              stories.length === 0 &&
-              user && (
-                <div className={classes.noDataContainer}>
-                  <Typography color="secondary">
-                    It's quiet in here...
-                  </Typography>
-                  <Typography color="textPrimary">
-                    {currentUser?.id === user.id
-                      ? "You haven't posted any Stories yet."
-                      : `${user.username} hasn't posted any stories yet.`}
-                  </Typography>
-                </div>
-              )}
-            {!isStoriesError &&
-              !isLoadingStories &&
-              stories.length > 0 &&
-              stories.map((story) => (
-                <div
-                  className={classes.listItem}
-                  key={story.id}
-                  onClick={() => history.push(`/story/${story.slug}`)}
-                >
-                  <div className={classes.listItemTopLine}>
-                    <Typography variant={"body1"} color={"textPrimary"}>
-                      {story.title}
-                    </Typography>
-                    <Typography color={"textSecondary"}>
-                      {moment(story.created_at).fromNow()}
-                    </Typography>
-                  </div>
-
-                  <Typography variant={"body1"} color={"secondary"}>
-                    {story.place_name}
-                  </Typography>
-                </div>
-              ))}
           </div>
         </div>
         {user && currentUser?.id === user.id && (
@@ -254,6 +168,7 @@ export default function ProfilePage() {
               </Typography>
               <Button
                 variant="outlined"
+                size={"small"}
                 className={classes.btn}
                 onClick={handleLogout}
                 startIcon={<LogoutIcon />}
@@ -262,6 +177,7 @@ export default function ProfilePage() {
               </Button>
               <Button
                 variant="outlined"
+                size={"small"}
                 className={classes.btn}
                 startIcon={<EditIcon />}
               >
@@ -269,6 +185,7 @@ export default function ProfilePage() {
               </Button>
               <Button
                 variant="outlined"
+                size={"small"}
                 className={`${classes.btn} ${classes.deleteBtn}`}
                 startIcon={<DeleteForeverIcon />}
                 onClick={() => setIsDeleteDialogOpen(true)}
