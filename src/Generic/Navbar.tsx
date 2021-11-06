@@ -55,7 +55,9 @@ export default function NavBar(props: { fetchNotifs: boolean }) {
       <>
         <Heading />
         <header className={classes.navBar}>
-          <Button style={{ textTransform: "none" }}>What is Storymap?</Button>
+          <Button href="/about" style={{ textTransform: "none" }}>
+            What is Storymap?
+          </Button>
         </header>
       </>
     );
@@ -103,8 +105,12 @@ export default function NavBar(props: { fetchNotifs: boolean }) {
           </Button>
         )}
 
-        <Button className={classes.navLinkBtn} startIcon={<HelpIcon />}>
-          help
+        <Button
+          className={classes.navLinkBtn}
+          href={`/about`}
+          startIcon={<HelpIcon />}
+        >
+          about
         </Button>
       </header>
     </>
