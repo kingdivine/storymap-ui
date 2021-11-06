@@ -12,6 +12,7 @@ import VerificationPage from "./VerificationPage/VerificationPage";
 import ForgotPasswordPage from "./ForgotPasswordPage/ForgotPasswordPage";
 import NotificationsPage from "./NotificationsPage/NotificationsPage";
 import AboutPage from "./AboutPage/AboutPage";
+import NotFoundPage from "./NotFoundPage.tsx/NotFoundPage";
 
 function App() {
   const [currentUser] = useCurrentUser();
@@ -39,7 +40,7 @@ function App() {
             {currentUser ? <NotificationsPage /> : <Redirect to="/login" />}
           </Route>
 
-          <Route>NOT FOUND</Route>
+          <Route component={NotFoundPage} />
         </Switch>
       </Router>
     </div>
