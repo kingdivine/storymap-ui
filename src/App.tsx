@@ -11,6 +11,7 @@ import ProfilePage from "./ProfilePage/ProfilePage";
 import VerificationPage from "./VerificationPage/VerificationPage";
 import ForgotPasswordPage from "./ForgotPasswordPage/ForgotPasswordPage";
 import NotificationsPage from "./NotificationsPage/NotificationsPage";
+import AboutPage from "./AboutPage/AboutPage";
 
 function App() {
   const [currentUser] = useCurrentUser();
@@ -23,6 +24,7 @@ function App() {
             {currentUser ? <Redirect to="/" /> : <LoginPage />}
           </Route>
           <Route path="/" exact component={MapPage} />
+          <Route exact path="/about" component={AboutPage} />
           <Route exact path="/users/:username">
             <ProfilePage />
           </Route>
