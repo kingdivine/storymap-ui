@@ -25,11 +25,6 @@ const useStyles = makeStyles((theme: Theme) =>
       boxSizing: "border-box",
       height: "100vh",
     },
-    header: {
-      position: "fixed",
-      right: theme.spacing(5),
-      top: theme.spacing(5),
-    },
     verificationContainer: {
       marginTop: "25vh",
       display: "flex",
@@ -83,13 +78,8 @@ export default function VerificationPage() {
 
   return (
     <div className={classes.pageContainer}>
-      <header className={classes.header}>
-        <Typography variant="body1" color={"textPrimary"}>
-          What is Storymap?
-        </Typography>
-      </header>
+      <Heading />
       <div className={classes.verificationContainer}>
-        <Heading />
         <Paper className={classes.msgBox}>
           {isLoading && (
             <>

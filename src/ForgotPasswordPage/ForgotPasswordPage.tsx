@@ -1,4 +1,4 @@
-import { createStyles, makeStyles, Theme, Typography } from "@material-ui/core";
+import { createStyles, makeStyles, Theme } from "@material-ui/core";
 import Heading from "../Generic/Heading";
 import mapBackground from "../Generic/images/map-background.png";
 import ForgotPasswordForm from "./ForgotPasswordForm";
@@ -13,11 +13,6 @@ const useStyles = makeStyles((theme: Theme) =>
       boxSizing: "border-box",
       height: "100vh",
     },
-    header: {
-      position: "fixed",
-      right: theme.spacing(5),
-      top: theme.spacing(5),
-    },
     paperContainer: {
       marginTop: "25vh",
       display: "flex",
@@ -31,13 +26,8 @@ export default function LoginPage() {
   const classes = useStyles();
   return (
     <div className={classes.pageContainer}>
-      <header className={classes.header}>
-        <Typography variant="body1" color={"textPrimary"}>
-          What is Storymap?
-        </Typography>
-      </header>
+      <Heading />
       <div className={classes.paperContainer}>
-        <Heading />
         <ForgotPasswordForm />
       </div>
     </div>
