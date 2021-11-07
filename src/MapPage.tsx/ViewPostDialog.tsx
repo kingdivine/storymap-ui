@@ -60,11 +60,8 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     storyAction: {
       display: "flex",
-      flexDirection: "row",
+      flexDirection: "column",
       alignItems: "center",
-      "&>*": {
-        marginRight: 2,
-      },
     },
   })
 );
@@ -238,7 +235,7 @@ export default function ViewPostDialog(props: {
                   />
                   <div className={classes.dateAndCloseBtn}>
                     <Typography color={"textSecondary"}>
-                      {moment(story.created_at).fromNow()}
+                      {moment(story.created_at).fromNow(true)}
                     </Typography>
                     {story.author_id === currentUser?.id && (
                       <IconButton

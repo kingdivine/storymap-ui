@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: "15vh",
       marginLeft: "auto",
       marginRight: "auto",
-      width: "50%",
+      width: "85%",
       textAlign: "center",
     },
     skeletonContainer: {
@@ -44,7 +44,8 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     sectionBody: { maxHeight: "30vh", overflowY: "scroll" },
     btn: {
-      marginRight: theme.spacing(1),
+      marginRight: theme.spacing(2),
+      marginBottom: theme.spacing(2),
       borderColor: theme.palette.common.white,
       width: "fit-content",
     },

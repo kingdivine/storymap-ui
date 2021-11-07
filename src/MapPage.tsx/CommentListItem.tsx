@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme: Theme) =>
       maxHeight: "90px",
       overflowY: "scroll",
       textOverflow: "ellipsis",
-      marginLeft: theme.spacing(6),
+      marginLeft: theme.spacing(4.5),
     },
     actionsContainer: {
       display: "flex",
@@ -83,14 +83,15 @@ export default function CommentListItem(props: {
             username={comment.author_username}
             userId={comment.author_id}
             avatar={comment.author_avatar}
+            small
           />
           <Typography color={"textSecondary"} style={{ marginLeft: 8 }}>
-            {moment(comment.created_at).fromNow()}
+            {moment(comment.created_at).fromNow(true)}
           </Typography>
         </div>
 
         <div className={classes.content}>
-          <Typography variant="body2">{comment.content}</Typography>
+          <Typography variant="body1">{comment.content}</Typography>
         </div>
       </div>
 
@@ -105,17 +106,25 @@ export default function CommentListItem(props: {
             </IconButton>
           )}
           <Menu
-            id="simple-menu"
+            id="comment-menu"
             anchorEl={contextMenuAnchor}
             keepMounted
+            style={{ padding: 0 }}
             open={Boolean(contextMenuAnchor)}
             onClose={() => setContextMenuAnchor(null)}
+            MenuListProps={{
+              disablePadding: true,
+            }}
           >
             <MenuItem
               //prevent deletion of multiple comments at once
               disabled={props.commentBeingDeleted !== ""}
               onClick={() => props.onDeleteClick(comment.id)}
-              style={{ display: "flex", alignItems: "flex-start" }}
+              style={{
+                display: "flex",
+                alignItems: "flex-start",
+                minHeight: 0,
+              }}
             >
               {isBeingDeleted() ? (
                 <CircularProgress size={20} style={{ marginRight: 4 }} />

@@ -29,18 +29,20 @@ const useStyles = makeStyles((theme: Theme) =>
       height: "100vh",
     },
     paperContainer: {
-      marginTop: "25vh",
+      marginTop: "15vh",
       display: "flex",
       alignItems: "center",
       flexDirection: "column",
     },
     paper: {
       padding: theme.spacing(2),
-      maxWidth: "50%",
+      maxWidth: "85%",
       textAlign: "center",
       "&>*": {
         margin: theme.spacing(2),
       },
+      maxHeight: "75vh",
+      overflowY: "scroll",
     },
   })
 );
@@ -57,7 +59,6 @@ export default function AboutPage() {
           {PARAGRAPHS.map((p) => (
             <Typography variant={"body1"}>{p}</Typography>
           ))}
-
           <Button
             variant="contained"
             href="/"

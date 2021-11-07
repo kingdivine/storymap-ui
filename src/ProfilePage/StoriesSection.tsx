@@ -120,7 +120,7 @@ export default function StoriesSection(props: { user: User }) {
               {story.title}
             </Typography>
             <Typography color={"textSecondary"}>
-              {moment(story.created_at).fromNow()}
+              {moment(story.created_at).fromNow(true)}
             </Typography>
           </div>
 

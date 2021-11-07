@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: "15vh",
       marginLeft: "auto",
       marginRight: "auto",
-      width: "65%",
+      width: "85%",
       textAlign: "center",
     },
     section: {
