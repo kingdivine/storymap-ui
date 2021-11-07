@@ -25,6 +25,9 @@ import LoginToContinueDialog from "../Generic/LoginToContinueDialog";
 import { Story } from "../types/Story";
 import Navbar from "../Generic/Navbar";
 import StoryClusterDialog from "./StoryClusterDialog";
+import { isMobile } from "../utils";
+
+const smallScreen = isMobile();
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -52,8 +55,8 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     fab: {
       position: "fixed",
-      bottom: theme.spacing(5),
-      right: theme.spacing(4),
+      bottom: theme.spacing(9),
+      right: theme.spacing(6),
     },
   })
 );
@@ -250,6 +253,7 @@ export default function MapPage() {
         color="primary"
         className={classes.fab}
         onClick={() => handleCreatePostClick()}
+        size={smallScreen ? "medium" : "large"}
       >
         <AddIcon />
       </Fab>
