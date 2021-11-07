@@ -57,10 +57,11 @@ const useStyles = makeStyles((theme: Theme) =>
       display: "flex",
       flexDirection: "row",
       justifyContent: "space-evenly",
+      marginBottom: theme.spacing(2),
     },
     storyAction: {
       display: "flex",
-      flexDirection: "column",
+      flexDirection: "row",
       alignItems: "center",
     },
   })
@@ -315,14 +316,15 @@ export default function ViewPostDialog(props: {
                           color={userLikedStory() ? "secondary" : "inherit"}
                         />
                       </IconButton>
-                      <Typography>{story.likers.length} Likes</Typography>
+                      <Typography variant={"body2"}>
+                        {story.likers.length}
+                      </Typography>
                     </div>
                     <div className={classes.storyAction}>
                       {/** TODO: try -> Navigator.share(), if not -> document.execCommand("copy")} */}
                       <IconButton size="small" onClick={() => {}} disabled>
                         <ShareIcon />
                       </IconButton>
-                      <Typography style={{ color: "grey" }}>Share</Typography>
                     </div>
                     <div className={classes.storyAction}>
                       <IconButton
@@ -331,11 +333,7 @@ export default function ViewPostDialog(props: {
                       >
                         <CommentIcon />
                       </IconButton>
-                      <Typography>
-                        {commentCount === 1
-                          ? "1 Comment"
-                          : `${commentCount} Comments`}
-                      </Typography>
+                      <Typography variant={"body2"}>{commentCount}</Typography>
                     </div>
                   </div>
                 )}
