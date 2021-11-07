@@ -14,6 +14,9 @@ import { useHistory } from "react-router-dom";
 import { useCurrentUser } from "../hooks/useCurrentUser";
 import { useEffect } from "react";
 import axios from "axios";
+import { isMobile } from "../utils";
+
+const smallScreen = isMobile();
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -32,10 +35,11 @@ const useStyles = makeStyles((theme: Theme) =>
       flexDirection: "column",
     },
     msgBox: {
-      padding: theme.spacing(2),
+      padding: smallScreen ? theme.spacing(2) : theme.spacing(4),
       display: "flex",
       alignItems: "center",
       flexDirection: "column",
+      maxWidth: "80vw",
     },
   })
 );
@@ -91,11 +95,9 @@ export default function VerificationPage() {
           )}
           {!isLoading && !errorMsg && currentUser && (
             <>
-              <Typography variant="h4">
-                Hey, {currentUser?.username}!
-              </Typography>
+              <Typography variant="h4">Hey {currentUser?.username}!</Typography>
               <br />
-              <Typography variant="h6">
+              <Typography variant="h6" align="center">
                 Your email verification was successful.
               </Typography>
               <Typography variant="h6"> Welcome to Storymap.</Typography>
@@ -112,11 +114,13 @@ export default function VerificationPage() {
           )}
           {!isLoading && errorMsg && (
             <>
-              <Typography variant="h4" color="secondary">
+              <Typography variant="h5" align="center" color="error">
                 Oops! Something went wrong.
               </Typography>
               <br />
-              <Typography variant="h6">{errorMsg}</Typography>
+              <Typography variant="body1" align="center">
+                {errorMsg}
+              </Typography>
             </>
           )}
         </Paper>
