@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme: Theme) =>
       height: "100vh",
     },
     paperContainer: {
-      marginTop: "25vh",
+      marginTop: "20vh",
       display: "flex",
       alignItems: "center",
       flexDirection: "column",

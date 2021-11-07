@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme: Theme) =>
       top: theme.spacing(5),
     },
     loginContainer: {
-      marginTop: "25vh",
+      marginTop: "20vh",
       display: "flex",
       alignItems: "center",
       flexDirection: "column",
