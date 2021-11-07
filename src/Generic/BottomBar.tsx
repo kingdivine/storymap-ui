@@ -1,11 +1,5 @@
 import { useCurrentUser } from "../hooks/useCurrentUser";
-import {
-  createStyles,
-  Theme,
-  Badge,
-  IconButton,
-  Divider,
-} from "@material-ui/core";
+import { createStyles, Theme, Badge, IconButton } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import FaceIcon from "@material-ui/icons/Face";
 import NotificationsActiveIcon from "@material-ui/icons/NotificationsActive";
@@ -22,7 +16,7 @@ const useStyles = makeStyles((theme: Theme) =>
       width: "100%",
       display: "flex",
       alignItems: "center",
-      justifyContent: "space-evenly",
+      justifyContent: "space-around",
       backgroundColor: theme.palette.grey[900],
       borderTop: `1px solid ${theme.palette.grey[700]}`,
     },
@@ -53,7 +47,6 @@ export default function BottomBar(props: { notificationsCount: number }) {
               <NotificationsActiveIcon fontSize={"large"} />
             </IconButton>
           </Badge>
-          <Divider orientation="vertical" variant="middle" />
         </>
       )}
       {currentUser && (
@@ -64,7 +57,6 @@ export default function BottomBar(props: { notificationsCount: number }) {
           >
             <FaceIcon fontSize={"large"} />
           </IconButton>
-          <Divider orientation="vertical" variant="middle" />
         </>
       )}
       {!currentUser && (
@@ -72,7 +64,6 @@ export default function BottomBar(props: { notificationsCount: number }) {
           <IconButton className={classes.navLinkBtn} href={"/login"}>
             <PersonPinIcon fontSize={"large"} />
           </IconButton>
-          <Divider orientation="vertical" variant="middle" />
         </>
       )}
 
