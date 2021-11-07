@@ -1,15 +1,16 @@
 import { useState, useEffect } from "react";
 import { useCurrentUser } from "../hooks/useCurrentUser";
 import axios from "axios";
-import { createStyles, Theme, Button, Badge } from "@material-ui/core";
+import { createStyles, Theme, Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import FaceIcon from "@material-ui/icons/Face";
-import NotificationsActiveIcon from "@material-ui/icons/NotificationsActive";
-import PersonPinIcon from "@material-ui/icons/PersonPin";
-import HelpIcon from "@material-ui/icons/Help";
 import { NotificationCounts } from "../types/NotificationCounts";
 import Heading from "./Heading";
 import { useHistory } from "react-router";
+import BottomMenu from "./BottomMenu";
+import { isMobile } from "../utils";
+import TopMenu from "./TopMenu";
+
+const smallScreen = isMobile();
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -63,56 +64,17 @@ export default function NavBar(props: { fetchNotifs: boolean }) {
     );
   }
 
+  if (smallScreen) {
+    return (
+      <>
+        <Heading /> <BottomMenu notificationsCount={unreadNotifsCount} />
+      </>
+    );
+  }
+
   return (
     <>
-      <Heading />
-      <header className={classes.navBar}>
-        {currentUser && (
-          <Badge
-            badgeContent={unreadNotifsCount}
-            max={99}
-            showZero={false}
-            color="secondary"
-            style={{ marginRight: unreadNotifsCount > 0 ? 16 : 0 }}
-          >
-            <Button
-              className={classes.navLinkBtn}
-              href="/notifications"
-              startIcon={<NotificationsActiveIcon />}
-            >
-              notifications
-            </Button>
-          </Badge>
-        )}
-
-        {currentUser && (
-          <Button
-            className={classes.navLinkBtn}
-            href={`/users/${currentUser.username}`}
-            startIcon={<FaceIcon />}
-          >
-            my profile
-          </Button>
-        )}
-
-        {!currentUser && (
-          <Button
-            className={classes.navLinkBtn}
-            href={`/login`}
-            startIcon={<PersonPinIcon />}
-          >
-            login or sign up
-          </Button>
-        )}
-
-        <Button
-          className={classes.navLinkBtn}
-          href={`/about`}
-          startIcon={<HelpIcon />}
-        >
-          about
-        </Button>
-      </header>
+      <Heading /> <TopMenu notificationsCount={unreadNotifsCount} />
     </>
   );
 }
