@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function TopMenu(props: { notificationsCount: number }) {
+export default function TopBar(props: { notificationsCount: number }) {
   const classes = useStyles();
   const { notificationsCount } = props;
 

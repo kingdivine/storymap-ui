@@ -6,9 +6,9 @@ import { makeStyles } from "@material-ui/core/styles";
 import { NotificationCounts } from "../types/NotificationCounts";
 import Heading from "./Heading";
 import { useHistory } from "react-router";
-import BottomMenu from "./BottomMenu";
+import BottomBar from "./BottomBar";
+import TopBar from "./TopBar";
 import { isMobile } from "../utils";
-import TopMenu from "./TopMenu";
 
 const smallScreen = isMobile();
 
@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function NavBar(props: { fetchNotifs: boolean }) {
+export default function Navbar(props: { fetchNotifs: boolean }) {
   const classes = useStyles();
 
   const [currentUser] = useCurrentUser();
@@ -67,14 +67,14 @@ export default function NavBar(props: { fetchNotifs: boolean }) {
   if (smallScreen) {
     return (
       <>
-        <Heading /> <BottomMenu notificationsCount={unreadNotifsCount} />
+        <Heading /> <BottomBar notificationsCount={unreadNotifsCount} />
       </>
     );
   }
 
   return (
     <>
-      <Heading /> <TopMenu notificationsCount={unreadNotifsCount} />
+      <Heading /> <TopBar notificationsCount={unreadNotifsCount} />
     </>
   );
 }
