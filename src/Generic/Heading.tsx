@@ -6,13 +6,14 @@ import {
   Typography,
 } from "@material-ui/core";
 import MapIcon from "@material-ui/icons/Map";
-
-const isMobile = window.innerWidth < 425;
+import { isMobile } from "../utils";
 
 const FONT_SIZE = 58;
 const FONT_SIZE_MOBILE = 38;
 const ICON_SIZE = 50;
 const ICON_SIZE_MOBILE = 32;
+
+const smallScreen = isMobile();
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -22,21 +23,21 @@ const useStyles = makeStyles((theme: Theme) =>
       zIndex: 1,
       position: "absolute",
       top: theme.spacing(1),
-      left: isMobile
+      left: smallScreen
         ? window.innerWidth / 2 - FONT_SIZE_MOBILE * 2 - ICON_SIZE_MOBILE
         : theme.spacing(2),
     },
     mapIcon: {
-      fontSize: isMobile ? ICON_SIZE_MOBILE : ICON_SIZE,
+      fontSize: smallScreen ? ICON_SIZE_MOBILE : ICON_SIZE,
       color: theme.palette.text.gold,
     },
     storyText: {
       color: theme.palette.text.primary,
-      fontSize: isMobile ? FONT_SIZE_MOBILE : FONT_SIZE,
+      fontSize: smallScreen ? FONT_SIZE_MOBILE : FONT_SIZE,
     },
     mapText: {
       color: theme.palette.text.gold,
-      fontSize: isMobile ? FONT_SIZE_MOBILE : FONT_SIZE,
+      fontSize: smallScreen ? FONT_SIZE_MOBILE : FONT_SIZE,
     },
   })
 );
