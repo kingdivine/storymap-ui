@@ -17,6 +17,9 @@ import UserSearch from "./UserSearch";
 import CloseIcon from "@material-ui/icons/Close";
 import TagSearch from "./TagSearch";
 import { User } from "../types/User";
+import { isMobile } from "../utils";
+
+const smallScreen = isMobile();
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -59,6 +62,7 @@ export default function Filter(props: {
       <Button
         variant="contained"
         color="primary"
+        size={smallScreen ? "small" : "medium"}
         startIcon={<FilterListIcon />}
         onClick={() => setFormOpen(true)}
       >

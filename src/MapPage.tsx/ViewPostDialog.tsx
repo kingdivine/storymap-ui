@@ -22,6 +22,9 @@ import CommentsDialog from "./CommentsDialog";
 import { StoryDetail } from "../types/StoryDetail";
 import UsernameAndPic from "../Generic/UsernameandPic";
 import DeleteStoryDialog from "./DeleteStoryDialog";
+import { isMobile } from "../utils";
+
+const smallScreen = isMobile();
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -30,6 +33,7 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: "center",
       justifyContent: "space-between",
       padding: theme.spacing(1, 3, 0, 3),
+      marginTop: theme.spacing(1),
     },
     loadingIndicator: {
       marginLeft: "auto",
@@ -241,6 +245,7 @@ export default function ViewPostDialog(props: {
                     {story.author_id === currentUser?.id && (
                       <IconButton
                         onClick={(e) => setContextMenuAnchor(e.currentTarget)}
+                        size={smallScreen ? "small" : "medium"}
                       >
                         <ContextMenuIcon />
                       </IconButton>
@@ -252,13 +257,20 @@ export default function ViewPostDialog(props: {
                       keepMounted
                       open={Boolean(contextMenuAnchor)}
                       onClose={() => setContextMenuAnchor(null)}
+                      MenuListProps={{
+                        disablePadding: true,
+                      }}
                     >
                       <MenuItem
                         onClick={() => {
                           setContextMenuAnchor(null);
                           setIsDeleteDialogOpen(true);
                         }}
-                        style={{ display: "flex", alignItems: "flex-start" }}
+                        style={{
+                          display: "flex",
+                          alignItems: "flex-start",
+                          minHeight: 0,
+                        }}
                       >
                         <DeleteForeverIcon
                           fontSize="small"
@@ -267,7 +279,10 @@ export default function ViewPostDialog(props: {
                         Delete
                       </MenuItem>
                     </Menu>
-                    <IconButton onClick={props.closePost}>
+                    <IconButton
+                      size={smallScreen ? "small" : "medium"}
+                      onClick={props.closePost}
+                    >
                       <CloseIcon />
                     </IconButton>
                   </div>
