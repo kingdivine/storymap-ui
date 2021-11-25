@@ -18,7 +18,9 @@ export default function NotificationListItemCollapse(props: {
         ? notification.target_id
         : notification.comment_id;
     axios
-      .get(`/storymap-api/comments/${commentId}`)
+      .get(`/storymap-api/comments/${commentId}`, {
+        params: { repliesOffset: 0 },
+      })
       .then((response) => setComment(response.data))
       .catch((e) => setIsError(true))
       .finally(() => setIsLoading(false));
