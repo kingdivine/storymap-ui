@@ -93,7 +93,7 @@ export default function DeleteAccountDialog(props: {
           </span>
           .
         </Typography>
-        <div style={{ display: "flex", alignItems: "baseline" }}>
+        <div style={{ display: "flex", flexDirection: "column" }}>
           <TextField
             placeholder="Type 'delete' to confirm"
             size="small"
@@ -106,9 +106,10 @@ export default function DeleteAccountDialog(props: {
           />
           <Button
             variant={"contained"}
+            style={{ marginTop: 8, width: "fit-content" }}
             size="small"
             color={"primary"}
-            disabled={confirmDeleteText !== "delete" || isLoading}
+            disabled={confirmDeleteText.toLowerCase() !== "delete" || isLoading}
             onClick={() => handleSubmit()}
           >
             {isLoading ? <CircularProgress size={20} /> : "Proceed"}

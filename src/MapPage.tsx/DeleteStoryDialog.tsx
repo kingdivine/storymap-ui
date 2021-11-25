@@ -80,7 +80,14 @@ export default function DeleteStoryDialog(props: {
           Are you sure you want to delete your Story?
         </Typography>
 
-        <div style={{ display: "flex", justifyContent: "end", marginTop: 16 }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "start",
+            marginTop: 16,
+            float: "right",
+          }}
+        >
           <Button
             variant={"text"}
             size="small"
