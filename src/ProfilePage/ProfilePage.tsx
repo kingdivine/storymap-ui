@@ -182,7 +182,7 @@ export default function ProfilePage() {
                 size={"small"}
                 className={classes.btn}
                 startIcon={<EditIcon />}
-                href={"/change-password"}
+                href={"/get-password-reset-link"}
               >
                 Change Password
               </Button>

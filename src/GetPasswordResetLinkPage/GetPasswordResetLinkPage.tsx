@@ -1,7 +1,7 @@
 import { createStyles, makeStyles, Theme } from "@material-ui/core";
 import Heading from "../Generic/Heading";
 import mapBackground from "../Generic/images/map-background.png";
-import ChangePasswordForm from "./ChangePasswordForm";
+import GetPasswordResetLinkForm from "./GetPasswordResetLinkForm";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -22,13 +22,13 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function ChangePasswordPage() {
+export default function GetPasswordResetLinkPage() {
   const classes = useStyles();
   return (
     <div className={classes.pageContainer}>
       <Heading />
       <div className={classes.paperContainer}>
-        <ChangePasswordForm />
+        <GetPasswordResetLinkForm />
       </div>
     </div>
   );

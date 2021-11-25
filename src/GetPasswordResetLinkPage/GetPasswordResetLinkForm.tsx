@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function ChangePasswordForm() {
+export default function GetPasswordResetLinkForm() {
   const classes = useStyles();
 
   const [email, setEmail] = useState("");

@@ -9,7 +9,7 @@ import LoginPage from "./LoginPage.tsx/LoginPage";
 import MapPage from "./MapPage.tsx/MapPage";
 import ProfilePage from "./ProfilePage/ProfilePage";
 import VerificationPage from "./VerificationPage/VerificationPage";
-import ChangePasswordPage from "./ChangePasswordPage/ChangePasswordPage";
+import GetPasswordResetLinkPage from "./GetPasswordResetLinkPage/GetPasswordResetLinkPage";
 import NotificationsPage from "./NotificationsPage/NotificationsPage";
 import AboutPage from "./AboutPage/AboutPage";
 import NotFoundPage from "./NotFoundPage.tsx/NotFoundPage";
@@ -38,7 +38,11 @@ function App() {
           <Route exact path="/users/:id/password-reset/:resetToken">
             <div> verify-password-reset-token</div>
           </Route>
-          <Route exact path="/change-password" component={ChangePasswordPage} />
+          <Route
+            exact
+            path="/get-password-reset-link"
+            component={GetPasswordResetLinkPage}
+          />
           <Route exact path="/notifications">
             {currentUser ? <NotificationsPage /> : <Redirect to="/login" />}
           </Route>
