@@ -239,7 +239,7 @@ export default function LoginForm() {
         </Typography>
         <div className={classes.btnAndPassowrdLinkContainer}>
           <Link
-            href="/forgot-password"
+            href="/change-password"
             variant="subtitle2"
             color="textPrimary"
             style={{ marginLeft: 16 }}

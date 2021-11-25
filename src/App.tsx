@@ -9,7 +9,7 @@ import LoginPage from "./LoginPage.tsx/LoginPage";
 import MapPage from "./MapPage.tsx/MapPage";
 import ProfilePage from "./ProfilePage/ProfilePage";
 import VerificationPage from "./VerificationPage/VerificationPage";
-import ForgotPasswordPage from "./ForgotPasswordPage/ForgotPasswordPage";
+import ChangePasswordPage from "./ChangePasswordPage/ChangePasswordPage";
 import NotificationsPage from "./NotificationsPage/NotificationsPage";
 import AboutPage from "./AboutPage/AboutPage";
 import NotFoundPage from "./NotFoundPage.tsx/NotFoundPage";
@@ -35,7 +35,7 @@ function App() {
             path="/users/:userId/verify/:verifcationCode"
             component={VerificationPage}
           />
-          <Route exact path="/forgot-password" component={ForgotPasswordPage} />
+          <Route exact path="/change-password" component={ChangePasswordPage} />
           <Route exact path="/notifications">
             {currentUser ? <NotificationsPage /> : <Redirect to="/login" />}
           </Route>

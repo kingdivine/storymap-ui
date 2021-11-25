@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function ForgotPasswordForm() {
+export default function ChangePasswordForm() {
   const classes = useStyles();
 
   const [email, setEmail] = useState("");
