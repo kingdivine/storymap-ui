@@ -35,6 +35,9 @@ function App() {
             path="/users/:userId/verify/:verifcationCode"
             component={VerificationPage}
           />
+          <Route exact path="/users/:id/password-reset/:resetToken">
+            <div> verify-password-reset-token</div>
+          </Route>
           <Route exact path="/change-password" component={ChangePasswordPage} />
           <Route exact path="/notifications">
             {currentUser ? <NotificationsPage /> : <Redirect to="/login" />}
