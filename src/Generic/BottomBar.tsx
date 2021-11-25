@@ -4,6 +4,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import FaceIcon from "@material-ui/icons/Face";
 import NotificationsActiveIcon from "@material-ui/icons/NotificationsActive";
 import PersonPinIcon from "@material-ui/icons/PersonPin";
+import MapIcon from "@material-ui/icons/Map";
 import HelpIcon from "@material-ui/icons/Help";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -66,6 +67,9 @@ export default function BottomBar(props: { notificationsCount: number }) {
           </IconButton>
         </>
       )}
+      <IconButton className={classes.navLinkBtn} href="/">
+        <MapIcon fontSize={"large"} />
+      </IconButton>
 
       <IconButton className={classes.navLinkBtn} href="/about">
         <HelpIcon fontSize={"large"} />
