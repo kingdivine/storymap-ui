@@ -48,6 +48,7 @@ const useStyles = makeStyles((theme: Theme) =>
       marginBottom: theme.spacing(2),
       borderColor: theme.palette.common.white,
       width: "fit-content",
+      alignItems: "self-start",
     },
     deleteBtn: {
       color: theme.palette.text.secondary,
