@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: "15vh",
       marginLeft: "auto",
       marginRight: "auto",
-      width: "65%",
+      width: "85%",
       textAlign: "center",
     },
     section: {
@@ -99,13 +99,16 @@ export default function NotificationsPage(props: {}) {
     if (notifications.length === 0 || !currentUser) {
       return;
     }
-    const notificationIds = notifications
+    const unreadNotificationIds = notifications
       .filter((n) => !n.is_read)
       .map((n) => n.id);
+    if (unreadNotificationIds.length === 0) {
+      return;
+    }
     axios
       .post(
         `/storymap-api/notifications`,
-        { notificationIds },
+        { notificationIds: unreadNotificationIds },
         {
           headers: {
             authorization: `Bearer ${currentUser.token}`,

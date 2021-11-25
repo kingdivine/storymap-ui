@@ -10,12 +10,19 @@ import {
 } from "@material-ui/core";
 import { AVATAR_NAMES } from "../Generic/UsernameandPic";
 import { useTheme } from "@material-ui/styles";
+import { isMobile } from "../utils";
+
+const smallScreen = isMobile();
+
+const ROW_LENGTH = smallScreen ? 4 : 12;
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     paper: {
       padding: 8,
       border: `1px solid ${theme.palette.common.white}`,
+      maxHeight: "70vh",
+      overflowY: "scroll",
     },
     row: {
       display: "flex",
@@ -23,8 +30,8 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: "space-between",
     },
     avatar: {
-      height: 64,
-      width: 64,
+      height: smallScreen ? 48 : 64,
+      width: smallScreen ? 48 : 64,
       margin: theme.spacing(1),
       boxSizing: "border-box",
       "&:hover": {
@@ -34,6 +41,15 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 );
+
+const getRows = () => {
+  const rows = [];
+  for (let i = 0; i < AVATAR_NAMES.length; i += ROW_LENGTH) {
+    const row = AVATAR_NAMES.slice(i, i + ROW_LENGTH);
+    rows.push(row);
+  }
+  return rows;
+};
 
 export default function AvatarSelector(props: {
   onSelect: (selected: string) => void;
@@ -107,46 +123,21 @@ export default function AvatarSelector(props: {
         }}
       >
         <Paper className={classes.paper}>
-          <div className={classes.row}>
-            {AVATAR_NAMES.slice(0, 12).map((name) => (
-              <Avatar
-                src={require(`../Generic/images/avatars/${name}.svg`).default}
-                className={classes.avatar}
-                style={selectedStyling(name)}
-                onClick={() => handleSelectAvatar(name)}
-              />
-            ))}
-          </div>
-          <div className={classes.row}>
-            {AVATAR_NAMES.slice(12, 24).map((name) => (
-              <Avatar
-                src={require(`../Generic/images/avatars/${name}.svg`).default}
-                className={classes.avatar}
-                style={selectedStyling(name)}
-                onClick={() => handleSelectAvatar(name)}
-              />
-            ))}
-          </div>
-          <div className={classes.row}>
-            {AVATAR_NAMES.slice(24, 36).map((name) => (
-              <Avatar
-                src={require(`../Generic/images/avatars/${name}.svg`).default}
-                className={classes.avatar}
-                style={selectedStyling(name)}
-                onClick={() => handleSelectAvatar(name)}
-              />
-            ))}
-          </div>
-          <div className={classes.row}>
-            {AVATAR_NAMES.slice(36, 48).map((name) => (
-              <Avatar
-                src={require(`../Generic/images/avatars/${name}.svg`).default}
-                className={classes.avatar}
-                style={selectedStyling(name)}
-                onClick={() => handleSelectAvatar(name)}
-              />
-            ))}
-          </div>
+          {getRows().map((row) => (
+            <div className={classes.row}>
+              {row.map((avatarName) => (
+                <Avatar
+                  src={
+                    require(`../Generic/images/avatars/${avatarName}.svg`)
+                      .default
+                  }
+                  className={classes.avatar}
+                  style={selectedStyling(avatarName)}
+                  onClick={() => handleSelectAvatar(avatarName)}
+                />
+              ))}
+            </div>
+          ))}
         </Paper>
       </Popover>
     </>

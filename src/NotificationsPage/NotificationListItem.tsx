@@ -72,6 +72,7 @@ export default function NotificationListItem(props: {
             username={notification.creator_username}
             userId={notification.creator_id}
             avatar={notification.creator_avatar}
+            small
           />
           <div className={classes.text}>
             <Typography color={"textPrimary"}>
@@ -96,7 +97,7 @@ export default function NotificationListItem(props: {
         </div>
         <div className={classes.expandIconAndDate}>
           <Typography color={"textSecondary"}>
-            {moment(notification.created_at).fromNow()}
+            {moment(notification.created_at).fromNow(true)}
           </Typography>
           <IconButton
             style={{

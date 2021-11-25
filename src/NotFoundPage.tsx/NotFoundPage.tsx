@@ -23,14 +23,14 @@ const useStyles = makeStyles((theme: Theme) =>
       height: "100vh",
     },
     paperContainer: {
-      marginTop: "25vh",
+      marginTop: "15vh",
       display: "flex",
       alignItems: "center",
       flexDirection: "column",
     },
     paper: {
       padding: theme.spacing(2),
-      maxWidth: "50%",
+      maxWidth: "85%",
       textAlign: "center",
       "&>*": {
         margin: theme.spacing(2),
@@ -60,7 +60,7 @@ export default function NotFoundPage() {
               height={150}
             />
           </div>
-          <Typography variant={"body1"} style={{ lineBreak: "anywhere" }}>
+          <Typography variant={"body1"}>
             The URL <em>{history.location.pathname}</em> doesn't exist
           </Typography>
           <Button

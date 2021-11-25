@@ -10,7 +10,7 @@ import {
 import MailOutlineIcon from "@material-ui/icons/MailOutline";
 import mapBackground from "../Generic/images/map-background.png";
 import LoginForm from "./LoginForm";
-import NavBar from "../Generic/Navbar";
+import Heading from "../Generic/Heading";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme: Theme) =>
       top: theme.spacing(5),
     },
     loginContainer: {
-      marginTop: "25vh",
+      marginTop: "20vh",
       display: "flex",
       alignItems: "center",
       flexDirection: "column",
@@ -48,8 +48,8 @@ export default function LoginPage() {
   const [showForm, setShowForm] = useState(false);
   return (
     <>
-      <NavBar fetchNotifs={false} />
       <div className={classes.pageContainer}>
+        <Heading />
         <div className={classes.loginContainer}>
           <Typography
             variant="h6"
@@ -72,6 +72,9 @@ export default function LoginPage() {
           <Collapse in={showForm}>
             <LoginForm />
           </Collapse>
+          <Button href="/about" style={{ textTransform: "none", marginTop: 8 }}>
+            What is Storymap?
+          </Button>
         </div>
       </div>
     </>

@@ -50,7 +50,11 @@ export default function LoginToContinueDialog(props: {
 
       <DialogContent className={classes.content}>
         <div style={{ width: 80, height: 80 }}>{props.icon}</div>
-        <Typography variant={"h4"} color={"textPrimary"}>
+        <Typography
+          variant={"h4"}
+          color={"textPrimary"}
+          style={{ textAlign: "center" }}
+        >
           Login to continue
         </Typography>
         <Typography

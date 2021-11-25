@@ -20,6 +20,7 @@ import LocationSearch from "./LocationSearch";
 import axios from "axios";
 import { useCurrentUser } from "../hooks/useCurrentUser";
 import { useHistory } from "react-router";
+import { isMobile } from "../utils";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -126,6 +127,7 @@ export default function CreatePostForm(props: { closeForm: () => void }) {
   return (
     <>
       <Dialog
+        fullScreen={isMobile()}
         fullWidth={true}
         maxWidth={"md"}
         open={true}
@@ -133,7 +135,7 @@ export default function CreatePostForm(props: { closeForm: () => void }) {
       >
         <DialogTitle>
           <div className={classes.topLineContainer}>
-            <Typography variant="h6">Create Post</Typography>
+            <Typography variant="h6">Create Story</Typography>
             <IconButton onClick={props.closeForm}>
               <CloseIcon />
             </IconButton>
@@ -153,7 +155,7 @@ export default function CreatePostForm(props: { closeForm: () => void }) {
             />
             <LocationSearch
               placeHolderText={"Enter location..."}
-              textFieldWidth={400}
+              textFieldWidth={isMobile() ? 200 : 400}
               onLocationSelect={(coords, place) => {
                 setLocation(coords);
                 setPlaceName(place);
