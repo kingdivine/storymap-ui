@@ -48,20 +48,38 @@ export default function StoriesSection(props: { user: User }) {
 
   useEffect(() => {
     setIsError(false);
-    axios
-      .get("/storymap-api/stories", {
-        params: {
-          userId: user.id,
-          offset: 0,
-        },
-      })
-      .then((response) => setStories(response.data))
-      .catch((e) => {
-        setIsError(true);
-        console.log(e);
-      })
-      .finally(() => setIsLoading(false));
-  }, [user.id]);
+    if (currentUser?.id === user.id) {
+      axios
+        .get("/storymap-api/stories/me", {
+          params: {
+            offset: 0,
+          },
+          headers: {
+            authorization: `Bearer ${currentUser.token}`,
+          },
+        })
+        .then((response) => setStories(response.data))
+        .catch((e) => {
+          setIsError(true);
+          console.log(e);
+        })
+        .finally(() => setIsLoading(false));
+    } else {
+      axios
+        .get("/storymap-api/stories", {
+          params: {
+            userId: user.id,
+            offset: 0,
+          },
+        })
+        .then((response) => setStories(response.data))
+        .catch((e) => {
+          setIsError(true);
+          console.log(e);
+        })
+        .finally(() => setIsLoading(false));
+    }
+  }, [currentUser, user.id]);
 
   if (isLoading) {
     return (
