@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import {
   Button,
   CircularProgress,
@@ -12,7 +12,6 @@ import Heading from "../Generic/Heading";
 import mapBackground from "../Generic/images/map-background.png";
 import { useHistory } from "react-router-dom";
 import { useCurrentUser } from "../hooks/useCurrentUser";
-import { useEffect } from "react";
 import axios from "axios";
 import { isMobile } from "../utils";
 
@@ -34,7 +33,7 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: "center",
       flexDirection: "column",
     },
-    msgBox: {
+    paper: {
       padding: smallScreen ? theme.spacing(2) : theme.spacing(4),
       display: "flex",
       alignItems: "center",
@@ -68,7 +67,7 @@ export default function VerificationPage() {
       })
       .catch((e) => {
         if (e.response && e.response.status === 401) {
-          setErrorMsg("Code not recognised or user already verified.");
+          setErrorMsg("Invalid link or user already verified.");
         } else {
           setErrorMsg(
             "Please check your internet connection and try again later."
@@ -84,7 +83,7 @@ export default function VerificationPage() {
     <div className={classes.pageContainer}>
       <Heading />
       <div className={classes.verificationContainer}>
-        <Paper className={classes.msgBox}>
+        <Paper className={classes.paper}>
           {isLoading && (
             <>
               <Typography variant="h6">
