@@ -13,6 +13,7 @@ import GetPasswordResetLinkPage from "./GetPasswordResetLinkPage/GetPasswordRese
 import NotificationsPage from "./NotificationsPage/NotificationsPage";
 import AboutPage from "./AboutPage/AboutPage";
 import NotFoundPage from "./NotFoundPage.tsx/NotFoundPage";
+import PasswordResetPage from "./PasswordResetPage/PasswordResetPage";
 
 function App() {
   const [currentUser] = useCurrentUser();
@@ -35,9 +36,12 @@ function App() {
             path="/users/:userId/verify/:verifcationCode"
             component={VerificationPage}
           />
-          <Route exact path="/users/:id/password-reset/:resetToken">
-            <div> verify-password-reset-token</div>
-          </Route>
+          <Route
+            exact
+            path="/users/:id/password-reset/:resetToken"
+            component={PasswordResetPage}
+          />
+
           <Route
             exact
             path="/get-password-reset-link"
@@ -46,7 +50,6 @@ function App() {
           <Route exact path="/notifications">
             {currentUser ? <NotificationsPage /> : <Redirect to="/login" />}
           </Route>
-
           <Route component={NotFoundPage} />
         </Switch>
       </Router>
