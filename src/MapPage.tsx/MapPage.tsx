@@ -81,29 +81,34 @@ export default function MapPage() {
     string[]
   >([]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      setIsError(false);
-      try {
-        const response = await axios.get("/storymap-api/stories/top");
-        setPosts(response.data);
-      } catch (e) {
-        setIsError(true);
-        console.log(e);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  const fetchTopStories = async () => {
+    setIsLoading(true);
+    setIsError(false);
+    try {
+      const response = await axios.get("/storymap-api/stories/top");
+      setPosts(response.data);
+    } catch (e) {
+      setIsError(true);
+      console.log(e);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-    fetchData();
+  useEffect(() => {
+    fetchTopStories();
   }, []);
 
   useEffect(() => {
     if (!filter) {
       return;
     }
-    const fetchData = async () => {
+    if (!filter.user && !filter.tag && !filter.followingOnly) {
+      fetchTopStories();
+      return;
+    }
+
+    const fetchFilteredStories = async () => {
       setIsLoading(true);
       setIsError(false);
       try {
@@ -124,7 +129,7 @@ export default function MapPage() {
       }
     };
 
-    fetchData();
+    fetchFilteredStories();
   }, [filter]);
 
   const handleOpenPost = useCallback(
