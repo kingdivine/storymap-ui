@@ -38,7 +38,7 @@ function App() {
           />
           <Route
             exact
-            path="/users/:id/password-reset/:resetToken"
+            path="/users/:userId/password-reset/:resetToken"
             component={PasswordResetPage}
           />
 

@@ -53,6 +53,9 @@ export default function GetPasswordResetLinkPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
+  const userId = routeMatch.params.userId;
+  const resetToken = routeMatch.params.resetToken;
+
   useEffect(() => {
     if (hasFetchedData.current) {
       return;
@@ -61,11 +64,9 @@ export default function GetPasswordResetLinkPage() {
     setIsLoading(true);
     setErrorMsg("");
 
-    const userId = routeMatch.params.userId;
-    const resetToken = routeMatch.params.resetToken;
     axios
       .get(
-        `storymap-api/users/${userId}/verify-password-reset-token/${resetToken}`
+        `/storymap-api/users/${userId}/verify-password-reset-token/${resetToken}`
       )
       .then((response) => {
         setCurrentUser(null);
@@ -82,7 +83,7 @@ export default function GetPasswordResetLinkPage() {
       .finally(() => {
         setIsLoading(false);
       });
-  }, [routeMatch, setCurrentUser]);
+  }, [userId, resetToken, routeMatch, setCurrentUser]);
   return (
     <div className={classes.pageContainer}>
       <Heading />
@@ -93,7 +94,9 @@ export default function GetPasswordResetLinkPage() {
             <CircularProgress style={{ margin: 16 }} color="secondary" />
           </Paper>
         )}
-        {!isLoading && !errorMsg && <PasswordResetForm />}
+        {!isLoading && !errorMsg && (
+          <PasswordResetForm userId={userId} resetToken={resetToken} />
+        )}
         {!isLoading && errorMsg && (
           <Paper className={classes.paper}>
             <Typography variant="h5" align="center" color="error">
