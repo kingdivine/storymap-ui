@@ -71,6 +71,7 @@ export default function UserSearch(props: {
             username={option.username}
             avatar={option.avatar}
             small
+            noLink
           />
         )}
       />

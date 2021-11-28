@@ -56,8 +56,9 @@ export default function UsernameAndPic(props: {
   userId: string;
   avatar: string;
   small?: Boolean;
+  noLink?: Boolean;
 }) {
-  const { username, avatar, small } = props;
+  const { username, avatar, small, noLink } = props;
   const validAvatar = AVATAR_NAMES.includes(avatar);
   const size = small ? { width: 30, height: 30 } : { width: 40, height: 40 };
 
@@ -81,29 +82,42 @@ export default function UsernameAndPic(props: {
       </div>
     );
   }
-  return (
-    <Link href={`/users/${username}`} underline="none">
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <Avatar
-          alt={username}
-          src={require(`./images/avatars/${avatar}.svg`).default}
-          style={size}
-        />
 
-        <Typography
-          style={{ marginLeft: 8 }}
-          variant={small ? "subtitle1" : "h6"}
-          color="textPrimary"
-        >
-          {username}
-        </Typography>
-      </div>
-    </Link>
+  const Content = () => (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <Avatar
+        alt={username}
+        src={require(`./images/avatars/${avatar}.svg`).default}
+        style={size}
+      />
+
+      <Typography
+        style={{ marginLeft: 8 }}
+        variant={small ? "subtitle1" : "h6"}
+        color="textPrimary"
+      >
+        {username}
+      </Typography>
+    </div>
   );
+
+  if (noLink) {
+    return (
+      <div>
+        <Content />
+      </div>
+    );
+  } else {
+    return (
+      <Link href={`/users/${username}`} underline="none">
+        <Content />
+      </Link>
+    );
+  }
 }
