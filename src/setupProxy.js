@@ -1,13 +1,20 @@
 const createProxyMiddleware = require("http-proxy-middleware");
 
+const storymapApiUrl =
+  process.env.NODE_ENV === "production"
+    ? "https://storymap-api-dq7bw.ondigitalocean.app"
+    : "http://localhost:4000";
+
+const storymapApiPath = process.env.NODE_ENV === "production" ? "/" : "/api";
+
 module.exports = function (app) {
   app.use(
     "/storymap-api",
     createProxyMiddleware({
-      target: "http://localhost:4000",
+      target: storymapApiUrl,
       changeOrigin: true,
       pathRewrite: {
-        "^/storymap-api": "/",
+        "^/storymap-api": storymapApiPath,
       },
     })
   );
