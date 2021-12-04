@@ -20,6 +20,7 @@ import { User } from "../types/User";
 import { Skeleton } from "@material-ui/lab";
 import { useHistory } from "react-router-dom";
 import StoriesSection from "./StoriesSection";
+import { storymapApiUrl } from "../utils";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -79,7 +80,7 @@ export default function ProfilePage() {
     } else {
       axios
         .get(
-          `/storymap-api/usersByUsername/${
+          `${storymapApiUrl}/usersByUsername/${
             history.location.pathname.split("/")[2]
           }`
         )

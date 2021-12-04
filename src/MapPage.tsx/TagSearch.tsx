@@ -3,6 +3,7 @@ import axios from "axios";
 import { TextField, Typography } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import { Tag } from "./Filter";
+import { storymapApiUrl } from "../utils";
 
 const sanitiseTag = (tag: string) => {
   if (tag.startsWith("#")) {
@@ -28,7 +29,7 @@ export default function UserSearch(props: { onTagSelect: (tag: Tag) => void }) {
     const fetchData = async (searchString: string) => {
       setIsLoading(true);
       try {
-        const response = await axios.get(`/storymap-api/tags/`, {
+        const response = await axios.get(`${storymapApiUrl}/tags/`, {
           params: {
             title: sanitiseTag(searchString),
           },

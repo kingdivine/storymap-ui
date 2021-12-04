@@ -20,7 +20,7 @@ import LocationSearch from "./LocationSearch";
 import axios from "axios";
 import { useCurrentUser } from "../hooks/useCurrentUser";
 import { useHistory } from "react-router";
-import { isMobile } from "../utils";
+import { isMobile, storymapApiUrl } from "../utils";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -99,7 +99,7 @@ export default function CreatePostForm(props: { closeForm: () => void }) {
     setPostError("");
     axios
       .post(
-        "/storymap-api/stories",
+        `${storymapApiUrl}/stories`,
         {
           title,
           content,

@@ -13,7 +13,7 @@ import mapBackground from "../Generic/images/map-background.png";
 import { useHistory } from "react-router-dom";
 import { useCurrentUser } from "../hooks/useCurrentUser";
 import axios from "axios";
-import { isMobile } from "../utils";
+import { isMobile, storymapApiUrl } from "../utils";
 
 const smallScreen = isMobile();
 
@@ -60,7 +60,7 @@ export default function VerificationPage() {
     setIsLoading(true);
     setErrorMsg("");
     axios
-      .get(`/storymap-api${history.location.pathname}`)
+      .get(`${storymapApiUrl}/${history.location.pathname}`)
       .then((response) => {
         const userObj = { ...response.data.user, token: response.data.token };
         setCurrentUser(userObj);

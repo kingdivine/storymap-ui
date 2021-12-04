@@ -5,7 +5,7 @@ import { NotificationCounts } from "../types/NotificationCounts";
 import Heading from "./Heading";
 import BottomBar from "./BottomBar";
 import TopBar from "./TopBar";
-import { isMobile } from "../utils";
+import { isMobile, storymapApiUrl } from "../utils";
 
 const smallScreen = isMobile();
 
@@ -19,7 +19,7 @@ export default function Navbar(props: { fetchNotifs: boolean }) {
       return;
     }
     axios
-      .get<NotificationCounts>("/storymap-api/notifications/counts", {
+      .get<NotificationCounts>(`${storymapApiUrl}/notifications/counts`, {
         headers: {
           authorization: `Bearer ${currentUser.token}`,
         },

@@ -20,6 +20,7 @@ import PersonOutlineIcon from "@material-ui/icons/PersonOutline";
 import VpnKeyIcon from "@material-ui/icons/VpnKey";
 import { useCurrentUser } from "../hooks/useCurrentUser";
 import AvatarSelector from "./AvatarSelector";
+import { storymapApiUrl } from "../utils";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -138,7 +139,7 @@ export default function LoginForm() {
     setIsLoading(true);
     setLoginError("");
     axios
-      .post("/storymap-api/users/login", {
+      .post(`${storymapApiUrl}/users/login`, {
         email: loginValues.email,
         password: loginValues.password,
       })
@@ -163,7 +164,7 @@ export default function LoginForm() {
     setIsLoading(true);
     setSignupError("");
     axios
-      .post("/storymap-api/users", {
+      .post(`${storymapApiUrl}/users`, {
         username: signupValues.username,
         email: signupValues.email,
         password: signupValues.password,

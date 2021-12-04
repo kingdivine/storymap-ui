@@ -25,7 +25,7 @@ import LoginToContinueDialog from "../Generic/LoginToContinueDialog";
 import { Story } from "../types/Story";
 import Navbar from "../Generic/Navbar";
 import StoryClusterDialog from "./StoryClusterDialog";
-import { isMobile } from "../utils";
+import { isMobile, storymapApiUrl } from "../utils";
 
 const smallScreen = isMobile();
 
@@ -85,7 +85,7 @@ export default function MapPage() {
     setIsLoading(true);
     setIsError(false);
     try {
-      const response = await axios.get("/storymap-api/stories/top");
+      const response = await axios.get(`${storymapApiUrl}/stories/top`);
       setPosts(response.data);
     } catch (e) {
       setIsError(true);
@@ -112,7 +112,7 @@ export default function MapPage() {
       setIsLoading(true);
       setIsError(false);
       try {
-        const response = await axios.get("/storymap-api/stories", {
+        const response = await axios.get(`${storymapApiUrl}/stories`, {
           params: {
             userId: filter?.user?.id,
             tag: filter?.tag?.title,

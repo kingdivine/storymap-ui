@@ -10,7 +10,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import Heading from "../Generic/Heading";
 import mapBackground from "../Generic/images/map-background.png";
-import { isMobile } from "../utils";
+import { isMobile, storymapApiUrl } from "../utils";
 
 const PARAGRAPHS = [
   "Storymap is an online travel diary. A place to share your stories and experiences from your community and around the world. It’s a place to journal your adventures and encounters, your insights and your life.",
@@ -58,7 +58,7 @@ export default function AboutPage() {
 
   useEffect(() => {
     axios
-      .get("/storymap-api")
+      .get(storymapApiUrl)
       .then((r) => setTestString(r.data.version))
       .catch((e) => console.log("testString err", e));
   }, []);

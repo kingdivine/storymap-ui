@@ -19,6 +19,7 @@ import { useCurrentUser } from "../hooks/useCurrentUser";
 import { useHistory } from "react-router-dom";
 import LoginToContinueDialog from "../Generic/LoginToContinueDialog";
 import FavoriteIcon from "@material-ui/icons/Favorite";
+import { storymapApiUrl } from "../utils";
 
 const COMMENTS_PER_PAGE = 50; //matches backend
 const COMMENT_CHAR_LENGTH_LIMIT = 1000;
@@ -103,7 +104,7 @@ export default function CommentsDialog(props: {
       setIsLoading(true);
       try {
         const response = await axios.get(
-          `/storymap-api/stories/${props.storyId}/comments`,
+          `${storymapApiUrl}/stories/${props.storyId}/comments`,
           {
             params: {
               offset: offset,
@@ -125,7 +126,7 @@ export default function CommentsDialog(props: {
     setIsLoadingMore(true);
     const newOffset = offset + COMMENTS_PER_PAGE;
     axios
-      .get(`/storymap-api/stories/${props.storyId}/comments`, {
+      .get(`${storymapApiUrl}/stories/${props.storyId}/comments`, {
         params: {
           offset: newOffset,
         },
@@ -150,7 +151,7 @@ export default function CommentsDialog(props: {
 
     axios
       .post(
-        `/storymap-api/comments`,
+        `${storymapApiUrl}/comments`,
         { content: userInput, storyId: props.storyId },
         {
           headers: {
@@ -214,7 +215,7 @@ export default function CommentsDialog(props: {
       updateLikers("add", commentId);
       axios
         .post(
-          `/storymap-api/comments/${commentId}/like`,
+          `${storymapApiUrl}/comments/${commentId}/like`,
           {},
           {
             headers: {
@@ -230,7 +231,7 @@ export default function CommentsDialog(props: {
     } else {
       updateLikers("remove", commentId);
       axios
-        .delete(`/storymap-api/comments/${commentId}/like`, {
+        .delete(`${storymapApiUrl}/comments/${commentId}/like`, {
           headers: {
             authorization: `Bearer ${currentUser.token}`,
           },
@@ -249,7 +250,7 @@ export default function CommentsDialog(props: {
     }
     setCommentBeingDeleted(commentId);
     axios
-      .delete(`/storymap-api/comments/${commentId}`, {
+      .delete(`${storymapApiUrl}/comments/${commentId}`, {
         headers: {
           authorization: `Bearer ${currentUser!.token}`,
         },

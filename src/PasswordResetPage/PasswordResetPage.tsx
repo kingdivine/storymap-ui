@@ -13,7 +13,7 @@ import { useRouteMatch } from "react-router-dom";
 import Heading from "../Generic/Heading";
 import mapBackground from "../Generic/images/map-background.png";
 import PasswordResetForm from "./PasswordResetForm";
-import { isMobile } from "../utils";
+import { isMobile, storymapApiUrl } from "../utils";
 
 const smallScreen = isMobile();
 
@@ -66,7 +66,7 @@ export default function GetPasswordResetLinkPage() {
 
     axios
       .get(
-        `/storymap-api/users/${userId}/verify-password-reset-token/${resetToken}`
+        `${storymapApiUrl}/users/${userId}/verify-password-reset-token/${resetToken}`
       )
       .then((response) => {
         setCurrentUser(null);

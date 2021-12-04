@@ -4,7 +4,7 @@ module.exports = function (app) {
   app.use(
     "/storymap-api",
     createProxyMiddleware({
-      target: "http://localhost:4000",
+      target: "http://localhost:8080",
       changeOrigin: true,
       pathRewrite: {
         "^/storymap-api": "/",
