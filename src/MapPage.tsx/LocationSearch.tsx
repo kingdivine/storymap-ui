@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { TextField, Typography } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
+import { mapboxApiUrl } from "../utils";
 
 type Bbox = [number, number, number, number];
 
@@ -36,10 +37,9 @@ export default function LocationSearch(props: {
       setIsLoading(true);
       try {
         const response = await axios({
-          url: `/mapbox-api/geocoding/v5/mapbox.places/${searchString}.json`,
+          url: `${mapboxApiUrl}/geocoding/v5/mapbox.places/${searchString}.json`,
           params: {
-            access_token:
-              "pk.eyJ1IjoiZGl2aW5lYSIsImEiOiJja24wZ2lqbjkwY2J4Mm9scnY3bW1yZW5nIn0.GkVgq5TQlU19vuZLwggtjQ",
+            access_token: process.env.REACT_APP_MAPBOX_ACCESS_TOKEN!,
           },
         });
         setOptions(response.data.features);
