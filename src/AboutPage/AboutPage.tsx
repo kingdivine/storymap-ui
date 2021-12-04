@@ -6,6 +6,8 @@ import {
   Theme,
   Typography,
 } from "@material-ui/core";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import Heading from "../Generic/Heading";
 import mapBackground from "../Generic/images/map-background.png";
 import { isMobile } from "../utils";
@@ -51,13 +53,23 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function AboutPage() {
   const classes = useStyles();
+
+  const [testString, setTestString] = useState("");
+
+  useEffect(() => {
+    axios
+      .get("/storymap-api")
+      .then((r) => setTestString(r.data.version))
+      .catch((e) => console.log("testString err", e));
+  }, []);
+
   return (
     <div className={classes.pageContainer}>
       <Heading />
       <div className={classes.paperContainer}>
         <Paper className={classes.paper}>
           <Typography variant={"h5"} color="secondary">
-            What is Storymap?
+            What is Storymap? {testString}
           </Typography>
           {PARAGRAPHS.map((p, i) => (
             <>
