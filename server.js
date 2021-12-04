@@ -5,6 +5,7 @@ const app = express();
 const createProxyMiddleware = require("http-proxy-middleware");
 
 const PORT = process.env.port || 3000;
+
 app.use(
   "/storymap-api",
   createProxyMiddleware({
