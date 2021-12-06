@@ -60,7 +60,7 @@ export default function VerificationPage() {
     setIsLoading(true);
     setErrorMsg("");
     axios
-      .get(`${storymapApiUrl}/${history.location.pathname}`)
+      .get(`${storymapApiUrl}${history.location.pathname}`)
       .then((response) => {
         const userObj = { ...response.data.user, token: response.data.token };
         setCurrentUser(userObj);
