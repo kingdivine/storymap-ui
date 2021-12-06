@@ -74,6 +74,11 @@ export default function AboutPage() {
           >
             Tell your Story
           </Button>
+          <div>
+            <Typography variant="caption" color="textSecondary">
+              v{process.env.REACT_APP_STORYMAP_UI_VERSION}
+            </Typography>
+          </div>
         </Paper>
       </div>
     </div>

@@ -63,6 +63,7 @@ export default function StoryClusterDialog(props: {
                 variant={"body1"}
                 style={{ marginLeft: 38, cursor: "pointer" }}
                 onClick={() => history.push(`/story/${post.slug}`)}
+                color={"primary"}
               >
                 {post.title}
               </Typography>
