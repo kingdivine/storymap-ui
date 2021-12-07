@@ -46,7 +46,7 @@ export default function GetPasswordResetLinkForm() {
     setIsError(false);
     setIsSuccess(false);
     axios
-      .post(`/${storymapApiUrl}/users/send-password-reset-link`, {
+      .post(`${storymapApiUrl}/users/send-password-reset-link`, {
         email,
       })
       .then((result) => {
