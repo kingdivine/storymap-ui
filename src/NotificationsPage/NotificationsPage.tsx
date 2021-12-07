@@ -15,14 +15,15 @@ import NotificationListItem from "./NotificationListItem";
 import UsernameAndPic from "../Generic/UsernameandPic";
 import { NotificationCounts } from "../types/NotificationCounts";
 import NavBar from "../Generic/Navbar";
-import { storymapApiUrl } from "../utils";
+import { isMobile, storymapApiUrl } from "../utils";
 
 const NOTIFS_PER_PAGE = 20; //matches backend
+const smallScreen = isMobile();
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     mainContent: {
-      marginTop: "15vh",
+      marginTop: smallScreen ? "10vh" : "15vh",
       marginLeft: "auto",
       marginRight: "auto",
       width: "85%",
