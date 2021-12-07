@@ -117,7 +117,10 @@ export default function LoginForm() {
   ) => {
     setSignupValues({
       ...signupValues,
-      [field]: field === "username" ? e.target.value.trim() : e.target.value,
+      [field]:
+        field === "username"
+          ? e.target.value.replace(/\s/g, "").toLowerCase()
+          : e.target.value,
     });
   };
 
