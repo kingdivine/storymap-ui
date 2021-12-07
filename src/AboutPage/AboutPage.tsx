@@ -11,7 +11,7 @@ import mapBackground from "../Generic/images/map-background.png";
 import { isMobile } from "../utils";
 
 const PARAGRAPHS = [
-  "Storymap is an online travel diary. A place to share your stories and experiences from your community and around the world. It’s a place to journal your adventures and encounters, your insights and your life.",
+  "Storymap is an online travel diary. A place to share your stories and experiences from your community and around the world. It’s a place to journal your adventures and encounters, to share recommendations and insights.",
   "Document stories for your own private viewing - as a memento for your future self - or post in public mode, for all to see and share. Simply curious? Well, fly around the map to various locations, and check out what’s happening over here and over there.",
   "There’s 8 billion stories to be written. Why not write yours?",
 ];
@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme: Theme) =>
       height: "100vh",
     },
     paperContainer: {
-      marginTop: "15vh",
+      marginTop: smallScreen ? "10vh" : "15vh",
       display: "flex",
       alignItems: "center",
       flexDirection: "column",
