@@ -41,23 +41,6 @@ export default function BottomBar(props: { notificationsCount: number }) {
     <div className={classes.navBar}>
       {currentUser && (
         <>
-          <Badge
-            badgeContent={notificationsCount}
-            max={99}
-            showZero={false}
-            color="secondary"
-          >
-            <IconButton className={classes.navLinkBtn} href="/notifications">
-              <NotificationsActiveIcon
-                color={page === "notifications" ? "secondary" : "inherit"}
-                fontSize={"large"}
-              />
-            </IconButton>
-          </Badge>
-        </>
-      )}
-      {currentUser && (
-        <>
           <IconButton
             className={classes.navLinkBtn}
             href={`/users/${currentUser.username}`}
@@ -83,9 +66,27 @@ export default function BottomBar(props: { notificationsCount: number }) {
         />
       </IconButton>
 
-      <IconButton className={classes.navLinkBtn} href="/about">
-        <HelpIcon fontSize={"large"} />
-      </IconButton>
+      {currentUser ? (
+        <>
+          <Badge
+            badgeContent={notificationsCount}
+            max={99}
+            showZero={false}
+            color="secondary"
+          >
+            <IconButton className={classes.navLinkBtn} href="/notifications">
+              <NotificationsActiveIcon
+                color={page === "notifications" ? "secondary" : "inherit"}
+                fontSize={"large"}
+              />
+            </IconButton>
+          </Badge>
+        </>
+      ) : (
+        <IconButton className={classes.navLinkBtn} href="/about">
+          <HelpIcon fontSize={"large"} />
+        </IconButton>
+      )}
     </div>
   );
 }
