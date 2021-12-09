@@ -13,7 +13,7 @@ export const isValidEmail = (email: string) => {
   return re.test(String(email).toLowerCase());
 };
 
-export const isMobile = () => window.innerWidth < 425;
+export const isMobile = () => window.innerWidth < 768;
 
 moment.locale("en", {
   relativeTime: {
