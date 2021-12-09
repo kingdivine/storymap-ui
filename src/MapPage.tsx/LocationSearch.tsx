@@ -57,7 +57,7 @@ export default function LocationSearch(props: {
   return (
     <>
       <Autocomplete
-        style={{ width: props.textFieldWidth }}
+        style={{ width: props.textFieldWidth, background: "rgba(0,0,0,0.5)" }}
         size={"small"}
         getOptionLabel={(option) => option.place_name}
         options={options}
