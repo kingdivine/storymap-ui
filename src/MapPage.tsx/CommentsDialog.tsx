@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: "flex",
       flexDirection: "row",
       alignItems: "center",
-      justifyContent: "flex-end",
+      justifyContent: "space-between",
       margin: theme.spacing(1),
     },
     loadingIndicator: {
@@ -275,13 +275,13 @@ export default function CommentsDialog(props: {
       >
         <div className={classes.topLineContainer}>
           <div />
-          <Typography style={{ width: "50%" }} color={"textSecondary"}>
+          <Typography color={"textSecondary"}>
             {props.totalCommentCount === 1
               ? "1 Comment"
               : `${props.totalCommentCount} Comments`}
           </Typography>
           <IconButton onClick={props.onClose}>
-            <CloseIcon />
+            <CloseIcon fontSize="small" />
           </IconButton>
         </div>
         {isLoading && (
