@@ -6,6 +6,7 @@ import NotificationsActiveIcon from "@material-ui/icons/NotificationsActive";
 import PersonPinIcon from "@material-ui/icons/PersonPin";
 import MapIcon from "@material-ui/icons/Map";
 import HelpIcon from "@material-ui/icons/Help";
+import { useHistory } from "react-router";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -31,6 +32,8 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function BottomBar(props: { notificationsCount: number }) {
   const classes = useStyles();
   const { notificationsCount } = props;
+  const history = useHistory();
+  const page = history.location.pathname.split("/")[1];
 
   const [currentUser] = useCurrentUser();
 
@@ -38,25 +41,14 @@ export default function BottomBar(props: { notificationsCount: number }) {
     <div className={classes.navBar}>
       {currentUser && (
         <>
-          <Badge
-            badgeContent={notificationsCount}
-            max={99}
-            showZero={false}
-            color="secondary"
-          >
-            <IconButton className={classes.navLinkBtn} href="/notifications">
-              <NotificationsActiveIcon fontSize={"large"} />
-            </IconButton>
-          </Badge>
-        </>
-      )}
-      {currentUser && (
-        <>
           <IconButton
             className={classes.navLinkBtn}
             href={`/users/${currentUser.username}`}
           >
-            <FaceIcon fontSize={"large"} />
+            <FaceIcon
+              color={page === "users" ? "secondary" : "inherit"}
+              fontSize={"large"}
+            />
           </IconButton>
         </>
       )}
@@ -68,12 +60,36 @@ export default function BottomBar(props: { notificationsCount: number }) {
         </>
       )}
       <IconButton className={classes.navLinkBtn} href="/">
-        <MapIcon fontSize={"large"} />
+        <MapIcon
+          color={page === "" ? "secondary" : "inherit"}
+          fontSize={"large"}
+        />
       </IconButton>
 
-      <IconButton className={classes.navLinkBtn} href="/about">
-        <HelpIcon fontSize={"large"} />
-      </IconButton>
+      {currentUser ? (
+        <>
+          <Badge
+            badgeContent={notificationsCount}
+            max={99}
+            showZero={false}
+            color="secondary"
+          >
+            <IconButton className={classes.navLinkBtn} href="/notifications">
+              <NotificationsActiveIcon
+                color={page === "notifications" ? "secondary" : "inherit"}
+                fontSize={"large"}
+              />
+            </IconButton>
+          </Badge>
+        </>
+      ) : (
+        <IconButton className={classes.navLinkBtn} href="/about">
+          <HelpIcon
+            color={page === "about" ? "secondary" : "inherit"}
+            fontSize={"large"}
+          />
+        </IconButton>
+      )}
     </div>
   );
 }

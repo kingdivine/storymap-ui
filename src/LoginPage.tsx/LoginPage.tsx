@@ -72,7 +72,11 @@ export default function LoginPage() {
           <Collapse in={showForm}>
             <LoginForm />
           </Collapse>
-          <Button href="/about" style={{ textTransform: "none", marginTop: 8 }}>
+          <Button
+            href="/about"
+            style={{ textTransform: "none", marginTop: 8 }}
+            color="secondary"
+          >
             What is Storymap?
           </Button>
         </div>

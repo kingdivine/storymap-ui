@@ -1,12 +1,19 @@
 import moment from "moment";
 
+export const storymapApiUrl =
+  process.env.NODE_ENV === "production"
+    ? process.env.REACT_APP_STORYMAP_API_URL_PROD!
+    : process.env.REACT_APP_STORYMAP_API_URL_DEV!;
+
+export const mapboxApiUrl = process.env.REACT_APP_MAPBOX_API_URL!;
+
 export const isValidEmail = (email: string) => {
   const re =
     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return re.test(String(email).toLowerCase());
 };
 
-export const isMobile = () => window.innerWidth < 425;
+export const isMobile = () => window.innerWidth < 768;
 
 moment.locale("en", {
   relativeTime: {

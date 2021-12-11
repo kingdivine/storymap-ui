@@ -12,7 +12,7 @@ import {
 } from "@material-ui/core";
 
 import MailOutlineIcon from "@material-ui/icons/MailOutline";
-import { isMobile, isValidEmail } from "../utils";
+import { isMobile, isValidEmail, storymapApiUrl } from "../utils";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -46,7 +46,7 @@ export default function GetPasswordResetLinkForm() {
     setIsError(false);
     setIsSuccess(false);
     axios
-      .post(`storymap-api/users/send-password-reset-link`, {
+      .post(`${storymapApiUrl}/users/send-password-reset-link`, {
         email,
       })
       .then((result) => {

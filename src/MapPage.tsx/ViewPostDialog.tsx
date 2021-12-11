@@ -22,7 +22,7 @@ import CommentsDialog from "./CommentsDialog";
 import { StoryDetail } from "../types/StoryDetail";
 import UsernameAndPic from "../Generic/UsernameandPic";
 import DeleteStoryDialog from "./DeleteStoryDialog";
-import { isMobile } from "../utils";
+import { isMobile, storymapApiUrl } from "../utils";
 
 const smallScreen = isMobile();
 
@@ -103,7 +103,7 @@ export default function ViewPostDialog(props: {
             }
           : null;
         const response = await axios.get(
-          `/storymap-api/storiesBySlug/${props.storySlug}`,
+          `${storymapApiUrl}/storiesBySlug/${props.storySlug}`,
           {
             headers,
           }
@@ -157,7 +157,7 @@ export default function ViewPostDialog(props: {
       updateLikers("add");
       axios
         .post(
-          `/storymap-api/stories/${story!.id}/like`,
+          `${storymapApiUrl}/stories/${story!.id}/like`,
           {},
           {
             headers: {
@@ -173,7 +173,7 @@ export default function ViewPostDialog(props: {
     } else {
       updateLikers("remove");
       axios
-        .delete(`/storymap-api/stories/${story!.id}/like`, {
+        .delete(`${storymapApiUrl}/stories/${story!.id}/like`, {
           headers: {
             authorization: `Bearer ${currentUser.token}`,
           },

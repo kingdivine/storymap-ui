@@ -12,6 +12,7 @@ import { useCurrentUser } from "../hooks/useCurrentUser";
 import { User } from "../types/User";
 import { useHistory } from "react-router";
 import axios from "axios";
+import { storymapApiUrl } from "../utils";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -50,7 +51,7 @@ export default function StoriesSection(props: { user: User }) {
     setIsError(false);
     if (currentUser?.id === user.id) {
       axios
-        .get("/storymap-api/stories/me", {
+        .get(`${storymapApiUrl}/stories/me`, {
           params: {
             offset: 0,
           },
@@ -66,7 +67,7 @@ export default function StoriesSection(props: { user: User }) {
         .finally(() => setIsLoading(false));
     } else {
       axios
-        .get("/storymap-api/stories", {
+        .get(`${storymapApiUrl}/stories`, {
           params: {
             userId: user.id,
             offset: 0,

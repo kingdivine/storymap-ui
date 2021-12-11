@@ -13,6 +13,7 @@ import { useTheme } from "@material-ui/styles";
 import axios from "axios";
 import { useCurrentUser } from "../hooks/useCurrentUser";
 import { useHistory } from "react-router";
+import { storymapApiUrl } from "../utils";
 
 export default function DeleteAccountDialog(props: {
   onCloseDialog: () => void;
@@ -32,7 +33,7 @@ export default function DeleteAccountDialog(props: {
     setIsLoading(true);
     setIsError(false);
     axios
-      .delete(`/storymap-api/users`, {
+      .delete(`${storymapApiUrl}/users`, {
         headers: {
           authorization: `Bearer ${currentUser!.token}`,
         },

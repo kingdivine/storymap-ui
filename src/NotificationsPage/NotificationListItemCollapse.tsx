@@ -3,6 +3,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { CommentDetail } from "../types/CommentDetail";
 import { Notification } from "../types/Notification";
+import { storymapApiUrl } from "../utils";
 export default function NotificationListItemCollapse(props: {
   notification: Notification;
 }) {
@@ -18,7 +19,7 @@ export default function NotificationListItemCollapse(props: {
         ? notification.target_id
         : notification.comment_id;
     axios
-      .get(`/storymap-api/comments/${commentId}`, {
+      .get(`${storymapApiUrl}/comments/${commentId}`, {
         params: { repliesOffset: 0 },
       })
       .then((response) => setComment(response.data))
@@ -47,7 +48,7 @@ export default function NotificationListItemCollapse(props: {
 
   if (comment) {
     return (
-      <div style={{ marginLeft: 64, marginRight: 64, marginBottom: 8 }}>
+      <div style={{ marginLeft: 16, marginRight: 64, marginBottom: 8 }}>
         {notification.target_type === "comment" && (
           <div style={{ display: "flex" }}>
             <Typography color={"textSecondary"}>Re:</Typography>

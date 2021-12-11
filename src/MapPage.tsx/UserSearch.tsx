@@ -4,6 +4,7 @@ import { TextField } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import { User } from "../types/User";
 import UsernameAndPic from "../Generic/UsernameandPic";
+import { storymapApiUrl } from "../utils";
 
 export default function UserSearch(props: {
   onUserSelect: (user: User) => void;
@@ -24,7 +25,7 @@ export default function UserSearch(props: {
     const fetchData = async (searchString: string) => {
       setIsLoading(true);
       try {
-        const response = await axios.get(`/storymap-api/users/`, {
+        const response = await axios.get(`${storymapApiUrl}/users/`, {
           params: {
             username: searchString,
             offset: 0,

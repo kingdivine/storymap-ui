@@ -20,11 +20,14 @@ import { User } from "../types/User";
 import { Skeleton } from "@material-ui/lab";
 import { useHistory } from "react-router-dom";
 import StoriesSection from "./StoriesSection";
+import { isMobile, storymapApiUrl } from "../utils";
+
+const smallScreen = isMobile();
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     mainContent: {
-      marginTop: "15vh",
+      marginTop: smallScreen ? "10vh" : "15vh",
       marginLeft: "auto",
       marginRight: "auto",
       width: "85%",
@@ -36,13 +39,21 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: "center",
       "&>*": { margin: 8 },
     },
+    sectionContainer: {
+      maxHeight: smallScreen ? "60vh" : undefined,
+      overflowY: smallScreen ? "scroll" : undefined,
+    },
     section: {
       display: "flex",
       flexDirection: "column",
       textAlign: "start",
       marginTop: theme.spacing(3),
     },
-    sectionBody: { maxHeight: "30vh", overflowY: "scroll" },
+    sectionBody: {
+      maxHeight: "30vh",
+      overflowY: "auto",
+      paddingRight: theme.spacing(1),
+    },
     btn: {
       marginRight: theme.spacing(2),
       marginBottom: theme.spacing(2),
@@ -79,7 +90,7 @@ export default function ProfilePage() {
     } else {
       axios
         .get(
-          `/storymap-api/usersByUsername/${
+          `${storymapApiUrl}/usersByUsername/${
             history.location.pathname.split("/")[2]
           }`
         )
@@ -120,72 +131,85 @@ export default function ProfilePage() {
         )}
 
         <Divider style={{ margin: 8 }} />
-        <div className={classes.section}>
-          {user && (
-            <Typography
-              variant="h5"
-              color="primary"
-              style={{ marginBottom: 8 }}
-            >
-              Stories
-            </Typography>
-          )}
-
-          <div className={classes.sectionBody}>
-            {user && <StoriesSection user={user} />}
-            {isError && (
-              <div style={{ textAlign: "center" }}>
-                <Typography
-                  style={{ marginTop: 8, alignSelf: "center" }}
-                  color={"error"}
-                >
-                  Oops! Something went wrong.
-                </Typography>
-                <Typography
-                  style={{
-                    marginTop: 8,
-                    marginBottom: 24,
-                    alignSelf: "center",
-                  }}
-                  color={"textPrimary"}
-                >
-                  Please check your internet connection and try again later.
-                </Typography>
-              </div>
-            )}
-          </div>
-        </div>
-        {user && currentUser?.id === user.id && (
+        <div className={classes.sectionContainer}>
           <div className={classes.section}>
-            <Typography
-              variant="h5"
-              color="primary"
-              style={{ marginBottom: 8 }}
-            >
-              Account
-            </Typography>
-            <div className={classes.sectionBody}>
-              <Typography color="textPrimary" style={{ marginBottom: 8 }}>
-                {currentUser?.email}
+            {user && (
+              <Typography
+                variant="h5"
+                color="primary"
+                style={{ marginBottom: 8 }}
+              >
+                Stories
               </Typography>
-              <Button
-                variant="outlined"
-                size={"small"}
-                className={classes.btn}
-                onClick={handleLogout}
-                startIcon={<LogoutIcon />}
+            )}
+
+            <div className={classes.sectionBody}>
+              {user && <StoriesSection user={user} />}
+              {isError && (
+                <div style={{ textAlign: "center" }}>
+                  <Typography
+                    style={{ marginTop: 8, alignSelf: "center" }}
+                    color={"error"}
+                  >
+                    Oops! Something went wrong.
+                  </Typography>
+                  <Typography
+                    style={{
+                      marginTop: 8,
+                      marginBottom: 24,
+                      alignSelf: "center",
+                    }}
+                    color={"textPrimary"}
+                  >
+                    Please check your internet connection and try again later.
+                  </Typography>
+                </div>
+              )}
+            </div>
+          </div>
+          {user && currentUser?.id === user.id && (
+            <div className={classes.section}>
+              <Typography
+                variant="h5"
+                color="primary"
+                style={{ marginBottom: 8 }}
               >
-                Logout
-              </Button>
-              <Button
-                variant="outlined"
-                size={"small"}
-                className={classes.btn}
-                startIcon={<EditIcon />}
-                href={"/get-password-reset-link"}
+                Account
+              </Typography>
+              <div className={classes.sectionBody}>
+                <Typography color="textPrimary" style={{ marginBottom: 8 }}>
+                  {currentUser?.email}
+                </Typography>
+                <Button
+                  variant="outlined"
+                  size={"small"}
+                  className={classes.btn}
+                  onClick={handleLogout}
+                  startIcon={<LogoutIcon />}
+                >
+                  Logout
+                </Button>
+                <Button
+                  variant="outlined"
+                  size={"small"}
+                  className={classes.btn}
+                  startIcon={<EditIcon />}
+                  href={"/get-password-reset-link"}
+                >
+                  Change Password
+                </Button>
+              </div>
+            </div>
+          )}
+          {user && currentUser?.id === user.id && (
+            <div className={classes.section}>
+              <Typography
+                variant="h5"
+                color="error"
+                style={{ marginBottom: 8 }}
               >
-                Change Password
-              </Button>
+                Danger Zone
+              </Typography>
               <Button
                 variant="outlined"
                 size={"small"}
@@ -196,8 +220,8 @@ export default function ProfilePage() {
                 DELETE ACCOUNT
               </Button>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
       {isDeleteDialogOpen && (
         <DeleteAccountDialog

@@ -12,6 +12,7 @@ import { useTheme } from "@material-ui/styles";
 import axios from "axios";
 import { useCurrentUser } from "../hooks/useCurrentUser";
 import { StoryDetail } from "../types/StoryDetail";
+import { storymapApiUrl } from "../utils";
 
 export default function DeleteStoryDialog(props: {
   story: StoryDetail;
@@ -30,7 +31,7 @@ export default function DeleteStoryDialog(props: {
     setIsLoading(true);
     setIsError(false);
     axios
-      .delete(`/storymap-api/stories/${story.id}`, {
+      .delete(`${storymapApiUrl}stories/${story.id}`, {
         headers: {
           authorization: `Bearer ${currentUser!.token}`,
         },

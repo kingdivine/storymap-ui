@@ -1,6 +1,6 @@
 {
   "name": "storymap-ui",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.11.4",
@@ -38,9 +38,13 @@
   },
   "browserslist": {
     "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
+      "last 5 chrome version",
+      "last 5 firefox version",
+      "last 5 safari version",
+      "last 5 edge version",
+      "last 5 and_chr version",
+      "last 5 and_ff version",
+      "last 5 ios_saf version"
     ],
     "development": [
       "last 1 chrome version",

@@ -15,13 +15,15 @@ import NotificationListItem from "./NotificationListItem";
 import UsernameAndPic from "../Generic/UsernameandPic";
 import { NotificationCounts } from "../types/NotificationCounts";
 import NavBar from "../Generic/Navbar";
+import { isMobile, storymapApiUrl } from "../utils";
 
 const NOTIFS_PER_PAGE = 20; //matches backend
+const smallScreen = isMobile();
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     mainContent: {
-      marginTop: "15vh",
+      marginTop: smallScreen ? "10vh" : "15vh",
       marginLeft: "auto",
       marginRight: "auto",
       width: "85%",
@@ -31,7 +33,7 @@ const useStyles = makeStyles((theme: Theme) =>
       textAlign: "start",
       marginTop: theme.spacing(3),
       maxHeight: "65vh",
-      overflowY: "scroll",
+      overflowY: "auto",
     },
     loadingIndicator: {
       marginLeft: "auto",
@@ -64,7 +66,7 @@ export default function NotificationsPage(props: {}) {
 
   useEffect(() => {
     axios
-      .get(`/storymap-api/notifications`, {
+      .get(`${storymapApiUrl}/notifications`, {
         headers: {
           authorization: `Bearer ${currentUser?.token}`,
         },
@@ -85,7 +87,7 @@ export default function NotificationsPage(props: {}) {
       return;
     }
     axios
-      .get<NotificationCounts>("/storymap-api/notifications/counts", {
+      .get<NotificationCounts>(`${storymapApiUrl}/notifications/counts`, {
         headers: {
           authorization: `Bearer ${currentUser.token}`,
         },
@@ -107,7 +109,7 @@ export default function NotificationsPage(props: {}) {
     }
     axios
       .post(
-        `/storymap-api/notifications`,
+        `${storymapApiUrl}/notifications`,
         { notificationIds: unreadNotificationIds },
         {
           headers: {
@@ -125,7 +127,7 @@ export default function NotificationsPage(props: {}) {
     setIsLoadingMore(true);
     const newOffset = offset + NOTIFS_PER_PAGE;
     axios
-      .get(`/storymap-api/notifications`, {
+      .get(`${storymapApiUrl}/notifications`, {
         headers: {
           authorization: `Bearer ${currentUser?.token}`,
         },

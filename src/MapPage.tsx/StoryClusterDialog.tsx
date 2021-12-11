@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: "flex",
       flexDirection: "row",
       alignItems: "center",
-      justifyContent: "flex-end",
+      justifyContent: "space-between",
       margin: theme.spacing(1),
     },
     listItem: {
@@ -42,7 +42,7 @@ export default function StoryClusterDialog(props: {
       <div style={{ margin: 8, padding: 16 }}>
         <div className={classes.topLineContainer}>
           <div />
-          <Typography style={{ width: "50%" }} color={"textSecondary"}>
+          <Typography color={"textSecondary"}>
             {`${posts.length} Stories`}
           </Typography>
           <IconButton onClick={() => onCloseDialog()}>
@@ -63,6 +63,7 @@ export default function StoryClusterDialog(props: {
                 variant={"body1"}
                 style={{ marginLeft: 38, cursor: "pointer" }}
                 onClick={() => history.push(`/story/${post.slug}`)}
+                color={"primary"}
               >
                 {post.title}
               </Typography>

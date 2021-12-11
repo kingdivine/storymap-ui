@@ -12,6 +12,7 @@ import {
 import { useCurrentUser } from "../hooks/useCurrentUser";
 //icons
 import VpnKeyIcon from "@material-ui/icons/VpnKey";
+import { storymapApiUrl } from "../utils";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -71,7 +72,7 @@ export default function PasswordResetForm(props: {
     setIsLoading(true);
     setError("");
     axios
-      .post(`/storymap-api/users/${props.userId}/password-reset`, {
+      .post(`${storymapApiUrl}/users/${props.userId}/password-reset`, {
         password,
         resetToken: props.resetToken,
       })
