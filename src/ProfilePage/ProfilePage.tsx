@@ -49,7 +49,11 @@ const useStyles = makeStyles((theme: Theme) =>
       textAlign: "start",
       marginTop: theme.spacing(3),
     },
-    sectionBody: { maxHeight: "30vh", overflowY: "scroll" },
+    sectionBody: {
+      maxHeight: "30vh",
+      overflowY: "auto",
+      paddingRight: theme.spacing(1),
+    },
     btn: {
       marginRight: theme.spacing(2),
       marginBottom: theme.spacing(2),

@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme: Theme) =>
       textAlign: "start",
       marginTop: theme.spacing(3),
       maxHeight: "65vh",
-      overflowY: "scroll",
+      overflowY: "auto",
     },
     loadingIndicator: {
       marginLeft: "auto",

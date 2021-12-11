@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     content: {
       maxHeight: "90px",
-      overflowY: "scroll",
+      overflowY: "auto",
       textOverflow: "ellipsis",
       marginLeft: theme.spacing(4.5),
     },
@@ -91,7 +91,9 @@ export default function CommentListItem(props: {
         </div>
 
         <div className={classes.content}>
-          <Typography variant="body1">{comment.content}</Typography>
+          <Typography variant="body1" style={{ wordBreak: "break-word" }}>
+            {comment.content}
+          </Typography>
         </div>
       </div>
 
