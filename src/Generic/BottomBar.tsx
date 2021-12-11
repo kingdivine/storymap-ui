@@ -84,7 +84,10 @@ export default function BottomBar(props: { notificationsCount: number }) {
         </>
       ) : (
         <IconButton className={classes.navLinkBtn} href="/about">
-          <HelpIcon fontSize={"large"} />
+          <HelpIcon
+            color={page === "about" ? "secondary" : "inherit"}
+            fontSize={"large"}
+          />
         </IconButton>
       )}
     </div>

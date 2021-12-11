@@ -8,6 +8,7 @@ import {
 } from "@material-ui/core";
 import Heading from "../Generic/Heading";
 import mapBackground from "../Generic/images/map-background.png";
+import Navbar from "../Generic/Navbar";
 import { isMobile } from "../utils";
 
 const PARAGRAPHS = [
@@ -37,14 +38,14 @@ const useStyles = makeStyles((theme: Theme) =>
       flexDirection: "column",
     },
     paper: {
-      padding: theme.spacing(2),
-      maxWidth: smallScreen ? "85%" : "60%",
+      padding: theme.spacing(1),
+      maxWidth: smallScreen ? "90%" : "70%",
       textAlign: "center",
       "&>*": {
         margin: theme.spacing(2),
       },
       maxHeight: "75vh",
-      overflowY: "scroll",
+      overflowY: "auto",
     },
   })
 );
@@ -55,6 +56,7 @@ export default function AboutPage() {
   return (
     <div className={classes.pageContainer}>
       <Heading />
+      <Navbar fetchNotifs={false} />
       <div className={classes.paperContainer}>
         <Paper className={classes.paper}>
           <Typography variant={"h5"} color="secondary">
@@ -70,7 +72,7 @@ export default function AboutPage() {
             variant="contained"
             href="/"
             color="primary"
-            style={{ marginBottom: 24 }}
+            style={{ marginBottom: 8 }}
           >
             Tell your Story
           </Button>
