@@ -281,7 +281,7 @@ export default function CommentsDialog(props: {
               : `${props.totalCommentCount} Comments`}
           </Typography>
           <IconButton onClick={props.onClose}>
-            <CloseIcon fontSize="small" />
+            <CloseIcon />
           </IconButton>
         </div>
         {isLoading && (
