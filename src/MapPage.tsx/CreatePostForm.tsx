@@ -21,6 +21,7 @@ import axios from "axios";
 import { useCurrentUser } from "../hooks/useCurrentUser";
 import { useHistory } from "react-router";
 import { isMobile, storymapApiUrl } from "../utils";
+import ImageUpload from "./ImageUpload";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -172,13 +173,14 @@ export default function CreatePostForm(props: { closeForm: () => void }) {
               placeholder={"Tell your story..."}
               variant="outlined"
               rows={8}
-              rowsMax={8}
+              maxRows={8}
               helperText={
                 content.length > STORY_CONTENT_CHAR_LIMIT * 0.75
                   ? `${content.length}/${STORY_CONTENT_CHAR_LIMIT} characters.`
                   : null
               }
             />
+            <ImageUpload />
             <OutlinedInput
               onKeyUp={handleTagInputKeyUp}
               inputProps={{ maxLength: TAG_CHAR_LIMIT }}
