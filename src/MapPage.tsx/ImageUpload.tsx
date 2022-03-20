@@ -1,9 +1,10 @@
-import { makeStyles, Theme, createStyles } from "@material-ui/core";
 import { useState, useEffect } from "react";
+import { makeStyles, Theme, createStyles, Typography } from "@material-ui/core";
 import { isMobile } from "../utils";
 
 const smallScreen = isMobile();
 const THUMBNAIL_SIZE = smallScreen ? 50 : 100;
+const FILE_SIZE_LIMIT = 5000000; //5MB
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -25,20 +26,29 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 export default function ImageUpload() {
-  const [images, setImages] = useState<File[]>([]);
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [imageObjectUrls, setImageObjectUrls] = useState([""]);
+  const [errorText, setErrorText] = useState("");
 
   const classes = useStyles();
 
   useEffect(() => {
-    const urlsToSet = images.map((image) => URL.createObjectURL(image));
+    const urlsToSet = imageFiles.map((image) => URL.createObjectURL(image));
     setImageObjectUrls(urlsToSet);
-  }, [images]);
+  }, [imageFiles]);
 
   const onImagesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setErrorText("");
     const files = e.target.files as FileList;
-    const imagesToSet = Array.from(files).map((file) => file);
-    setImages(images.concat(imagesToSet));
+    const fileArr = Array.from(files).map((file) => file);
+    const validSizes = fileArr.every((file) => file.size <= FILE_SIZE_LIMIT);
+    if (!validSizes) {
+      setErrorText(
+        "Max file size of 5MB exceed. One or more of your images are too big."
+      );
+    } else {
+      setImageFiles(imageFiles.concat(fileArr));
+    }
   };
 
   return (
@@ -61,6 +71,9 @@ export default function ImageUpload() {
           ></div>
         ))}
       </div>
+      <Typography variant="caption" color="error">
+        {errorText}
+      </Typography>
     </div>
   );
 }
