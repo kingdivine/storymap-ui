@@ -180,7 +180,9 @@ export default function CreatePostForm(props: { closeForm: () => void }) {
                   : null
               }
             />
-            <ImageUpload />
+            <div style={{ marginTop: 8 }}>
+              <ImageUpload />
+            </div>
             <OutlinedInput
               onKeyUp={handleTagInputKeyUp}
               inputProps={{ maxLength: TAG_CHAR_LIMIT }}

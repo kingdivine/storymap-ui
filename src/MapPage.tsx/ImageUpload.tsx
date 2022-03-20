@@ -1,9 +1,16 @@
 import { useState, useEffect } from "react";
-import { makeStyles, Theme, createStyles, Typography } from "@material-ui/core";
+import {
+  makeStyles,
+  Theme,
+  createStyles,
+  Typography,
+  Button,
+} from "@material-ui/core";
 import { isMobile } from "../utils";
+import { PhotoCamera } from "@material-ui/icons";
 
 const smallScreen = isMobile();
-const THUMBNAIL_SIZE = smallScreen ? 50 : 100;
+const THUMBNAIL_SIZE = smallScreen ? 75 : 100;
 const FILE_SIZE_LIMIT = 5000000; //5MB
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -16,9 +23,9 @@ const useStyles = makeStyles((theme: Theme) =>
       width: `${THUMBNAIL_SIZE}px`,
       height: `${THUMBNAIL_SIZE}px`,
       margin: "5px 5px 0px 0px",
-      borderWidth: "1px",
+      borderWidth: "2px",
       borderStyle: "solid",
-      borderColor: theme.palette.secondary.main,
+      borderColor: theme.palette.common.white,
       backgroundPosition: "center center",
       backgroundSize: "cover",
     },
@@ -52,14 +59,28 @@ export default function ImageUpload() {
   };
 
   return (
-    <div>
-      <input
-        type="file"
-        multiple
-        accept="image/*"
-        onChange={onImagesChange}
-        title=""
-      />
+    <>
+      <div>
+        <label htmlFor="image-upload-input">
+          <Button
+            variant="outlined"
+            size="small"
+            component="span"
+            startIcon={<PhotoCamera />}
+          >
+            Add Images
+          </Button>
+        </label>
+        <input
+          id="image-upload-input"
+          type="file"
+          style={{ display: "none" }}
+          multiple
+          accept="image/*"
+          onChange={onImagesChange}
+        />
+      </div>
+
       <div className={classes.thumbnailContainer}>
         {imageObjectUrls.map((url) => (
           <div
@@ -74,6 +95,6 @@ export default function ImageUpload() {
       <Typography variant="caption" color="error">
         {errorText}
       </Typography>
-    </div>
+    </>
   );
 }
