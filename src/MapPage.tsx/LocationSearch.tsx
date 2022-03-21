@@ -19,6 +19,7 @@ export default function LocationSearch(props: {
   placeHolderText: string;
   textFieldWidth: number;
   onLocationSelect: (longLat: [number, number], placeName: string) => void;
+  darken?: boolean;
 }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [options, setOptions] = useState<MapboxGeocodeLocation[]>([]);
@@ -57,7 +58,10 @@ export default function LocationSearch(props: {
   return (
     <>
       <Autocomplete
-        style={{ width: props.textFieldWidth, background: "rgba(0,0,0,0.5)" }}
+        style={{
+          width: props.textFieldWidth,
+          background: props.darken ? "rgba(0,0,0,0.5)" : undefined,
+        }}
         size={"small"}
         getOptionLabel={(option) => option.place_name}
         options={options}

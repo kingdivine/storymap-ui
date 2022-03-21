@@ -179,6 +179,7 @@ export default function MapPage() {
           placeHolderText={"Fly to..."}
           textFieldWidth={165}
           onLocationSelect={(coords) => setFlyToLongLat(coords)}
+          darken
         />
         <Filter onFilterChange={handleFilterChange} />
         <div className={classes.chipContainer}>
