@@ -42,6 +42,8 @@ const STORY_CONTENT_CHAR_LIMIT = 10000;
 const STORY_TITLE_CHAR_LIMIT = 80;
 const TAG_CHAR_LIMIT = 30;
 const TAGS_COUNT_LIMIT = 3;
+const IMAGE_SIZE_LIMIT = 1000000; //5MB
+const IMAGE_COUNT_LIMIT = 3;
 
 export default function CreatePostForm(props: { closeForm: () => void }) {
   const classes = useStyles();
@@ -49,7 +51,7 @@ export default function CreatePostForm(props: { closeForm: () => void }) {
 
   const [currentUser] = useCurrentUser();
 
-  //form values
+  //form state
   const [title, setTitle] = useState("");
   const [placeName, setPlaceName] = useState("");
   const [location, setLocation] = useState<[number, number]>();
@@ -57,10 +59,15 @@ export default function CreatePostForm(props: { closeForm: () => void }) {
   const [tags, setTags] = useState<string[]>([]);
   const [isPrivate, setIsPrivate] = useState(false);
 
+  //image state
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
+  const [imageErrorText, setImageErrorText] = useState("");
+
   //submission state
   const [isLoading, setIsLoading] = useState(false);
   const [postError, setPostError] = useState("");
 
+  //tag handlers
   const handleTagInputKeyUp = (event: any) => {
     if (event.key === "Enter" || event.key === " ") {
       let newTag = "";
@@ -85,6 +92,29 @@ export default function CreatePostForm(props: { closeForm: () => void }) {
     setTags((tags) => tags.filter((tag) => tag !== tagToDelete));
   };
 
+  //image handlers
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setImageErrorText("");
+    const files = e.target.files as FileList;
+    const fileArr = Array.from(files).map((file) => file);
+    const validSizes = fileArr.every((file) => file.size <= IMAGE_SIZE_LIMIT);
+    if (!validSizes) {
+      setImageErrorText(
+        "Max file size of 5MB exceed. One or more of your images are too big."
+      );
+    } else {
+      setImageFiles(imageFiles.concat(fileArr));
+    }
+  };
+
+  const handleRemoveImageClick = (fileName: string) => {
+    const updatedImageFiles = imageFiles.filter(
+      (imageFile) => imageFile.name !== fileName
+    );
+    setImageFiles(updatedImageFiles);
+  };
+
+  //form posting
   const canPost = () =>
     content.length > 0 &&
     content.length <= STORY_CONTENT_CHAR_LIMIT &&
@@ -93,6 +123,7 @@ export default function CreatePostForm(props: { closeForm: () => void }) {
     placeName &&
     tags.length <= TAGS_COUNT_LIMIT &&
     tags.every((tag) => tag.length > 0 && tag.length <= TAG_CHAR_LIMIT) &&
+    !imageErrorText &&
     location;
 
   const handlePostSubmit = () => {
@@ -181,7 +212,14 @@ export default function CreatePostForm(props: { closeForm: () => void }) {
               }
             />
             <div style={{ marginTop: 8 }}>
-              <ImageUpload />
+              <ImageUpload
+                imageSizeLimit={IMAGE_SIZE_LIMIT}
+                imageCountLimit={IMAGE_COUNT_LIMIT}
+                imageFiles={imageFiles}
+                handleImageUpload={handleImageUpload}
+                handleRemoveImageClick={handleRemoveImageClick}
+                errorText={imageErrorText}
+              />
             </div>
             <OutlinedInput
               onKeyUp={handleTagInputKeyUp}

@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import {
   makeStyles,
   Theme,
@@ -13,8 +12,6 @@ import RemoveIcon from "@material-ui/icons/Clear";
 
 const smallScreen = isMobile();
 const THUMBNAIL_SIZE = smallScreen ? 75 : 100;
-const FILE_SIZE_LIMIT = 5000000; //5MB
-const MAX_IMAGES = 3;
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -46,43 +43,15 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function ImageUpload() {
-  const [imageFiles, setImageFiles] = useState<File[]>([]);
-  const [imageObjectUrls, setImageObjectUrls] = useState<
-    { name: string; url: string }[]
-  >([]);
-  const [errorText, setErrorText] = useState("");
-
+export default function ImageUpload(props: {
+  imageSizeLimit: number;
+  imageCountLimit: number;
+  imageFiles: File[];
+  handleImageUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleRemoveImageClick: (fileName: string) => void;
+  errorText: string;
+}) {
   const classes = useStyles();
-
-  useEffect(() => {
-    const urlsToSet = imageFiles.map((image) => ({
-      name: image.name,
-      url: URL.createObjectURL(image),
-    }));
-    setImageObjectUrls(urlsToSet);
-  }, [imageFiles]);
-
-  const onImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setErrorText("");
-    const files = e.target.files as FileList;
-    const fileArr = Array.from(files).map((file) => file);
-    const validSizes = fileArr.every((file) => file.size <= FILE_SIZE_LIMIT);
-    if (!validSizes) {
-      setErrorText(
-        "Max file size of 5MB exceed. One or more of your images are too big."
-      );
-    } else {
-      setImageFiles(imageFiles.concat(fileArr));
-    }
-  };
-
-  const handleRemoveClick = (imageName: string) => {
-    const updatedImageFiles = imageFiles.filter(
-      (image) => image.name !== imageName
-    );
-    setImageFiles(updatedImageFiles);
-  };
 
   return (
     <>
@@ -93,7 +62,7 @@ export default function ImageUpload() {
             size="small"
             component="span"
             startIcon={<PhotoCamera />}
-            disabled={imageFiles.length === MAX_IMAGES}
+            disabled={props.imageFiles.length === props.imageCountLimit}
           >
             Add Images
           </Button>
@@ -104,38 +73,43 @@ export default function ImageUpload() {
           style={{ display: "none" }}
           multiple
           accept="image/*"
-          onChange={onImageUpload}
-          disabled={imageFiles.length === MAX_IMAGES}
+          onChange={(e) => props.handleImageUpload(e)}
+          disabled={props.imageFiles.length === props.imageCountLimit}
         />
       </div>
 
       <div className={classes.thumbnailContainer}>
-        {imageObjectUrls.map((image) => (
-          <div className={classes.thumbnailAndRemoveBtn}>
-            <div
-              className={classes.thumbnail}
-              style={{
-                backgroundImage: `url('${image.url}')`,
-              }}
-              title={image.url}
-            />
+        {props.imageFiles
+          .map((image) => ({
+            name: image.name,
+            url: URL.createObjectURL(image),
+          }))
+          .map((image) => (
+            <div className={classes.thumbnailAndRemoveBtn}>
+              <div
+                className={classes.thumbnail}
+                style={{
+                  backgroundImage: `url('${image.url}')`,
+                }}
+                title={image.url}
+              />
 
-            <IconButton
-              className={classes.removeBtn}
-              onClick={() => handleRemoveClick(image.name)}
-            >
-              <RemoveIcon />
-            </IconButton>
-          </div>
-        ))}
+              <IconButton
+                className={classes.removeBtn}
+                onClick={() => props.handleRemoveImageClick(image.name)}
+              >
+                <RemoveIcon />
+              </IconButton>
+            </div>
+          ))}
       </div>
-      {errorText && (
+      {props.errorText && (
         <Typography variant="caption" color="error">
-          {errorText}
+          {props.errorText}
         </Typography>
       )}
 
-      {!errorText && imageFiles.length === MAX_IMAGES && (
+      {!props.errorText && props.imageFiles.length === props.imageCountLimit && (
         <Typography variant="caption" color="textPrimary">
           Max of 3 images added.
         </Typography>
