@@ -49,7 +49,6 @@ export default function ImageUpload(props: {
   imageFiles: File[];
   handleImageUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleRemoveImageClick: (fileName: string) => void;
-  errorText: string;
 }) {
   const classes = useStyles();
 
@@ -62,7 +61,7 @@ export default function ImageUpload(props: {
             size="small"
             component="span"
             startIcon={<PhotoCamera />}
-            disabled={props.imageFiles.length === props.imageCountLimit}
+            disabled={props.imageFiles.length >= props.imageCountLimit}
           >
             Add Images
           </Button>
@@ -74,7 +73,7 @@ export default function ImageUpload(props: {
           multiple
           accept="image/*"
           onChange={(e) => props.handleImageUpload(e)}
-          disabled={props.imageFiles.length === props.imageCountLimit}
+          disabled={props.imageFiles.length >= props.imageCountLimit}
         />
       </div>
 
@@ -103,13 +102,18 @@ export default function ImageUpload(props: {
             </div>
           ))}
       </div>
-      {props.errorText && (
+      {props.imageFiles.some((file) => file.size > props.imageSizeLimit) && (
         <Typography variant="caption" color="error">
-          {props.errorText}
+          Max file size of 5MB exceed. One or more of your images are too big.
+        </Typography>
+      )}
+      {props.imageFiles.length > props.imageCountLimit && (
+        <Typography variant="caption" color="error">
+          Too many images. Add 3 or less.
         </Typography>
       )}
 
-      {!props.errorText && props.imageFiles.length === props.imageCountLimit && (
+      {props.imageFiles.length === props.imageCountLimit && (
         <Typography variant="caption" color="textPrimary">
           Max of 3 images added.
         </Typography>

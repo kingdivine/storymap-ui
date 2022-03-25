@@ -42,7 +42,7 @@ const STORY_CONTENT_CHAR_LIMIT = 10000;
 const STORY_TITLE_CHAR_LIMIT = 80;
 const TAG_CHAR_LIMIT = 30;
 const TAGS_COUNT_LIMIT = 3;
-const IMAGE_SIZE_LIMIT = 1000000; //5MB
+const IMAGE_SIZE_LIMIT = 5000000; //5MB
 const IMAGE_COUNT_LIMIT = 3;
 
 export default function CreatePostForm(props: { closeForm: () => void }) {
@@ -61,7 +61,6 @@ export default function CreatePostForm(props: { closeForm: () => void }) {
 
   //image state
   const [imageFiles, setImageFiles] = useState<File[]>([]);
-  const [imageErrorText, setImageErrorText] = useState("");
 
   //submission state
   const [isLoading, setIsLoading] = useState(false);
@@ -94,17 +93,9 @@ export default function CreatePostForm(props: { closeForm: () => void }) {
 
   //image handlers
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setImageErrorText("");
     const files = e.target.files as FileList;
     const fileArr = Array.from(files).map((file) => file);
-    const validSizes = fileArr.every((file) => file.size <= IMAGE_SIZE_LIMIT);
-    if (!validSizes) {
-      setImageErrorText(
-        "Max file size of 5MB exceed. One or more of your images are too big."
-      );
-    } else {
-      setImageFiles(imageFiles.concat(fileArr));
-    }
+    setImageFiles(imageFiles.concat(fileArr));
   };
 
   const handleRemoveImageClick = (fileName: string) => {
@@ -123,7 +114,8 @@ export default function CreatePostForm(props: { closeForm: () => void }) {
     placeName &&
     tags.length <= TAGS_COUNT_LIMIT &&
     tags.every((tag) => tag.length > 0 && tag.length <= TAG_CHAR_LIMIT) &&
-    !imageErrorText &&
+    imageFiles.every((file) => file.size <= IMAGE_SIZE_LIMIT) &&
+    imageFiles.length <= IMAGE_COUNT_LIMIT &&
     location;
 
   const handlePostSubmit = () => {
@@ -218,7 +210,6 @@ export default function CreatePostForm(props: { closeForm: () => void }) {
                 imageFiles={imageFiles}
                 handleImageUpload={handleImageUpload}
                 handleRemoveImageClick={handleRemoveImageClick}
-                errorText={imageErrorText}
               />
             </div>
             <OutlinedInput
