@@ -20,7 +20,7 @@ import LocationSearch from "./LocationSearch";
 import axios from "axios";
 import { useCurrentUser } from "../hooks/useCurrentUser";
 import { useHistory } from "react-router";
-import { isMobile, storymapApiUrl } from "../utils";
+import { imageApiUrl, isMobile, storymapApiUrl } from "../utils";
 import ImageUpload from "./ImageUpload";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -118,11 +118,41 @@ export default function CreatePostForm(props: { closeForm: () => void }) {
     imageFiles.length <= IMAGE_COUNT_LIMIT &&
     location;
 
-  const handlePostSubmit = () => {
+  const handlePostSubmit = async () => {
     setIsLoading(true);
     setPostError("");
-    axios
-      .post(
+
+    try {
+      //fetch presigned urls
+      let presignedUrls: string[] = [];
+      if (imageFiles.length > 0) {
+        const presignedUrlsResponse = await axios.get<string[]>(
+          `${storymapApiUrl}/images/presign?count=${imageFiles.length}&isPrivate=${isPrivate}`,
+          {
+            headers: {
+              authorization: `Bearer ${currentUser!.token}`,
+            },
+          }
+        );
+        presignedUrls = presignedUrlsResponse.data;
+
+        //url manipulation forces req via proxy to avoid cors errs
+        await Promise.all(
+          presignedUrls.map((url, i) =>
+            axios({
+              method: "put",
+              url: `image-api${url.split(imageApiUrl)[1]}`,
+              headers: {
+                "Content-Type": "multipart/form-data",
+                "x-amz-acl": new URLSearchParams(url).get("x-amz-acl"),
+              },
+              data: imageFiles[i],
+            })
+          )
+        );
+      }
+
+      const newPost = await axios.post(
         `${storymapApiUrl}/stories`,
         {
           title,
@@ -131,21 +161,22 @@ export default function CreatePostForm(props: { closeForm: () => void }) {
           isPrivate,
           tags,
           location: `${location![1]},${location![0]}`,
+          imageIds: presignedUrls.map(
+            (url) => url.split(`${imageApiUrl}/`)[1].split("?")[0]
+          ),
         },
         {
           headers: {
             authorization: `Bearer ${currentUser?.token}`, //TODO: replace with !
           },
         }
-      )
-      .then((result) => {
-        history.push(`/story/${result.data.slug}`);
-        props.closeForm();
-      })
-      .catch((e) => {
-        setPostError("Oops! Something went wrong.");
-        setIsLoading(false);
-      });
+      );
+      history.push(`/story/${newPost.data.slug}`);
+      props.closeForm();
+    } catch (e) {
+      setPostError("Oops! Something went wrong.");
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -195,7 +226,7 @@ export default function CreatePostForm(props: { closeForm: () => void }) {
               multiline
               placeholder={"Tell your story..."}
               variant="outlined"
-              rows={8}
+              minRows={8}
               maxRows={8}
               helperText={
                 content.length > STORY_CONTENT_CHAR_LIMIT * 0.75

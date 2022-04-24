@@ -84,7 +84,7 @@ export default function ImageUpload(props: {
             url: URL.createObjectURL(image),
           }))
           .map((image) => (
-            <div className={classes.thumbnailAndRemoveBtn}>
+            <div key={image.url} className={classes.thumbnailAndRemoveBtn}>
               <div
                 className={classes.thumbnail}
                 style={{
