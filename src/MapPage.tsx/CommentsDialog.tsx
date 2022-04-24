@@ -350,7 +350,7 @@ export default function CommentsDialog(props: {
                 className={classes.newCommentInput}
                 placeholder="Add comment..."
                 multiline
-                rowsMax={6}
+                maxRows={6}
                 variant="outlined"
                 error={isCreateCommentError}
                 onChange={(e) =>

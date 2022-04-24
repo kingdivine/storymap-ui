@@ -20,7 +20,8 @@ import LocationSearch from "./LocationSearch";
 import axios from "axios";
 import { useCurrentUser } from "../hooks/useCurrentUser";
 import { useHistory } from "react-router";
-import { isMobile, storymapApiUrl } from "../utils";
+import { imageApiUrl, isMobile, storymapApiUrl } from "../utils";
+import ImageUpload from "./ImageUpload";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -41,6 +42,8 @@ const STORY_CONTENT_CHAR_LIMIT = 10000;
 const STORY_TITLE_CHAR_LIMIT = 80;
 const TAG_CHAR_LIMIT = 30;
 const TAGS_COUNT_LIMIT = 3;
+const IMAGE_SIZE_LIMIT = 5000000; //5MB
+const IMAGE_COUNT_LIMIT = 3;
 
 export default function CreatePostForm(props: { closeForm: () => void }) {
   const classes = useStyles();
@@ -48,7 +51,7 @@ export default function CreatePostForm(props: { closeForm: () => void }) {
 
   const [currentUser] = useCurrentUser();
 
-  //form values
+  //form state
   const [title, setTitle] = useState("");
   const [placeName, setPlaceName] = useState("");
   const [location, setLocation] = useState<[number, number]>();
@@ -56,10 +59,14 @@ export default function CreatePostForm(props: { closeForm: () => void }) {
   const [tags, setTags] = useState<string[]>([]);
   const [isPrivate, setIsPrivate] = useState(false);
 
+  //image state
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
+
   //submission state
   const [isLoading, setIsLoading] = useState(false);
   const [postError, setPostError] = useState("");
 
+  //tag handlers
   const handleTagInputKeyUp = (event: any) => {
     if (event.key === "Enter" || event.key === " ") {
       let newTag = "";
@@ -84,6 +91,21 @@ export default function CreatePostForm(props: { closeForm: () => void }) {
     setTags((tags) => tags.filter((tag) => tag !== tagToDelete));
   };
 
+  //image handlers
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files as FileList;
+    const fileArr = Array.from(files).map((file) => file);
+    setImageFiles(imageFiles.concat(fileArr));
+  };
+
+  const handleRemoveImageClick = (fileName: string) => {
+    const updatedImageFiles = imageFiles.filter(
+      (imageFile) => imageFile.name !== fileName
+    );
+    setImageFiles(updatedImageFiles);
+  };
+
+  //form posting
   const canPost = () =>
     content.length > 0 &&
     content.length <= STORY_CONTENT_CHAR_LIMIT &&
@@ -92,13 +114,45 @@ export default function CreatePostForm(props: { closeForm: () => void }) {
     placeName &&
     tags.length <= TAGS_COUNT_LIMIT &&
     tags.every((tag) => tag.length > 0 && tag.length <= TAG_CHAR_LIMIT) &&
+    imageFiles.every((file) => file.size <= IMAGE_SIZE_LIMIT) &&
+    imageFiles.length <= IMAGE_COUNT_LIMIT &&
     location;
 
-  const handlePostSubmit = () => {
+  const handlePostSubmit = async () => {
     setIsLoading(true);
     setPostError("");
-    axios
-      .post(
+
+    try {
+      //fetch presigned urls
+      let presignedUrls: string[] = [];
+      if (imageFiles.length > 0) {
+        const presignedUrlsResponse = await axios.get<string[]>(
+          `${storymapApiUrl}/images/presign?count=${imageFiles.length}&isPrivate=${isPrivate}`,
+          {
+            headers: {
+              authorization: `Bearer ${currentUser!.token}`,
+            },
+          }
+        );
+        presignedUrls = presignedUrlsResponse.data;
+
+        //url manipulation forces req via proxy to avoid cors errs
+        await Promise.all(
+          presignedUrls.map((url, i) =>
+            axios({
+              method: "put",
+              url: `image-api${url.split(imageApiUrl)[1]}`,
+              headers: {
+                "Content-Type": "multipart/form-data",
+                "x-amz-acl": new URLSearchParams(url).get("x-amz-acl"),
+              },
+              data: imageFiles[i],
+            })
+          )
+        );
+      }
+
+      const newPost = await axios.post(
         `${storymapApiUrl}/stories`,
         {
           title,
@@ -107,21 +161,22 @@ export default function CreatePostForm(props: { closeForm: () => void }) {
           isPrivate,
           tags,
           location: `${location![1]},${location![0]}`,
+          imageIds: presignedUrls.map(
+            (url) => url.split(`${imageApiUrl}/`)[1].split("?")[0]
+          ),
         },
         {
           headers: {
             authorization: `Bearer ${currentUser?.token}`, //TODO: replace with !
           },
         }
-      )
-      .then((result) => {
-        history.push(`/story/${result.data.slug}`);
-        props.closeForm();
-      })
-      .catch((e) => {
-        setPostError("Oops! Something went wrong.");
-        setIsLoading(false);
-      });
+      );
+      history.push(`/story/${newPost.data.slug}`);
+      props.closeForm();
+    } catch (e) {
+      setPostError("Oops! Something went wrong.");
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -171,14 +226,23 @@ export default function CreatePostForm(props: { closeForm: () => void }) {
               multiline
               placeholder={"Tell your story..."}
               variant="outlined"
-              rows={8}
-              rowsMax={8}
+              minRows={8}
+              maxRows={8}
               helperText={
                 content.length > STORY_CONTENT_CHAR_LIMIT * 0.75
                   ? `${content.length}/${STORY_CONTENT_CHAR_LIMIT} characters.`
                   : null
               }
             />
+            <div style={{ marginTop: 8 }}>
+              <ImageUpload
+                imageSizeLimit={IMAGE_SIZE_LIMIT}
+                imageCountLimit={IMAGE_COUNT_LIMIT}
+                imageFiles={imageFiles}
+                handleImageUpload={handleImageUpload}
+                handleRemoveImageClick={handleRemoveImageClick}
+              />
+            </div>
             <OutlinedInput
               onKeyUp={handleTagInputKeyUp}
               inputProps={{ maxLength: TAG_CHAR_LIMIT }}

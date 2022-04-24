@@ -21,4 +21,14 @@ module.exports = function (app) {
       },
     })
   );
+  app.use(
+    "/image-api",
+    createProxyMiddleware({
+      target: "https://storymap-images.fra1.digitaloceanspaces.com",
+      changeOrigin: true,
+      pathRewrite: {
+        "^/image-api": "/",
+      },
+    })
+  );
 };
