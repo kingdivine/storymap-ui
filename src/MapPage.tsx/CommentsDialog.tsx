@@ -19,10 +19,12 @@ import { useCurrentUser } from "../hooks/useCurrentUser";
 import { useHistory } from "react-router-dom";
 import LoginToContinueDialog from "../Generic/LoginToContinueDialog";
 import FavoriteIcon from "@material-ui/icons/Favorite";
-import { storymapApiUrl } from "../utils";
+import { isMobile, storymapApiUrl } from "../utils";
 
 const COMMENTS_PER_PAGE = 50; //matches backend
 const COMMENT_CHAR_LENGTH_LIMIT = 1000;
+
+const smallScreen = isMobile();
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -268,8 +270,9 @@ export default function CommentsDialog(props: {
   return (
     <>
       <Dialog
+        fullScreen={smallScreen}
         fullWidth={true}
-        maxWidth={"sm"}
+        maxWidth={"md"}
         open={true}
         onClose={props.onClose}
       >

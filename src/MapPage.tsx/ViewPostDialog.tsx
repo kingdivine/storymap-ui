@@ -23,6 +23,7 @@ import { StoryDetail } from "../types/StoryDetail";
 import UsernameAndPic from "../Generic/UsernameandPic";
 import DeleteStoryDialog from "./DeleteStoryDialog";
 import { isMobile, storymapApiUrl } from "../utils";
+import ImageDisplay from "./ImageDisplay";
 
 const smallScreen = isMobile();
 
@@ -190,6 +191,7 @@ export default function ViewPostDialog(props: {
     <>
       {!isCommentsViewOpen && (
         <Dialog
+          fullScreen={smallScreen}
           fullWidth={true}
           maxWidth={"md"}
           open={true}
@@ -306,6 +308,7 @@ export default function ViewPostDialog(props: {
               </div>
 
               <DialogContent>
+                <ImageDisplay imageIds={story.image_ids} />
                 <DialogContentText
                   color="textPrimary"
                   style={{ marginBottom: 16 }}
