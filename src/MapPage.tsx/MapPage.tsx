@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme: Theme) =>
       flexDirection: "column",
       zIndex: 1,
       position: "absolute",
-      top: "15%",
+      top: smallScreen ? "10%" : "15%",
       left: theme.spacing(2),
     },
     chipContainer: {

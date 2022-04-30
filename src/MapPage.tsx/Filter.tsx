@@ -24,7 +24,7 @@ const smallScreen = isMobile();
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     filterContainer: {
-      marginTop: theme.spacing(3),
+      marginTop: theme.spacing(2),
     },
     form: {
       display: "flex",
