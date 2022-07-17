@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme: Theme) =>
       zIndex: 10,
       position: "fixed",
       bottom: 0,
-      height: 55,
+      height: 65,
       width: "100%",
       display: "flex",
       alignItems: "center",
@@ -25,6 +25,7 @@ const useStyles = makeStyles((theme: Theme) =>
     navLinkBtn: {
       textTransform: "lowercase",
       color: theme.palette.common.white,
+      paddingBottom: 24,
     },
   })
 );

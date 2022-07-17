@@ -13,6 +13,7 @@ export interface StoryDetail {
   comment_count: string;
   tags: string[];
   likers: Liker[];
+  image_ids: string[];
 }
 
 interface Liker {

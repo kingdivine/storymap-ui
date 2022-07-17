@@ -38,7 +38,12 @@ export default function StoryClusterDialog(props: {
   let history = useHistory();
 
   return (
-    <Dialog onClose={() => onCloseDialog()} open={true}>
+    <Dialog
+      onClose={() => onCloseDialog()}
+      open={true}
+      fullWidth={true}
+      maxWidth={"md"}
+    >
       <div style={{ margin: 8, padding: 16 }}>
         <div className={classes.topLineContainer}>
           <div />
