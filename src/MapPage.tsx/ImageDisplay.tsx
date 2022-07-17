@@ -2,12 +2,18 @@ import { imageApiUrl } from "../utils";
 
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
+import fallBackStoryImage from "../Generic/images/broken-image.png";
+import { isMobile } from "../utils";
+
+const smallScreen = isMobile();
+
+const IMAGE_HEIGHT = smallScreen ? 300 : 400;
 
 export default function ImageDisplay(props: { imageIds: string[] }) {
   const { imageIds } = props;
 
   return (
-    <div>
+    <div style={{ marginBottom: 16 }}>
       <Carousel
         autoPlay={false}
         showStatus={false}
@@ -15,10 +21,18 @@ export default function ImageDisplay(props: { imageIds: string[] }) {
         showIndicators={imageIds.length > 1}
       >
         {props.imageIds.map((imageId, idx) => (
-          <div>
-            {/* TODO: image on load start and image on error 
-              https://dev.to/elisabethleonhardt/configure-fallback-images-in-react-and-nextjs-54ej*/}
-            <img src={`${imageApiUrl}/${imageId}`} alt={imageId} />
+          <div
+            key={imageId}
+            style={{
+              height: IMAGE_HEIGHT,
+            }}
+          >
+            <img
+              src={`${imageApiUrl}/${imageId}`}
+              alt={imageId}
+              style={{ height: "100%", width: "auto" }}
+              onError={(e) => (e.currentTarget.src = fallBackStoryImage)}
+            />
           </div>
         ))}
       </Carousel>
