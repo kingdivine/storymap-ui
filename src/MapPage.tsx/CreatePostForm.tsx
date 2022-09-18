@@ -180,6 +180,7 @@ export default function CreatePostForm(props: { closeForm: () => void }) {
       history.push(`/story/${newPost.data.slug}`);
       props.closeForm();
     } catch (e) {
+      console.log(e);
       setPostError("Oops! Something went wrong.");
       setIsLoading(false);
     }
