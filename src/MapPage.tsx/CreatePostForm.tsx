@@ -136,8 +136,6 @@ export default function CreatePostForm(props: { closeForm: () => void }) {
         );
 
         presignedUrls.forEach((url) => {
-          console.log("url", url);
-          console.log("imageApiUrl", imageApiUrl);
           imageIds.push(url.split(`${imageApiUrl}/`)[1].split("?")[0]);
         });
 
