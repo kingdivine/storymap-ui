@@ -123,10 +123,10 @@ export default function CreatePostForm(props: { closeForm: () => void }) {
     setPostError("");
 
     try {
+      let imageIds: string[] = [];
       //fetch presigned urls
-      let presignedUrls: string[] = [];
       if (imageFiles.length > 0) {
-        const presignedUrlsResponse = await axios.get<string[]>(
+        const { data: presignedUrls } = await axios.get<string[]>(
           `${storymapApiUrl}/images/presign?count=${imageFiles.length}&isPrivate=${isPrivate}`,
           {
             headers: {
@@ -134,7 +134,15 @@ export default function CreatePostForm(props: { closeForm: () => void }) {
             },
           }
         );
-        presignedUrls = presignedUrlsResponse.data;
+
+        presignedUrls.forEach((url) => {
+          imageIds.push(url.split(`${imageApiUrl}/`)[1].split("?")[0]);
+        });
+
+        presignedUrls.forEach((url) => {
+          console.log("url", url);
+          console.log("imageApiUrl", imageApiUrl);
+        });
 
         //url manipulation forces req via proxy to avoid cors errs
         await Promise.all(
@@ -161,9 +169,7 @@ export default function CreatePostForm(props: { closeForm: () => void }) {
           isPrivate,
           tags,
           location: `${location![1]},${location![0]}`,
-          imageIds: presignedUrls.map(
-            (url) => url.split(`${imageApiUrl}/`)[1].split("?")[0]
-          ),
+          imageIds,
         },
         {
           headers: {
