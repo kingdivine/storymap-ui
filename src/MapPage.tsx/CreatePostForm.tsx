@@ -136,12 +136,9 @@ export default function CreatePostForm(props: { closeForm: () => void }) {
         );
 
         presignedUrls.forEach((url) => {
-          imageIds.push(url.split(`${imageApiUrl}/`)[1].split("?")[0]);
-        });
-
-        presignedUrls.forEach((url) => {
           console.log("url", url);
           console.log("imageApiUrl", imageApiUrl);
+          imageIds.push(url.split(`${imageApiUrl}/`)[1].split("?")[0]);
         });
 
         //url manipulation forces req via proxy to avoid cors errs
