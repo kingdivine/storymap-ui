@@ -24,7 +24,7 @@ module.exports = function (app) {
   app.use(
     "/image-api",
     createProxyMiddleware({
-      target: "https://storymap-images.fra1.digitaloceanspaces.com",
+      target: "https://fra1.digitaloceanspaces.com/storymap-images",
       changeOrigin: true,
       pathRewrite: {
         "^/image-api": "/",

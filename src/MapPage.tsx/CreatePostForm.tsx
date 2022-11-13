@@ -45,6 +45,16 @@ const TAGS_COUNT_LIMIT = 3;
 const IMAGE_SIZE_LIMIT = 5000000; //5MB
 const IMAGE_COUNT_LIMIT = 3;
 
+interface PresignedPostUrlResponse {
+  url: string;
+  fields: {
+    key: string;
+    acl: string;
+    bucket: string;
+  };
+  filePath: string;
+}
+
 export default function CreatePostForm(props: { closeForm: () => void }) {
   const classes = useStyles();
   let history = useHistory();
@@ -126,7 +136,9 @@ export default function CreatePostForm(props: { closeForm: () => void }) {
       let imageIds: string[] = [];
       //fetch presigned urls
       if (imageFiles.length > 0) {
-        const { data: presignedUrls } = await axios.get<string[]>(
+        const { data: presignedPostUrls } = await axios.get<
+          PresignedPostUrlResponse[]
+        >(
           `${storymapApiUrl}/images/presign?count=${imageFiles.length}&isPrivate=${isPrivate}`,
           {
             headers: {
@@ -135,21 +147,27 @@ export default function CreatePostForm(props: { closeForm: () => void }) {
           }
         );
 
-        presignedUrls.forEach((url) => {
-          imageIds.push(url.split(`${imageApiUrl}/`)[1].split("?")[0]);
+        let formDatum: FormData[] = [];
+        presignedPostUrls.forEach((url, i) => {
+          const formData = new FormData();
+          formData.append("Content-Type", "multipart/form-data");
+          Object.entries(url.fields).forEach(([k, v]) => {
+            formData.append(k, v);
+          });
+          formData.append("file", imageFiles[i]);
+          formDatum.push(formData);
+          imageIds.push(url.fields.key);
         });
 
-        //url manipulation forces req via proxy to avoid cors errs
         await Promise.all(
-          presignedUrls.map((url, i) =>
+          formDatum.map((data, i) =>
             axios({
-              method: "put",
-              url: `image-api${url.split(imageApiUrl)[1]}`,
+              method: "post",
+              url: imageApiUrl,
               headers: {
                 "Content-Type": "multipart/form-data",
-                "x-amz-acl": new URLSearchParams(url).get("x-amz-acl"),
               },
-              data: imageFiles[i],
+              data,
             })
           )
         );
