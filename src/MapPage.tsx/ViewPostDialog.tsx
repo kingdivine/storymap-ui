@@ -352,7 +352,6 @@ export default function ViewPostDialog(props: {
                       </Typography>
                     </div>
                     <div className={classes.storyAction}>
-                      {/** TODO: try -> Navigator.share(), if not -> document.execCommand("copy")} */}
                       <IconButton
                         size="small"
                         onClick={() => handleShareClick()}
