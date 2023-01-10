@@ -15,7 +15,9 @@ import LockIcon from "@material-ui/icons/Lock";
 
 import axios from "axios";
 import moment from "moment";
+
 import { useCurrentUser } from "../hooks/useCurrentUser";
+import { useSnackbar } from "notistack";
 
 import LoginToContinueDialog from "../Generic/LoginToContinueDialog";
 import CommentsDialog from "./CommentsDialog";
@@ -79,6 +81,8 @@ export default function ViewPostDialog(props: {
   const classes = useStyles();
 
   const [currentUser] = useCurrentUser();
+
+  const { enqueueSnackbar } = useSnackbar();
 
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
@@ -187,6 +191,19 @@ export default function ViewPostDialog(props: {
     }
   };
 
+  const handleShareClick = () => {
+    navigator.clipboard
+      .writeText(window.location.href)
+      .then(() => {
+        enqueueSnackbar("Link copied to clipboard.", {
+          autoHideDuration: 2500,
+          key: "shareStory",
+          preventDuplicate: true,
+        });
+      })
+      .catch((e) => console.log(e));
+  };
+
   return (
     <>
       {!isCommentsViewOpen && (
@@ -277,7 +294,7 @@ export default function ViewPostDialog(props: {
                         <DeleteForeverIcon
                           fontSize="small"
                           style={{ marginRight: 4 }}
-                        />{" "}
+                        />
                         Delete
                       </MenuItem>
                     </Menu>
@@ -339,8 +356,10 @@ export default function ViewPostDialog(props: {
                       </Typography>
                     </div>
                     <div className={classes.storyAction}>
-                      {/** TODO: try -> Navigator.share(), if not -> document.execCommand("copy")} */}
-                      <IconButton size="small" onClick={() => {}} disabled>
+                      <IconButton
+                        size="small"
+                        onClick={() => handleShareClick()}
+                      >
                         <ShareIcon />
                       </IconButton>
                     </div>

@@ -17,6 +17,7 @@
     "jsonwebtoken": "^8.5.1",
     "mapbox-gl": "^2.2.0",
     "moment": "^2.29.1",
+    "notistack": "^1.0.10",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-responsive-carousel": "^3.2.23",
@@ -27,9 +28,13 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "dev": "react-scripts --openssl-legacy-provider start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
+  },
+  "scriptsComments": {
+    "dev": "Remove use of --openssl-legacy-provider see https://stackoverflow.com/a/73027407"
   },
   "eslintConfig": {
     "extends": [
