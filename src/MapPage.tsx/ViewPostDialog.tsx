@@ -192,12 +192,16 @@ export default function ViewPostDialog(props: {
   };
 
   const handleShareClick = () => {
-    navigator.clipboard.writeText(window.location.href);
-    enqueueSnackbar("Link copied to clipboard.", {
-      autoHideDuration: 2500,
-      key: "shareStory",
-      preventDuplicate: true,
-    });
+    navigator.clipboard
+      .writeText(window.location.href)
+      .then(() => {
+        enqueueSnackbar("Link copied to clipboard.", {
+          autoHideDuration: 2500,
+          key: "shareStory",
+          preventDuplicate: true,
+        });
+      })
+      .catch((e) => console.log(e));
   };
 
   return (
