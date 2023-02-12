@@ -328,7 +328,7 @@ export default function ViewPostDialog(props: {
                 <ImageDisplay imageIds={story.image_ids} />
                 <DialogContentText
                   color="textPrimary"
-                  style={{ marginBottom: 16 }}
+                  style={{ marginBottom: 16, whiteSpace: "pre-line" }}
                 >
                   {story.content}
                 </DialogContentText>
