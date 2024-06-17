@@ -1,0 +1,23 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "8QY363FBVW.com.divinebuiltthis.storymap",
+        "paths": [
+          "/story/*"
+        ]
+      }
+    ]
+  },
+  "activitycontinuation": {
+    "apps": [
+      "8QY363FBVW.com.divinebuiltthis.storymap"
+    ]
+  },
+  "webcredentials": {
+    "apps": [
+      "8QY363FBVW.com.divinebuiltthis.storymap"
+    ]
+  }
+}
