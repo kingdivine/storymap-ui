@@ -1,11 +1,15 @@
 {
   "applinks": {
-    "apps": [],
     "details": [
       {
-        "appID": "8QY363FBVW.com.divinebuiltthis.storymap",
-        "paths": [
-          "/story/*"
+        "appIDs": [
+          "8QY363FBVW.com.divinebuiltthis.storymap"
+        ],
+        "components": [
+          {
+            "/": "*",
+            "comment": "Matches all routes"
+          }
         ]
       }
     ]
