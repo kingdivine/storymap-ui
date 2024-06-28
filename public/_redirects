@@ -1,2 +1,3 @@
+https://storymap.co/.well-known/*  https://www.storymap.co/.well-known/:splat  301!
 /.well-known/*  /.well-known/:splat  200
 /*              /index.html          200
