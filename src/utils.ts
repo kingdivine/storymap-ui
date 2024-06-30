@@ -1,18 +1,15 @@
 import moment from "moment";
 
-export const storymapApiUrl =
-  import.meta.env.NODE_ENV === "production"
-    ? import.meta.env.VITE_APP_STORYMAP_API_URL_PROD!
-    : import.meta.env.VITE_APP_STORYMAP_API_URL_DEV!;
+export const storymapApiUrl = import.meta.env.PROD
+  ? import.meta.env.VITE_APP_STORYMAP_API_URL_PROD!
+  : import.meta.env.VITE_APP_STORYMAP_API_URL_DEV!;
 
 export const mapboxApiUrl = import.meta.env.VITE_APP_MAPBOX_API_URL!;
-
 //images ultimately upload to the same bucket but dev
 //points to '/image-api' locally to avoid CORS errors
-export const imageApiUrl =
-  import.meta.env.NODE_ENV === "production"
-    ? import.meta.env.VITE_APP_IMAGE_API_URL_PROD!
-    : import.meta.env.VITE_APP_IMAGE_API_URL_DEV!;
+export const imageApiUrl = import.meta.env.PROD
+  ? import.meta.env.VITE_APP_IMAGE_API_URL_PROD!
+  : import.meta.env.VITE_APP_IMAGE_API_URL_DEV!;
 
 export const isValidEmail = (email: string) => {
   const re =
