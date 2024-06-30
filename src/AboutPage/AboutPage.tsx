@@ -78,7 +78,7 @@ export default function AboutPage() {
           </Button>
           <div>
             <Typography variant="caption" color="textSecondary">
-              v{process.env.REACT_APP_STORYMAP_UI_VERSION}
+              v{import.meta.env.VITE_APP_STORYMAP_UI_VERSION}
             </Typography>
           </div>
         </Paper>

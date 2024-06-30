@@ -3,7 +3,7 @@ import mapboxgl from "mapbox-gl";
 import { makeStyles } from "@material-ui/core/styles";
 import { Story } from "../types/Story";
 
-mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN!;
+mapboxgl.accessToken = import.meta.env.VITE_APP_MAPBOX_ACCESS_TOKEN!;
 
 const MAP_THEME = "mapbox://styles/mapbox/dark-v10";
 const DEFAULT_LONG_LAT: mapboxgl.LngLatLike = [9, 25];

@@ -40,7 +40,7 @@ export default function LocationSearch(props: {
         const response = await axios({
           url: `${mapboxApiUrl}/geocoding/v5/mapbox.places/${searchString}.json`,
           params: {
-            access_token: process.env.REACT_APP_MAPBOX_ACCESS_TOKEN!,
+            access_token: import.meta.env.VITE_APP_MAPBOX_ACCESS_TOKEN!,
           },
         });
         setOptions(response.data.features);
