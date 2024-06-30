@@ -2,6 +2,7 @@
   "name": "storymap-ui",
   "version": "0.0.1",
   "private": true,
+  "type": "module",
   "dependencies": {
     "@material-ui/core": "^4.11.4",
     "@material-ui/icons": "^4.11.2",
@@ -27,11 +28,9 @@
     "web-vitals": "^4.2.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "dev": "react-scripts --openssl-legacy-provider start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "start": "vite",
+    "build": "tsc && vite build",
+    "serve": "vite preview"
   },
   "scriptsComments": {
     "dev": "Remove use of --openssl-legacy-provider see https://stackoverflow.com/a/73027407"
