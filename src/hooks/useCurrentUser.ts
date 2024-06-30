@@ -1,5 +1,5 @@
 import { useState } from "react";
-import jwt from "jsonwebtoken";
+import { decodeJwt } from "jose";
 
 interface User {
   id: string;
@@ -15,7 +15,7 @@ export function useCurrentUser() {
       const user = window.localStorage.getItem("currentUser");
       if (user) {
         const userObj = JSON.parse(user) as User;
-        const decodedToken: any = jwt.decode(userObj.token);
+        const decodedToken: any = decodeJwt(userObj.token);
         if (decodedToken && Date.now() >= decodedToken.exp * 1000) {
           return null;
         }

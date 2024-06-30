@@ -106,7 +106,7 @@ export default function ViewPostDialog(props: {
           ? {
               authorization: `Bearer ${currentUser?.token}`,
             }
-          : null;
+          : {};
         const response = await axios.get(
           `${storymapApiUrl}/storiesBySlug/${props.storySlug}`,
           {

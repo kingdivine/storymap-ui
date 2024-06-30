@@ -3,7 +3,7 @@ import mapboxgl from "mapbox-gl";
 import { makeStyles } from "@material-ui/core/styles";
 import { Story } from "../types/Story";
 
-mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN!;
+mapboxgl.accessToken = import.meta.env.VITE_APP_MAPBOX_ACCESS_TOKEN!;
 
 const MAP_THEME = "mapbox://styles/mapbox/dark-v10";
 const DEFAULT_LONG_LAT: mapboxgl.LngLatLike = [9, 25];
@@ -60,9 +60,18 @@ const ICON_MAPPING = {
   "girl-26": "47",
   "cluster-pin": "48",
 };
-const MARKER_PNGS = Object.keys(ICON_MAPPING).map(
-  (name) => require(`../Generic/images/markers/${name}-marker.png`).default
-);
+
+const loadImages = async () => {
+  const markerPngs = await Promise.all(
+    Object.keys(ICON_MAPPING).map(async (name) => {
+      const module = await import(
+        `../Generic/images/markers/${name}-marker.png`
+      );
+      return module.default;
+    })
+  );
+  return markerPngs;
+};
 
 const useStyles = makeStyles({
   mapContainer: {
@@ -85,6 +94,11 @@ export default function Map(props: {
   const { posts, onPostClick, onClusterClick, flyToLongLat, onFlyEnd } = props;
   const mapContainer = useRef(null);
   const [map, setMap] = useState<mapboxgl.Map>();
+  const [markerPngs, setMarkerPngs] = useState<string[]>([]);
+
+  useEffect(() => {
+    loadImages().then((images) => setMarkerPngs(images));
+  }, []);
 
   useEffect(() => {
     const initialMap = new mapboxgl.Map({
@@ -115,7 +129,7 @@ export default function Map(props: {
     initialMap.on("load", () => {
       // Add an image to use as a custom marker
       Promise.all(
-        MARKER_PNGS.map(
+        markerPngs.map(
           (img, idx) =>
             new Promise<void>((resolve, reject) => {
               initialMap.loadImage(img, (error, res) => {
@@ -238,7 +252,7 @@ export default function Map(props: {
       });
       onFlyEnd();
     }
-  }, [flyToLongLat, map, onFlyEnd]);
+  }, [flyToLongLat, map, onFlyEnd, markerPngs]);
 
   return (
     <div>

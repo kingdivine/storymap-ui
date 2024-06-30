@@ -1,4 +1,5 @@
 import { Typography, Avatar, Link } from "@material-ui/core";
+import { useEffect, useState } from "react";
 
 export const AVATAR_NAMES = [
   "boy-01",
@@ -61,6 +62,17 @@ export default function UsernameAndPic(props: {
   const { username, avatar, small, noLink } = props;
   const validAvatar = AVATAR_NAMES.includes(avatar);
   const size = small ? { width: 30, height: 30 } : { width: 40, height: 40 };
+  const [avatarSrc, setAvatarSrc] = useState<string>("");
+
+  useEffect(() => {
+    if (validAvatar) {
+      import(`./images/avatars/${avatar}.svg`)
+        .then((image) => setAvatarSrc(image.default))
+        .catch(() => setAvatarSrc("./broken-img"));
+    } else {
+      setAvatarSrc("./broken-img");
+    }
+  }, [avatar, validAvatar]);
 
   if (!validAvatar) {
     return (
@@ -91,11 +103,7 @@ export default function UsernameAndPic(props: {
         justifyContent: "center",
       }}
     >
-      <Avatar
-        alt={username}
-        src={require(`./images/avatars/${avatar}.svg`).default}
-        style={size}
-      />
+      <Avatar alt={username} src={avatarSrc} style={size} />
 
       <Typography
         style={{ marginLeft: 8 }}
