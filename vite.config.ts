@@ -8,5 +8,22 @@ export default defineConfig({
   server: {
     open: true,
     port: 3000,
+    proxy: {
+      "/storymap-api": {
+        target: "http://localhost:8080",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/storymap-api/, ""),
+      },
+      "/mapbox-api": {
+        target: "https://api.mapbox.com",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/mapbox-api/, ""),
+      },
+      "/image-api": {
+        target: "https://fra1.digitaloceanspaces.com/storymap-images",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/image-api/, ""),
+      },
+    },
   },
 });
