@@ -240,7 +240,7 @@ export default function Map(props: {
 
     setMap(initialMap);
     return () => initialMap.remove();
-  }, [posts, onPostClick, onClusterClick]);
+  }, [posts, onPostClick, onClusterClick, markerPngs]);
 
   useEffect(() => {
     if (flyToLongLat && map) {
@@ -252,7 +252,7 @@ export default function Map(props: {
       });
       onFlyEnd();
     }
-  }, [flyToLongLat, map, onFlyEnd, markerPngs]);
+  }, [flyToLongLat, map, onFlyEnd]);
 
   return (
     <div>

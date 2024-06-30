@@ -32,11 +32,6 @@
     "build": "tsc && vite build",
     "serve": "vite preview"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app"
-    ]
-  },
   "browserslist": {
     "production": [
       "last 5 chrome version",
@@ -55,6 +50,15 @@
   },
   "devDependencies": {
     "@types/mapbox-gl": "^2.1.1",
-    "@types/react-router-dom": "^5.1.7"
+    "@types/react-router-dom": "^5.1.7",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^8.57.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-react-app": "^7.0.1",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-jsx-a11y": "^6.9.0",
+    "eslint-plugin-react": "^7.34.3",
+    "eslint-plugin-react-hooks": "^4.6.2",
+    "vite-plugin-eslint": "^1.8.1"
   }
 }
