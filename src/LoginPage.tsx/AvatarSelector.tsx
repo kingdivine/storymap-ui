@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Avatar,
   Button,
@@ -51,6 +51,16 @@ const getRows = () => {
   return rows;
 };
 
+const importAllAvatars = async () => {
+  const importedAvatars: { [key: string]: any } = {};
+  for (const name of AVATAR_NAMES) {
+    importedAvatars[name] = (
+      await import(`../Generic/images/avatars/${name}.svg`)
+    ).default;
+  }
+  return importedAvatars;
+};
+
 export default function AvatarSelector(props: {
   onSelect: (selected: string) => void;
   selected: string;
@@ -59,6 +69,7 @@ export default function AvatarSelector(props: {
   const theme: Theme = useTheme();
 
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const [avatars, setAvatars] = useState<{ [key: string]: any }>({});
 
   const handleButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -72,6 +83,15 @@ export default function AvatarSelector(props: {
     props.onSelect(name);
     setAnchorEl(null);
   };
+
+  useEffect(() => {
+    const loadAvatars = async () => {
+      const importedAvatars = await importAllAvatars();
+      setAvatars(importedAvatars);
+    };
+
+    loadAvatars();
+  }, []);
 
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
@@ -96,12 +116,7 @@ export default function AvatarSelector(props: {
         onClick={handleButtonClick}
         startIcon={
           <Avatar
-            src={
-              props.selected
-                ? require(`../Generic/images/avatars/${props.selected}.svg`)
-                    .default
-                : "none"
-            }
+            src={props.selected ? avatars[props.selected] : "none"}
             style={{ height: 24, width: 24 }}
           />
         }
@@ -123,14 +138,12 @@ export default function AvatarSelector(props: {
         }}
       >
         <Paper className={classes.paper}>
-          {getRows().map((row) => (
-            <div className={classes.row}>
+          {getRows().map((row, idx) => (
+            <div className={classes.row} key={idx}>
               {row.map((avatarName) => (
                 <Avatar
-                  src={
-                    require(`../Generic/images/avatars/${avatarName}.svg`)
-                      .default
-                  }
+                  key={avatarName}
+                  src={avatars[avatarName]}
                   className={classes.avatar}
                   style={selectedStyling(avatarName)}
                   onClick={() => handleSelectAvatar(avatarName)}

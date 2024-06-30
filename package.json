@@ -55,8 +55,6 @@
   },
   "devDependencies": {
     "@types/mapbox-gl": "^2.1.1",
-    "@types/react-router-dom": "^5.1.7",
-    "http-proxy-middleware": "^3.0.0",
-    "vite-plugin-svgr": "^4.2.0"
+    "@types/react-router-dom": "^5.1.7"
   }
 }
