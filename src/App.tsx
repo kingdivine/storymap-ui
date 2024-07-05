@@ -14,6 +14,7 @@ import NotificationsPage from "./NotificationsPage/NotificationsPage";
 import AboutPage from "./AboutPage/AboutPage";
 import NotFoundPage from "./NotFoundPage.tsx/NotFoundPage";
 import PasswordResetPage from "./PasswordResetPage/PasswordResetPage";
+import ContactPage from "./ContactPage/ContactPage";
 
 function App() {
   const [currentUser] = useCurrentUser();
@@ -50,6 +51,7 @@ function App() {
           <Route exact path="/notifications">
             {currentUser ? <NotificationsPage /> : <Redirect to="/login" />}
           </Route>
+          <Route exact path="/contact" component={ContactPage} />
           <Route component={NotFoundPage} />
         </Switch>
       </Router>
