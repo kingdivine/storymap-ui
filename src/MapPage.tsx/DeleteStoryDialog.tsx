@@ -31,7 +31,7 @@ export default function DeleteStoryDialog(props: {
     setIsLoading(true);
     setIsError(false);
     axios
-      .delete(`${storymapApiUrl}stories/${story.id}`, {
+      .delete(`${storymapApiUrl}/stories/${story.id}`, {
         headers: {
           authorization: `Bearer ${currentUser!.token}`,
         },
