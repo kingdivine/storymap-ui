@@ -17,6 +17,7 @@ export function useCurrentUser() {
         const userObj = JSON.parse(user) as User;
         const decodedToken: any = decodeJwt(userObj.token);
         if (decodedToken && Date.now() >= decodedToken.exp * 1000) {
+          window.localStorage.removeItem("currentUser");
           return null;
         }
         return userObj;
